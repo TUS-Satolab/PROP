@@ -11,7 +11,27 @@
    python3 -m pip install -r requirements.txt
    ``` 
 5. `python3 -m pip install -r requirements.txt`
-6. Run the program help page with   
+
+## Run the program
+(0.) program help page access:   
    `python3 calculation.py -help`
-7. Example  
+   ```
+   Usage:
+  calculation.py [--filename <filename>] [--type <type>] [--align <align>]
+                 [--align_clw_opt <align_clw_opt>] [--model <model>]
+                 [--plusgap <plusgap>] [--gapdel <gapdel>] [--tree <tree>]
+
+Options:
+  -h --help                         Show this screen.
+  --filename=<filename>             aln-file
+  --type=<type>                     nuc or ami
+  --align=<align>                   clustalw, mafft or none
+  --align_clw_opt=<align_clw_opt>   string of options [default: ]
+  --model=<model>                   P, PC, JS or K2P
+  --plusgap=<plusgap>               "checked" / "" [default: ]
+  --gapdel=<gapdel>                 "comp" / "pair" 
+  --tree=<tree>                     "nj" / "upgma"
+
+   ```
+1. Example:  
    `python3 calculation.py --filename unaligned.fasta --type nuc --align clustalw --model P --plusgap checked --gapdel comp --tree nj`
