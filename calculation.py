@@ -10,8 +10,8 @@ Options:
   -h --help                         Show this screen.
   --filename=<filename>             aln-file
   --type=<type>                     nuc or ami
-  --align=<align>                   ClustalW or "unnecessary"
-  --align_clw_opt=<align_clw_opt>   string of options [default: ""]
+  --align=<align>                   clustalw, mafft or none
+  --align_clw_opt=<align_clw_opt>   string of options [default: ]
   --model=<model>                   P, PC, JS or K2P
   --plusgap=<plusgap>               "checked" / ""
   --gapdel=<gapdel>                 "comp" / "pair" 
@@ -34,8 +34,11 @@ def calculation(args):
     out_align = timestamp + "align.txt"
     out_matrix = timestamp + "matrix.txt"
     out_tree = timestamp + "tree.txt"
+    current_dir = os.getcwd()
     ############ docopt arguments ###############
     filename = args["--filename"]
+    print("Filename is:", filename)
+    print("Out_align is:", out_align)
     data_type = args["--type"]
     align = args["--align"]
     align_clw_opt = args["--align_clw_opt"]
@@ -44,22 +47,36 @@ def calculation(args):
     plusgap = args["--plusgap"]
     gapdel = args["--gapdel"]
     tree = args["--tree"]
+    # Moved to area before creating Matrix because aligned file needs to be input rather than unaligned file
+    #(otus, seqs) = parse_otus(filename)
     #############################################
-    (otus, seqs) = parse_otus(filename)
     #アライメント
     if align_clw_opt == "(default)":
         align_clw_opt = ""
 
     # TODO: Make this prettier
-    if align == "unnecessary":
+    print("Starting alignment with settings", data_type, "and", align,"in \n ", current_dir)
+    if align == "none":
         #ファイルコピー
         shutil.copy(filename, out_align)
-
-    elif data_type == "nuc" and not align == "unnecessary":
-        subprocess.call("./clustalw2 -INFILE=" + filename + " -OUTFILE=./" + out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=DNA "+align_clw_opt,shell=True)
-
-    elif data_type == "ami" and not align == "unnecessary":
-        subprocess.call("./clustalw2 -INFILE=" + filename + " -OUTFILE=./" + out_align + "/Align.txt" + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=PROTEIN "+align_clw_opt,shell=True)
+    # TODO: NOT WORKING
+    elif data_type == "nuc" and align == "clustalw":
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
+                -INFILE=" + filename + " -OUTFILE=./" + out_align + \
+                " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=DNA "+align_clw_opt,shell=True)
+    # Docker calls:
+    # dc_clustalw
+    # dc_mafft in > out
+    elif data_type == "ami" and align == "clustalw":
+        # TODO: originally out_align/Align.txt name but I don't see the reason why
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
+                -INFILE=" + filename + " -OUTFILE=./" + out_align + \
+                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=PROTEIN "+align_clw_opt,shell=True)
+    elif data_type == "nuc" and align == "mafft":
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft ", filename, " > ", out_align,shell=True)
+    # TODO: Make sure what outputs are necessary for it
+    elif data_type == "ami" and align == "mafft":
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft ", filename, " > ", out_align,shell=True)
 
     #Complete Deletionオプション(plusGapオプションなしの場合)
     if plusgap == "":
@@ -72,34 +89,25 @@ def calculation(args):
                             tmp[i] = "-"
                             seqs[k] = "".join(tmp)
 
+    # TODO: is it correct to input the aligned file? Get error otherwise
+    (otus, seqs) = parse_otus(out_align)
     #距離行列作成
     print("Create Distance Matrix...")
-    #print("Data type is:", data_type)
     # TODO: Error here because "IndexError: list index out of range"
     try:
         if data_type == "nuc":
-            #print("length of otus:", len(otus))
-            #print("range of len(otus):", range(len(otus)))
-            # print("Seqdata:", seqs)
-            # print("Length of Seqdata[0]:", len(seqs[0]))
-            # print("Range of length of Seqdata[0]:", range(len(seqs[0])))
             score = calcDiff(model,plusgap,seqs,len(otus))
-            #print("Score: ", score)
         elif data_type == "ami":
             score = calcDiffProtein(model,plusgap,seqs,len(otus))
-            #print("Score: ", score)
         #距離行列書き出し + Inter/Intra距離計算
-        print("I am here")
         f = open(out_matrix,"w")
         f.write("%s\n" % str(len(otus)))
-        print("Still here")
         for n in range(len(otus)):
             f.write("%-30s " % otus[n][0:30])
             for m in range(len(otus)):
                 score[m][n] = score[m][n] + 0.00000000001 #マイナスゼロ対策
                 f.write("%0.5f " % score[m][n])
             f.write("\r")
-        print("not leaving")
         f.close()
     except:
         raise Exception("遺伝的差異計算Error",0,0,0)
@@ -117,14 +125,12 @@ def calculation(args):
         raise Exception("系統樹作成Error",0,0,0)
 
     #ここまで行ったら結果出力する
-    print("Phylothingies are finished")
     #結果表示
     f = open(out_align)
     align_result = f.read()
     f.close()
     f = open(out_matrix)
     matrix_result = f.read()
-    print(matrix_result)
     f.close()
     f = open(out_tree)
     tree_result = f.read()
@@ -141,12 +147,9 @@ def parse_otus(filename):
     #ここでfiledateにファイル読み込む
     #try:
     filedata = open(filename,"r")
-    #print(filedata)
     for record in SeqIO.parse(filedata, "fasta"):
         otu = str(record.id)
         seq = str(record.seq).upper().replace("U","T")
-        print(otu)
-        print(seq)
         otus.append(otu)
         seqs.append(list(seq))
     filedata.close()
@@ -213,7 +216,6 @@ def calcDiff(model,plusgap,seqData,otu):
         for b in range(a):
             r = [[0 for a in range(5)] for b in range(5)] # 0=A 1=T 2=G 3=C
             for i in range(len(seqData[0])):
-                #print("a:", a, "b:", b, "i:", i)
                 if seqData[a][i] == '-' and seqData[b][i] == 'A':
                     r[0][1]+=1
                 elif seqData[a][i] == '-' and seqData[b][i] == 'T':
