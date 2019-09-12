@@ -47,7 +47,6 @@ def calculation(args):
         align_clw_opt = ""
 
     # TODO: Make this prettier
-    print("Starting alignment with settings", data_type, "and", align,"in \n ", current_dir)
     if align == "none":
         #ファイルコピー
         shutil.copy(filename, out_align)
@@ -61,11 +60,10 @@ def calculation(args):
                 -INFILE=" + filename + " -OUTFILE=./" + out_align + \
                  " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=PROTEIN "+align_clw_opt,shell=True)
     # TODO: Make sure what outputs are necessary for it
-    elif data_type == "nuc" and align == "mafft":
+    elif data_type in ["nuc", "ami"] and align == "mafft":
         subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
-
-    elif data_type == "ami" and align == "mafft":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
+    else:
+        raise Exception("Check datatype or align definitions")
 
     # TODO: is it correct to input the aligned file? Get error otherwise
     (otus, seqs) = parse_otus(out_align) 
