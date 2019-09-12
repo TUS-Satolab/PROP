@@ -59,22 +59,19 @@ def calculation(args):
     if align == "none":
         #ファイルコピー
         shutil.copy(filename, out_align)
-    # TODO: NOT WORKING
     elif data_type == "nuc" and align == "clustalw":
         subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
                 -INFILE=" + filename + " -OUTFILE=./" + out_align + \
                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=DNA "+align_clw_opt,shell=True)
-    # Docker calls:
-    # dc_clustalw
-    # dc_mafft in > out
     elif data_type == "ami" and align == "clustalw":
         # TODO: originally out_align/Align.txt name but I don't see the reason why
         subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
                 -INFILE=" + filename + " -OUTFILE=./" + out_align + \
                  " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=PROTEIN "+align_clw_opt,shell=True)
+    # TODO: Make sure what outputs are necessary for it
+    # TODO: NOT WORKING
     elif data_type == "nuc" and align == "mafft":
         subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft ", filename, " > ", out_align,shell=True)
-    # TODO: Make sure what outputs are necessary for it
     elif data_type == "ami" and align == "mafft":
         subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft ", filename, " > ", out_align,shell=True)
 
