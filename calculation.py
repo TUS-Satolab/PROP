@@ -13,13 +13,10 @@ Options:
   --align=<align>                   clustalw, mafft or none
   --align_clw_opt=<align_clw_opt>   string of options [default: ]
   --model=<model>                   P, PC, JS or K2P
-  --plusgap=<plusgap>               "checked" / ""
+  --plusgap=<plusgap>               "checked" / "" [default: ]
   --gapdel=<gapdel>                 "comp" / "pair" 
   --tree=<tree>                     "nj" / "upgma"
 """
-
-# TODO: remove the "" of docopt inputs
-
 
 import datetime, time, subprocess, shutil, sys, os, Bio, math
 from docopt import docopt
@@ -37,8 +34,6 @@ def calculation(args):
     current_dir = os.getcwd()
     ############ docopt arguments ###############
     filename = args["--filename"]
-    print("Filename is:", filename)
-    print("Out_align is:", out_align)
     data_type = args["--type"]
     align = args["--align"]
     align_clw_opt = args["--align_clw_opt"]
@@ -47,9 +42,6 @@ def calculation(args):
     plusgap = args["--plusgap"]
     gapdel = args["--gapdel"]
     tree = args["--tree"]
-    # Moved to area before creating Matrix because aligned file needs to be input rather than unaligned file
-    #(otus, seqs) = parse_otus(filename)
-    #############################################
     #アライメント
     if align_clw_opt == "(default)":
         align_clw_opt = ""
@@ -69,11 +61,14 @@ def calculation(args):
                 -INFILE=" + filename + " -OUTFILE=./" + out_align + \
                  " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=PROTEIN "+align_clw_opt,shell=True)
     # TODO: Make sure what outputs are necessary for it
-    # TODO: NOT WORKING
     elif data_type == "nuc" and align == "mafft":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft ", filename, " > ", out_align,shell=True)
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
+
     elif data_type == "ami" and align == "mafft":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft ", filename, " > ", out_align,shell=True)
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
+
+    # TODO: is it correct to input the aligned file? Get error otherwise
+    (otus, seqs) = parse_otus(out_align) 
 
     #Complete Deletionオプション(plusGapオプションなしの場合)
     if plusgap == "":
@@ -86,11 +81,8 @@ def calculation(args):
                             tmp[i] = "-"
                             seqs[k] = "".join(tmp)
 
-    # TODO: is it correct to input the aligned file? Get error otherwise
-    (otus, seqs) = parse_otus(out_align)
     #距離行列作成
     print("Create Distance Matrix...")
-    # TODO: Error here because "IndexError: list index out of range"
     try:
         if data_type == "nuc":
             score = calcDiff(model,plusgap,seqs,len(otus))
@@ -389,13 +381,22 @@ def makeNj(score,otuName):
 ###UPMGA法による系統樹作成
 #input...遺伝的差異行列
 #output...Newick形式の系統樹
+
+def height_of(clade):
+        """Calculate clade height -- the longest path to any terminal (PRIVATE)."""
+        height = 0
+        if clade.is_terminal():
+            height = clade.branch_length
+        else:
+            height = height + max(height_of(c) for c in clade.clades)
+        return height
+
 def makeUpgma(score,otuName):
 
     for i in range(len(score)):
         for j in range(len(score)):
             score[i][j] = round(score[i][j],6)
 
-    from Bio.Phylo import BaseTree
     clades = [BaseTree.Clade(None, name) for name in otuName]
 
     # init minimum index
@@ -421,21 +422,20 @@ def makeUpgma(score,otuName):
         inner_clade.clades.append(clade2)
         # assign branch length
 
-        # TODO
-        ###############################################################
-        ## This shouldn't work, there is no self variable definition ##
-        ###############################################################
+        # TODO: originally self._height_of function from github repo 
+        #       was called but not implemented in this code. 
+        #       Function was input above.
         if clade1.is_terminal():
             clade1.branch_length = min_dist * 1.0 / 2
         else:
             clade1.branch_length = min_dist * \
-                1.0 / 2 - self._height_of(clade1)
+                1.0 / 2 - height_of(clade1)
 
         if clade2.is_terminal():
             clade2.branch_length = min_dist * 1.0 / 2
         else:
             clade2.branch_length = min_dist * \
-                1.0 / 2 - self._height_of(clade2)
+                1.0 / 2 - height_of(clade2)
         ################################################################
         ################################################################
         ################################################################
@@ -458,20 +458,8 @@ def makeUpgma(score,otuName):
     inner_clade.branch_length = 0
     return BaseTree.Tree(inner_clade)
 
-# results = calculation(filename,type,align,align_clw_opt,model,plusgap,gapdel,tree,otus,seqs)
-# message = results[0]
-# if results[0] == "Complete.":
-#     DL_message = "[DOWNLOAD]"
-#     DL_alignment = "alignment.txt"
-#     DL_matrix = "matrix.txt"
-#     DL_tree = "tree.txt"
-#     DL_alignment_result = results[1]
-#     DL_matrix_result = results[2]
-#     DL_tree_result = results[3]
-
 if __name__ == '__main__':
     results = calculation(docopt(__doc__))
-    #results = calculation(filename,type,align,align_clw_opt,model,plusgap,gapdel,tree,otus,seqs)
     if results[0] == "Complete.":
         DL_message = "[DOWNLOAD]"
         DL_alignment = "alignment.txt"
