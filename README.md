@@ -1,5 +1,9 @@
 # canal_project
 
+## Prerequisites
+- Docker
+- Python3 & pip
+
 ## Installation
 1. Pull this repo
 2. `docker build -f Dockerfile_clustalw -t my_clustalw .`
