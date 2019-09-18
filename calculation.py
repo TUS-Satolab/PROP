@@ -24,7 +24,8 @@ from flask import Flask, render_template, request
 from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
 
-def calculation(args):
+
+def main(args):
     #タイムスタンプ取得(ファイル名に使うのみ)
     start = time.time()
     timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
@@ -35,6 +36,11 @@ def calculation(args):
     ############ docopt arguments ###############
     filename = args["--filename"]
     data_type = args["--type"]
+    data_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
+    try:
+        d = data_type_dict[data_type]
+    except:
+        raise Exception("Data type is neither nuc nor ami")
     align = args["--align"]
     align_clw_opt = args["--align_clw_opt"]
     
@@ -42,42 +48,22 @@ def calculation(args):
     plusgap = args["--plusgap"]
     gapdel = args["--gapdel"]
     tree = args["--tree"]
-    #アライメント
-    if align_clw_opt == "(default)":
-        align_clw_opt = ""
 
-    # TODO: Make this prettier
-    if align == "none":
-        #ファイルコピー
-        shutil.copy(filename, out_align)
-    elif data_type == "nuc" and align == "clustalw":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
-                -INFILE=" + filename + " -OUTFILE=./" + out_align + \
-                " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=DNA "+align_clw_opt,shell=True)
-    elif data_type == "ami" and align == "clustalw":
-        # TODO: originally out_align/Align.txt name but I don't see the reason why
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
-                -INFILE=" + filename + " -OUTFILE=./" + out_align + \
-                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=PROTEIN "+align_clw_opt,shell=True)
-    # TODO: Make sure what outputs are necessary for it
-    elif data_type in ["nuc", "ami"] and align == "mafft":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
-    else:
-        raise Exception("Check datatype or align definitions")
+    # Start a Docker instance and output an aligned file
+    alignment(out_align, current_dir, filename, d, align, align_clw_opt)
 
     # TODO: is it correct to input the aligned file? Get error otherwise
     (otus, seqs) = parse_otus(out_align) 
 
     #Complete Deletionオプション(plusGapオプションなしの場合)
-    if plusgap == "":
-        if gapdel == "comp":
-            for i in range(len(seqs[0])):
-                for j in range(len(otus)):
-                    if seqs[j][i] == "-":
-                        for k in range(len(otus)):
-                            tmp = list(seqs[k])
-                            tmp[i] = "-"
-                            seqs[k] = "".join(tmp)
+    if plusgap == "" and gapdel == "comp":
+        for i in range(len(seqs[0])):
+            for j in range(len(otus)):
+                if seqs[j][i] == "-":
+                    for k in range(len(otus)):
+                        tmp = list(seqs[k])
+                        tmp[i] = "-"
+                        seqs[k] = "".join(tmp)
 
     #距離行列作成
     print("Create Distance Matrix...")
@@ -127,6 +113,21 @@ def calculation(args):
     #os.remove(out_tree)
 
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
+
+def alignment(out_align, current_dir, filename, d, align, align_clw_opt=None):
+    # d is either DNA or PROTEIN
+    if align == "none":
+        shutil.copy(filename, out_align)
+    elif align == "clustalw":
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
+                -INFILE=" + filename + " -OUTFILE=./" + out_align + \
+                " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
+    elif align == "mafft":
+        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
+    else:
+        raise Exception("Check datatype or align definitions")
+    print("Created alignment file ", out_align)
+
 def parse_otus(filename):
 
     otus = []
@@ -457,7 +458,7 @@ def makeUpgma(score,otuName):
     return BaseTree.Tree(inner_clade)
 
 if __name__ == '__main__':
-    results = calculation(docopt(__doc__))
+    results = main(docopt(__doc__))
     if results[0] == "Complete.":
         DL_message = "[DOWNLOAD]"
         DL_alignment = "alignment.txt"
