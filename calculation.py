@@ -32,7 +32,6 @@ def main(args):
     out_align = timestamp + "align.txt"
     out_matrix = timestamp + "matrix.txt"
     out_tree = timestamp + "tree.txt"
-    current_dir = os.getcwd()
     ############ docopt arguments ###############
     filename = args["--filename"]
     data_type = args["--type"]
@@ -50,7 +49,7 @@ def main(args):
     tree = args["--tree"]
 
     # Start a Docker instance and output an aligned file
-    alignment(out_align, current_dir, filename, d, align, align_clw_opt)
+    alignment(out_align, filename, d, align, align_clw_opt)
 
     # TODO: is it correct to input the aligned file? Get error otherwise
     (otus, seqs) = parse_otus(out_align) 
@@ -114,16 +113,16 @@ def main(args):
 
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
-def alignment(out_align, current_dir, filename, d, align, align_clw_opt=None):
+def alignment(out_align, filename, d, align, align_clw_opt=None):
     # d is either DNA or PROTEIN
     if align == "none":
         shutil.copy(filename, out_align)
     elif align == "clustalw":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_clustalw clustalw \
+        subprocess.call("docker run -v "+ os.getcwd() +":/data --rm my_clustalw clustalw \
                 -INFILE=" + filename + " -OUTFILE=./" + out_align + \
                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
     elif align == "mafft":
-        subprocess.call("docker run -v "+ current_dir +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
+        subprocess.call("docker run -v "+ os.getcwd() +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
     else:
         raise Exception("Check datatype or align definitions")
     print("Created alignment file ", out_align)
