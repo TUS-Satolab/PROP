@@ -4,7 +4,7 @@ import datetime, time, os
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/post/alignment')
 def align_flask():
     timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
     out_align = timestamp + "align.txt"
