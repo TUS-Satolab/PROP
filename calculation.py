@@ -59,7 +59,8 @@ def distance_matrix(aligned_input, matrix_output, plusgap, gapdel, input_type, m
             #score = matrix_func(model,plusgap,seqs,len(otus))
             #score = calcDiffProtein(model,plusgap,seqs,len(otus))
         #距離行列書き出し + Inter/Intra距離計算
-        f = open(matrix_output,"w")
+        #f = open(os.path.join('./files', matrix_output))
+        f = open(os.path.join('./files', matrix_output),"w")
         f.write("%s\n" % str(len(otus)))
         for n in range(len(otus)):
             f.write("%-30s " % otus[n][0:30])
@@ -107,21 +108,25 @@ def main(args):
     print("Create Phylogenetic Tree...")
     try:
         if tree == "nj":
-            Phylo.write(makeNj(score,otus), out_tree, "newick")
+            Phylo.write(makeNj(score,otus), os.path.join('./files', out_tree), "newick")
         elif tree == "upgma":
-            Phylo.write(makeUpgma(score,otus), out_tree, "newick")
+            Phylo.write(makeUpgma(score,otus), os.path.join('./files', out_tree), "newick")
     except: 
         raise Exception("系統樹作成Error",0,0,0)
 
     #ここまで行ったら結果出力する
     #結果表示
-    f = open(out_align)
+    #filedata = open(os.path.join('./files', input_file),"r")
+    f = open(os.path.join('./files', out_align))
+    # f = open(out_align)
     align_result = f.read()
     f.close()
-    f = open(matrix_output)
+    f = open(os.path.join('./files', matrix_output))
+    #f = open(matrix_output)
     matrix_result = f.read()
     f.close()
-    f = open(out_tree)
+    f = open(os.path.join('./files', out_tree))
+    #f = open(out_tree)
     tree_result = f.read()
     f.close()
     #os.remove(out_align)
@@ -155,7 +160,8 @@ def parse_otus(input_file):
     seqs = []
     #ここでfiledateにファイル読み込む
     #try:
-    filedata = open(input_file,"r")
+    #filedata = open(input_file,"r")
+    filedata = open(os.path.join('./files', input_file),"r")
     for record in SeqIO.parse(filedata, "fasta"):
         otu = str(record.id)
         seq = str(record.seq).upper().replace("U","T")
