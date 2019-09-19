@@ -114,18 +114,21 @@ def main(args):
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
 def alignment(out_align, filename, d, align, align_clw_opt=None):
+    path = os.path.dirname(os.path.abspath(__file__)) + "/files"
     # d is either DNA or PROTEIN
     if align == "none":
         shutil.copy(filename, out_align)
     elif align == "clustalw":
-        subprocess.call("docker run -v "+ os.getcwd() +":/data --rm my_clustalw clustalw \
+        subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
                 -INFILE=" + filename + " -OUTFILE=./" + out_align + \
                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
     elif align == "mafft":
-        subprocess.call("docker run -v "+ os.getcwd() +":/data --rm my_mafft mafft "+ filename +" > "+ out_align,shell=True)
+        print(path)
+        print(out_align)
+        subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ filename +" > ./files/"+ out_align,shell=True)
     else:
         raise Exception("Check datatype or align definitions")
-    print("Created alignment file ", out_align)
+    print("Created alignment file")
 
 def parse_otus(filename):
 
