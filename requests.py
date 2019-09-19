@@ -21,6 +21,8 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # File Upload
+# necessary input: 
+# file: [select file]
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -55,6 +57,10 @@ def upload_file():
 # What if the user closes the window? #
 # Is this function still finished?    #
 #######################################
+# necessary input: 
+# file: [select file]
+# align_method: clustalw or mafft
+# input_type: nuc or ami [not necessary for mafft]
 @app.route('/alignment', methods=['GET', 'POST'])
 def align():
     if request.method == 'POST':
@@ -62,14 +68,13 @@ def align():
         if not filename.endswith('.fasta'):
             flash('File format not correct. Choose fasta file')
             return redirect(request.url)
-        print(filename)
         align_method = request.form['align_method']
         input_type = request.form['input_type']
+        align_clw_opt = request.form['align_clw_opt']
         timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
         out_align = "align"+ task_id +".txt"
         print(out_align)
-
-        alignment(out_align, filename=filename, input_type=input_type, align=align_method, align_clw_opt="")
+        alignment(out_align, input_file=filename, input_type=input_type, align=align_method, align_clw_opt=align_clw_opt)
         send_from_directory(app.config['UPLOAD_FOLDER'],out_align)
         result = {
             "jobID": task_id,

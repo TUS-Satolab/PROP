@@ -2,13 +2,13 @@
 calculation
 
 Usage:
-  calculation.py [--filename <filename>] [--type <type>] [--align <align>]
+  calculation.py [--input_file <input_file>] [--type <type>] [--align <align>]
                  [--align_clw_opt <align_clw_opt>] [--model <model>]
                  [--plusgap <plusgap>] [--gapdel <gapdel>] [--tree <tree>]
 
 Options:
   -h --help                         Show this screen.
-  --filename=<filename>             aln-file
+  --input_file=<input_file>             aln-file
   --type=<type>                     nuc or ami
   --align=<align>                   clustalw, mafft or none
   --align_clw_opt=<align_clw_opt>   string of options [default: ]
@@ -24,32 +24,14 @@ from flask import Flask, render_template, request
 from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
 
-
-def main(args):
-    #タイムスタンプ取得(ファイル名に使うのみ)
-    start = time.time()
-    timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-    out_align = timestamp + "align.txt"
-    out_matrix = timestamp + "matrix.txt"
-    out_tree = timestamp + "tree.txt"
-    ############ docopt arguments ###############
-    filename = args["--filename"]
-    input_type = args["--type"]
-    if input_type not in ["nuc", "ami"]:
-        raise Exception("Data type is neither nuc nor ami")
-    align = args["--align"]
-    align_clw_opt = args["--align_clw_opt"]
-    
-    model = args["--model"]
-    plusgap = args["--plusgap"]
-    gapdel = args["--gapdel"]
-    tree = args["--tree"]
-
-    # Start a Docker instance and output an aligned file
-    alignment(out_align, filename, input_type, align, align_clw_opt)
-
+#################################################################################
+# CUT
+# INPUTS: out_align, matrix_output, plusgap, gapdel, input_type, model
+# OUTPUTS: score, otus, matrix_output
+#################################################################################
+def distance_matrix(aligned_input, matrix_output, plusgap, gapdel, input_type, model):
     # TODO: is it correct to input the aligned file? Get error otherwise
-    (otus, seqs) = parse_otus(out_align) 
+    (otus, seqs) = parse_otus(aligned_input) 
 
     #Complete Deletionオプション(plusGapオプションなしの場合)
     if plusgap == "" and gapdel == "comp":
@@ -63,13 +45,21 @@ def main(args):
 
     #距離行列作成
     print("Create Distance Matrix...")
+    function_mapping = {
+        'nuc': 'calcDiff_ami',
+        'ami': 'calcDiff_nuc'
+    }
     try:
-        if input_type == "nuc":
-            score = calcDiff(model,plusgap,seqs,len(otus))
-        elif input_type == "ami":
-            score = calcDiffProtein(model,plusgap,seqs,len(otus))
+        matrix_func = globals()[function_mapping[input_type]]
+        #score = function_mapping[input_type](model,plusgap,seqs,len(otus))
+        #if input_type == "nuc":
+        score = matrix_func(model,plusgap,seqs,len(otus))
+            #score = calcDiff(model,plusgap,seqs,len(otus))
+        #elif input_type == "ami":
+            #score = matrix_func(model,plusgap,seqs,len(otus))
+            #score = calcDiffProtein(model,plusgap,seqs,len(otus))
         #距離行列書き出し + Inter/Intra距離計算
-        f = open(out_matrix,"w")
+        f = open(matrix_output,"w")
         f.write("%s\n" % str(len(otus)))
         for n in range(len(otus)):
             f.write("%-30s " % otus[n][0:30])
@@ -80,8 +70,38 @@ def main(args):
         f.close()
     except:
         raise Exception("遺伝的差異計算Error",0,0,0)
+    return (score, otus)
+#################################################################################
+# CUT END
+################################################################################# 
 
+def main(args):
+    #タイムスタンプ取得(ファイル名に使うのみ)
+    start = time.time()
+    timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
+    out_align = timestamp + "align.txt"
+    matrix_output = timestamp + "matrix.txt"
+    out_tree = timestamp + "tree.txt"
+    ############ docopt arguments ###############
+    input_file = args["--input_file"]
+    input_type = args["--type"]
+    if input_type not in ["nuc", "ami"]:
+        raise Exception("Data type is neither nuc nor ami")
+    align = args["--align"]
+    align_clw_opt = args["--align_clw_opt"]
     
+    model = args["--model"]
+    plusgap = args["--plusgap"]
+    gapdel = args["--gapdel"]
+    tree = args["--tree"]
+
+    # Start a Docker instance and output an aligned file
+    alignment(out_align, input_file, input_type, align, align_clw_opt)
+
+
+    (score, otus) = distance_matrix(out_align, matrix_output, plusgap, gapdel, input_type, model)
+
+
 
     #系統樹作成
     print("Create Phylogenetic Tree...")
@@ -98,44 +118,44 @@ def main(args):
     f = open(out_align)
     align_result = f.read()
     f.close()
-    f = open(out_matrix)
+    f = open(matrix_output)
     matrix_result = f.read()
     f.close()
     f = open(out_tree)
     tree_result = f.read()
     f.close()
     #os.remove(out_align)
-    #os.remove(out_matrix)
+    #os.remove(matrix_output)
     #os.remove(out_tree)
 
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
-def alignment(out_align, filename, input_type, align, align_clw_opt=None):
+def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None):
     path = os.path.dirname(os.path.abspath(__file__)) + "/files"
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
     d = input_type_dict[input_type]
     # d is either DNA or PROTEIN
     if align == "none":
-        shutil.copy(filename, out_align)
+        shutil.copy(input_file, out_align)
     elif align == "clustalw":
         subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
-                -INFILE=" + filename + " -OUTFILE=./" + out_align + \
+                -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
     elif align == "mafft":
         print(path)
         print(out_align)
-        subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ filename +" > ./files/"+ out_align,shell=True)
+        subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
     else:
         raise Exception("Check datatype or align definitions")
     print("Created alignment file")
 
-def parse_otus(filename):
+def parse_otus(input_file):
 
     otus = []
     seqs = []
     #ここでfiledateにファイル読み込む
     #try:
-    filedata = open(filename,"r")
+    filedata = open(input_file,"r")
     for record in SeqIO.parse(filedata, "fasta"):
         otu = str(record.id)
         seq = str(record.seq).upper().replace("U","T")
@@ -144,7 +164,8 @@ def parse_otus(filename):
     filedata.close()
     return (otus, seqs)
 
-def calcDiffProtein(model,plusgap,seqData,otu):
+def calcDiff_ami(model,plusgap,seqData,otu):
+#def calcDiffProtein(model,plusgap,seqData,otu):
     import math
 
     score = [[0 for a in range(otu)] for b in range(otu)]
@@ -196,7 +217,8 @@ def calcDiffProtein(model,plusgap,seqData,otu):
 ###塩基配列の遺伝的差異行列生成
 #input...進化モデル名、+Gapオプション、アライメント済配列、生物種数
 #output...遺伝的差異行列
-def calcDiff(model,plusgap,seqData,otu):   
+def calcDiff_nuc(model,plusgap,seqData,otu):   
+#def calcDiff(model,plusgap,seqData,otu):   
     # Example file: otu = 90, range(otu) = (0,90)
     # score: 90 x 90 Zero-Matrix
     # r = 5 x 5 Zero-Matrix
