@@ -21,13 +21,13 @@
    `python3 calculation.py -help`
    ```
    Usage:
-  calculation.py [--filename <filename>] [--type <type>] [--align <align>]
+  calculation.py [--input_file <input_file>] [--type <type>] [--align <align>]
                  [--align_clw_opt <align_clw_opt>] [--model <model>]
                  [--plusgap <plusgap>] [--gapdel <gapdel>] [--tree <tree>]
 
 Options:
   -h --help                         Show this screen.
-  --filename=<filename>             aln-file
+  --input_file=<input_file>             aln-file
   --type=<type>                     nuc or ami
   --align=<align>                   clustalw, mafft or none
   --align_clw_opt=<align_clw_opt>   string of options [default: ]
@@ -35,7 +35,6 @@ Options:
   --plusgap=<plusgap>               "checked" / "" [default: ]
   --gapdel=<gapdel>                 "comp" / "pair" 
   --tree=<tree>                     "nj" / "upgma"
-
    ```
 1. Example:  
-   `python3 calculation.py --filename unaligned.fasta --type nuc --align clustalw --model P --plusgap checked --gapdel comp --tree nj`
+   `python3 calculation.py --input_file unaligned.fasta --type nuc --align clustalw --model P --plusgap checked --gapdel comp --tree nj`
