@@ -34,11 +34,8 @@ def main(args):
     out_tree = timestamp + "tree.txt"
     ############ docopt arguments ###############
     filename = args["--filename"]
-    data_type = args["--type"]
-    data_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
-    try:
-        d = data_type_dict[data_type]
-    except:
+    input_type = args["--type"]
+    if input_type not in ["nuc", "ami"]:
         raise Exception("Data type is neither nuc nor ami")
     align = args["--align"]
     align_clw_opt = args["--align_clw_opt"]
@@ -49,7 +46,7 @@ def main(args):
     tree = args["--tree"]
 
     # Start a Docker instance and output an aligned file
-    alignment(out_align, filename, d, align, align_clw_opt)
+    alignment(out_align, filename, input_type, align, align_clw_opt)
 
     # TODO: is it correct to input the aligned file? Get error otherwise
     (otus, seqs) = parse_otus(out_align) 
@@ -67,9 +64,9 @@ def main(args):
     #距離行列作成
     print("Create Distance Matrix...")
     try:
-        if data_type == "nuc":
+        if input_type == "nuc":
             score = calcDiff(model,plusgap,seqs,len(otus))
-        elif data_type == "ami":
+        elif input_type == "ami":
             score = calcDiffProtein(model,plusgap,seqs,len(otus))
         #距離行列書き出し + Inter/Intra距離計算
         f = open(out_matrix,"w")
@@ -113,8 +110,10 @@ def main(args):
 
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
-def alignment(out_align, filename, d, align, align_clw_opt=None):
+def alignment(out_align, filename, input_type, align, align_clw_opt=None):
     path = os.path.dirname(os.path.abspath(__file__)) + "/files"
+    input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
+    d = input_type_dict[input_type]
     # d is either DNA or PROTEIN
     if align == "none":
         shutil.copy(filename, out_align)
