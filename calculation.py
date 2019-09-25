@@ -18,21 +18,80 @@ Options:
   --tree=<tree>                     "nj" / "upgma"
 """
 
-import datetime, time, subprocess, shutil, sys, os, Bio, math
+import datetime, time, subprocess, shutil, sys, os, Bio, math, pickle
 from docopt import docopt
 from flask import Flask, render_template, request
 from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
 
+def main(args):
+    #タイムスタンプ取得(ファイル名に使うのみ)
+    start = time.time()
+    timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
+    out_align = timestamp + "align.txt"
+    matrix_output = timestamp + "matrix.txt"
+    out_tree = timestamp + "tree.txt"
+    ############ docopt arguments ###############
+    input_file = args["--input_file"]
+    input_type = args["--type"]
+    if input_type not in ["nuc", "ami"]:
+        raise Exception("Data type is neither nuc nor ami")
+    align = args["--align"]
+    align_clw_opt = args["--align_clw_opt"]
+    
+    model = args["--model"]
+    plusgap = args["--plusgap"]
+    gapdel = args["--gapdel"]
+    tree = args["--tree"]
+
+    # Start a Docker instance and output an aligned file
+    alignment(out_align, input_file, input_type, align, align_clw_opt)
+
+
+    (score, otus) = distance_matrix(out_align, matrix_output, gapdel, input_type, model, plusgap)
+
+    phylo_tree(score, otus, tree, out_tree=out_tree)
+    
+    #ここまで行ったら結果出力する
+    #結果表示
+    f = open(os.path.join('./files', out_align))
+    align_result = f.read()
+    f.close()
+    f = open(os.path.join('./files', matrix_output))
+    matrix_result = f.read()
+    f.close()
+    f = open(os.path.join('./files', out_tree))
+    tree_result = f.read()
+    f.close()
+
+    return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
+
+def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None):
+    path = os.path.dirname(os.path.abspath(__file__)) + "/files"
+    input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
+    d = input_type_dict[input_type]
+    # d is either DNA or PROTEIN
+    if align == "none":
+        shutil.copy(input_file, out_align)
+    elif align == "clustalw":
+        subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
+                -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
+                " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
+    elif align == "mafft":
+        print(path)
+        print(out_align)
+        subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
+    else:
+        raise Exception("Check datatype or align definitions")
+    print("Created alignment file")
+
 #################################################################################
-# CUT
 # INPUTS: out_align, matrix_output, plusgap, gapdel, input_type, model
 # OUTPUTS: score, otus, matrix_output
 #################################################################################
-def distance_matrix(aligned_input, matrix_output, plusgap, gapdel, input_type, model):
+def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap=""):
     # TODO: is it correct to input the aligned file? Get error otherwise
     (otus, seqs) = parse_otus(aligned_input) 
-
     #Complete Deletionオプション(plusGapオプションなしの場合)
     if plusgap == "" and gapdel == "comp":
         for i in range(len(seqs[0])):
@@ -71,88 +130,24 @@ def distance_matrix(aligned_input, matrix_output, plusgap, gapdel, input_type, m
         f.close()
     except:
         raise Exception("遺伝的差異計算Error",0,0,0)
+    print(score)
+    print(otus)
     return (score, otus)
-#################################################################################
-# CUT END
-################################################################################# 
 
-def main(args):
-    #タイムスタンプ取得(ファイル名に使うのみ)
-    start = time.time()
-    timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-    out_align = timestamp + "align.txt"
-    matrix_output = timestamp + "matrix.txt"
-    out_tree = timestamp + "tree.txt"
-    ############ docopt arguments ###############
-    input_file = args["--input_file"]
-    input_type = args["--type"]
-    if input_type not in ["nuc", "ami"]:
-        raise Exception("Data type is neither nuc nor ami")
-    align = args["--align"]
-    align_clw_opt = args["--align_clw_opt"]
-    
-    model = args["--model"]
-    plusgap = args["--plusgap"]
-    gapdel = args["--gapdel"]
-    tree = args["--tree"]
-
-    # Start a Docker instance and output an aligned file
-    alignment(out_align, input_file, input_type, align, align_clw_opt)
-
-
-    (score, otus) = distance_matrix(out_align, matrix_output, plusgap, gapdel, input_type, model)
-
-
-
+def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
     #系統樹作成
     print("Create Phylogenetic Tree...")
     try:
         if tree == "nj":
-            Phylo.write(makeNj(score,otus), os.path.join('./files', out_tree), "newick")
+            print("nj")
+            Phylo.write(makeNj(score,otus), os.path.join(path, out_tree), "newick")
         elif tree == "upgma":
-            Phylo.write(makeUpgma(score,otus), os.path.join('./files', out_tree), "newick")
+            print("upgma")
+            Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
         raise Exception("系統樹作成Error",0,0,0)
 
-    #ここまで行ったら結果出力する
-    #結果表示
-    #filedata = open(os.path.join('./files', input_file),"r")
-    f = open(os.path.join('./files', out_align))
-    # f = open(out_align)
-    align_result = f.read()
-    f.close()
-    f = open(os.path.join('./files', matrix_output))
-    #f = open(matrix_output)
-    matrix_result = f.read()
-    f.close()
-    f = open(os.path.join('./files', out_tree))
-    #f = open(out_tree)
-    tree_result = f.read()
-    f.close()
-    #os.remove(out_align)
-    #os.remove(matrix_output)
-    #os.remove(out_tree)
-
-    return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
-
-def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None):
-    path = os.path.dirname(os.path.abspath(__file__)) + "/files"
-    input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
-    d = input_type_dict[input_type]
-    # d is either DNA or PROTEIN
-    if align == "none":
-        shutil.copy(input_file, out_align)
-    elif align == "clustalw":
-        subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
-                -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
-                " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
-    elif align == "mafft":
-        print(path)
-        print(out_align)
-        subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
-    else:
-        raise Exception("Check datatype or align definitions")
-    print("Created alignment file")
+    #print(output_tree)
 
 def parse_otus(input_file):
 
