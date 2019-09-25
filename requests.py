@@ -39,12 +39,6 @@ def allowed_file(filename):
 def upload_file(f_name):
     f_name = f_name
     if request.method == 'POST':
-
-        # check if the post request has the file part
-        #if 'file' not in request.files:
-        #    flash('No file part')
-        #    return redirect(request.url)
-            #raise Exception('No file provided')
         file = request.files[str(f_name)]
 
         # if user does not select file, browser also
@@ -84,11 +78,9 @@ def align(flag=0):
         align_method = request.form['align_method']
         input_type = request.form['input_type']
         align_clw_opt = request.form['align_clw_opt']
-        #timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
         out_align = "align_"+ task_id +".txt"
         print(out_align)
         alignment(out_align, filename, input_type, align_method, align_clw_opt)
-        #send_from_directory(app.config['UPLOAD_FOLDER'],out_align)
         print("flag in align is", flag)
         if flag == 0:
             result = {
@@ -264,19 +256,12 @@ def tree(score=None, otus=None, task_id=None, flag=0):
 def complete():
     # signal for directly computing everything
     flag = 1
-    print("THIS IS FLAG ", flag )
-    # Run align
+
     task_id = align(flag)
-    print("task_id is", task_id)
-
-    # run matrix
     (score, otus) = matrix(task_id, flag)
-
-    # run tree
     tree(score, otus, task_id, flag)
-
 
     # output the three files align, matrix and tree
     uploaded_file(task_id, flag)
-    return ('Task ID is %s', task_id)
+    return task_id
     flag = 0
