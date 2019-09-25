@@ -107,7 +107,7 @@ def uploaded_file(result_id=None, flag=0):
         #upload_file = "align_"+result_id+".txt"
         #print(upload_file)
         if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
-            return send_from_directory(app.config['UPLOAD_FOLDER'], result_zip)
+            return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
         else:
             return redirect(request.url)
 
