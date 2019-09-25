@@ -262,6 +262,6 @@ def complete():
     tree(score, otus, task_id, flag)
 
     # output the three files align, matrix and tree
-    uploaded_file(task_id, flag)
+    #uploaded_file(task_id, flag)
     return task_id
     flag = 0
