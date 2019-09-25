@@ -6,6 +6,7 @@ import datetime, time, os, uuid, pickle, glob
 
 # Global variables
 UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
+ZIPPED_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/zipped"
 ALLOWED_EXTENSIONS = {'fasta', 'txt'}
 flag = 0
 
@@ -101,7 +102,7 @@ def uploaded_file(result_id=None, flag=0):
         if flag == 0:
             result_id = request.form['result_id']
         result_zip = 'results_' + result_id + '.zip'
-        zipFilesInDir(UPLOAD_FOLDER, UPLOAD_FOLDER+"/"+result_zip, lambda name : result_id in name)
+        zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
 
         #upload_file = "align_"+result_id+".txt"
         #print(upload_file)
