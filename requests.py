@@ -13,6 +13,8 @@ flag = 0
 app = Flask(__name__)
 app.secret_key = "Nj#z2L86|!'=Cw&CG"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['ZIPPED_FOLDER'] = ZIPPED_FOLDER
+
 
 def zipFilesInDir(dirName, zipFileName, filter):
    # create a ZipFile object
