@@ -83,7 +83,6 @@ def align(flag=0):
             out_align = "align_"+ task_id +".txt"
             print(out_align)
             alignment(out_align, filename, input_type, align_method, align_clw_opt)
-            print("flag in align is", flag)
             if flag == 0:
                 result = {
                     "jobID": task_id,
@@ -92,25 +91,29 @@ def align(flag=0):
                 }
                 return jsonify(result)
             else:
-                print("I am here at align")
                 return task_id
     else:
         return render_template('alignment_form.html')
 
 @app.route('/get_result', methods=['GET', 'POST'])
-def uploaded_file(result_id=None, flag=0):
+def get_result(result_id=None, flag=0):
     if request.method == 'POST':
-        if flag == 0:
-            result_id = request.form['result_id']
-        result_zip = 'results_' + result_id + '.zip'
-        zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+        if request.form['submit_button'] == 'go_back':
+                return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'get_result':
+            if flag == 0:
+                result_id = request.form['result_id']
+            result_zip = 'results_' + result_id + '.zip'
+            zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
 
-        #upload_file = "align_"+result_id+".txt"
-        #print(upload_file)
-        if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
-            return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
-        else:
-            return redirect(request.url)
+            #upload_file = "align_"+result_id+".txt"
+            #print(upload_file)
+            if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
+                return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
+            else:
+                return redirect(request.url)
+    else:
+        return render_template('get_result_form.html')
 
 # necessary input: 
 # file: or task ID
@@ -126,52 +129,59 @@ def matrix(task_id=None, flag=0):
         # get inputs from alignment call: out_align
         # either input the task ID if out_align was created in the previous step or upload out_align manually
         # create matrix_output name with either task ID from previous step or give it new task ID
-        if flag == 0:
-            try:
-                file = request.files['file']
-            except:
+        if request.form['submit_button'] == 'go_back':
+                return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'calculate':
+            if flag == 0:
+                try:
+                    file = request.files['file']
+                    if file.filename == '':
+                        file = None
+                except:
+                    file = None
+                task_id = request.form['task_id'] or None
+            else:
                 file = None
-            task_id = request.form['task_id'] or None
-        else:
-            file = None
-        if task_id is not None and file is None:
-            filename = "align_" + task_id + ".txt"
-        elif task_id is None and file is not None:
-            (filename, task_id) = upload_file('file')
-        elif task_id is not None and file is not None:
-            flash('Choose either task ID or upload a file, not both')
-            return redirect(request.url)
-        # TODO: Handle the case that user inputs wrong task ID
-        else:
-            flash('Choose task ID or upload a file to proceed')
-            return redirect(request.url)
+            if task_id is not None and file is None:
+                filename = "align_" + task_id + ".txt"
+            elif task_id is None and file is not None:
+                (filename, task_id) = upload_file('file')
+            elif task_id is not None and file is not None:
+                flash('Choose either task ID or upload a file, not both')
+                return redirect(request.url)
+            # TODO: Handle the case that user inputs wrong task ID
+            else:
+                flash('Choose task ID or upload a file to proceed')
+                return redirect(request.url)
 
-        matrix_output = "matrix_"+task_id+".txt"
-        if request.form.get("plusgap"):
-            plusgap_checked = "checked"
-        gapdel = request.form.get("gapdel", None)
-        input_type = request.form['input_type']
-        model = request.form['model']
-        (score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)
+            matrix_output = "matrix_"+task_id+".txt"
+            if request.form.get("plusgap"):
+                plusgap_checked = "checked"
+            gapdel = request.form.get("gapdel", None)
+            input_type = request.form['input_type']
+            model = request.form['model']
+            (score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)
 
-        score_with_id = "score_" + task_id
-        otus_with_id = "otus_" + task_id
-        if flag == 0:
-            # Pickle is used to preserve structure of list and dict
-            with open(UPLOAD_FOLDER+"/"+score_with_id, 'wb') as score_p_file:
-                pickle.dump(score, score_p_file)
+            score_with_id = "score_" + task_id
+            otus_with_id = "otus_" + task_id
+            if flag == 0:
+                # Pickle is used to preserve structure of list and dict
+                with open(UPLOAD_FOLDER+"/"+score_with_id, 'wb') as score_p_file:
+                    pickle.dump(score, score_p_file)
 
-            with open(UPLOAD_FOLDER+"/"+otus_with_id, 'wb') as otus_p_file:
-                pickle.dump(otus, otus_p_file)
+                with open(UPLOAD_FOLDER+"/"+otus_with_id, 'wb') as otus_p_file:
+                    pickle.dump(otus, otus_p_file)
 
-            result = {
-                "jobID": task_id,
-                "input filename": filename,
-                "output filename": matrix_output
-            }
-            return jsonify(result)
-        else:
-            return (score, otus)
+                result = {
+                    "jobID": task_id,
+                    "input filename": filename,
+                    "output filename": matrix_output
+                }
+                return jsonify(result)
+            else:
+                return (score, otus)
+    else:
+        return render_template('distance_matrix_form.html')
 
 # necessary input: 
 # score: [file name]
@@ -181,63 +191,74 @@ def matrix(task_id=None, flag=0):
 @app.route('/tree', methods=['GET', 'POST'])
 def tree(score=None, otus=None, task_id=None, flag=0):
     if request.method == 'POST':
-        if flag == 0:
-            # Upload scores and otus OR input job ID
-            try:
-                file_score = request.files['score']
-                file_otus = request.files['otus']
-            except:
+        if request.form['submit_button'] == 'go_back':
+                return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'calculate':
+            if flag == 0:
+                # Upload scores and otus OR input job ID
+                try:
+                    file_score = request.files['score']
+                    file_otus = request.files['otus']
+                    return(file_score.filename)
+
+                    if file_score.filename == '' or file_otus.filename == '':
+                        file_score = None
+                        file_otus = None
+                        return(file_score)
+                except:
+                    file_score = None
+                    file_otus = None
+                task_id = request.form['task_id'] or None
+            else:
                 file_score = None
                 file_otus = None
-            task_id = request.form['task_id'] or None
-        else:
-            file_score = None
-            file_otus = None
-
-        if task_id is not None:
-            if file_score is None and file_otus is None:
-                score_with_id = "score_" + task_id
-                otus_with_id = "otus_" + task_id
+            if task_id is not None:
+                if file_score is None and file_otus is None:
+                    score_with_id = "score_" + task_id
+                    otus_with_id = "otus_" + task_id
+                else:
+                    flash("Either define a task ID or upload score and otus.")
+            elif task_id is None:
+                if file_score is not None and file_otus is not None:
+                    # Upload of score and otus
+                    # changing of otus task id to score task id to have corresponding task ids
+                    (filename, task_id) = upload_file('file')
+                    (score_with_id, task_id) = upload_file('score')
+                    (otus_with_id, task_id_otus) = upload_file('otus')
+                    path_otus = os.path.join(UPLOAD_FOLDER,otus_with_id)
+                    newname_otus = path_otus.replace(task_id_otus, task_id)
+                    os.rename(path_otus,newname_otus)
+                    otus_with_id = os.path.basename(newname_otus)
+                else:
+                    flash("Upload score and otus file")
+                    return redirect(request.url)
             else:
-                flash("Either define a task ID or upload score and otus.")
-        elif task_id is None:
-            if file_score is not None and file_otus is not None:
-                # Upload of score and otus
-                # changing of otus task id to score task id to have corresponding task ids
-                (score_with_id, task_id) = upload_file('score')
-                (otus_with_id, task_id_otus) = upload_file('otus')
-                path_otus = os.path.join(UPLOAD_FOLDER,otus_with_id)
-                newname_otus = path_otus.replace(task_id_otus, task_id)
-                os.rename(path_otus,newname_otus)
-                otus_with_id = os.path.basename(newname_otus)
-            else:
-                flash("Upload score and otus file")
+                flash('Choose task ID or upload score and otus file to proceed')
                 return redirect(request.url)
-        else:
-            flash('Choose task ID or upload score and otus file to proceed')
-            return redirect(request.url)
-        # TODO: Handle the case that user inputs wrong task ID
-        
-        if flag == 0:
-            # Pickle is used to preserve structure of list and dict
-            with open(UPLOAD_FOLDER+"/"+score_with_id, 'rb') as score_p_file:
-                score = pickle.load(score_p_file)
-            with open(UPLOAD_FOLDER+"/"+otus_with_id, 'rb') as otus_p_file:
-                otus = pickle.load(otus_p_file)
+            # TODO: Handle the case that user inputs wrong task ID
+            
+            if flag == 0:
+                # Pickle is used to preserve structure of list and dict
+                with open(UPLOAD_FOLDER+"/"+score_with_id, 'rb') as score_p_file:
+                    score = pickle.load(score_p_file)
+                with open(UPLOAD_FOLDER+"/"+otus_with_id, 'rb') as otus_p_file:
+                    otus = pickle.load(otus_p_file)
 
-        tree = request.form['tree']
-        out_tree = "tree_"+task_id+".txt"
-        phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
-        if flag == 0:
-            result = {
-                "jobID": task_id,
-                "input filename score": score_with_id,
-                "input filename otus": otus_with_id,
-                "output filename": out_tree
-            }
-            return jsonify(result)
-        else:
-            return 'Finished'
+            tree = request.form['tree']
+            out_tree = "tree_"+task_id+".txt"
+            phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
+            if flag == 0:
+                result = {
+                    "jobID": task_id,
+                    "input filename score": score_with_id,
+                    "input filename otus": otus_with_id,
+                    "output filename": out_tree
+                }
+                return jsonify(result)
+            else:
+                return 'Finished'
+    else:
+        return render_template('tree_form.html')
 
 # necessary input: 
 # file: [select file]
@@ -273,19 +294,6 @@ def complete():
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/alignment_form', methods=['GET', 'POST'])
-def alignment_form():
-    if request.method == 'POST':
-        # do stuff when the form is submitted
-
-        # redirect to end the POST handling
-        # the redirect can be to the same route or somewhere else
-        return redirect(url_for('index'))
-
-    # show the form, it wasn't submitted
-    return render_template('alignment_form.html')
-
 
 
 

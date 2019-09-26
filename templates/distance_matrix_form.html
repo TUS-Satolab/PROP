@@ -1,14 +1,17 @@
 <!doctype html>
 <html>
 <body>
-    <form method="post">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    <form method="post" action="/matrix" enctype = "multipart/form-data">
             <div class="form-group">
-                    <label>align_method</label>
-                    <select class="form-control" id="align_method" name="align_method">
-                        <option value="clustalw">clustalw</option>
-                        <option value="mafft">mafft</option>
-                        <option value="none" selected>none</option>
-                    </select>
                     <label>input_type</label>
                     <select class="form-control" id="input_type" name="input_type">
                         <option value="nuc">nuc</option>
@@ -29,15 +32,13 @@
                         <option value="K2P">K2P</option>
                         <option value="none" selected>none</option>
                     </select>
-                    <label>tree</label>
-                    <select class="form-control" id="tree" name="tree">
-                        <option value="nj">nj</option>
-                        <option value="upgma">upgma</option>
-                        <option value="none" selected>none</option>
-                    </select>
+                    <label>Plusgap</label>
+                    <input type="checkbox" class="form-control" id="plusgap" name="plusgap">
+                    <p>task ID <input type = "text" id="task_id" name = "task_id" /></p>
+                    <input type = "file" id="file" name = "file" />
             </div>
-
-        <button type="submit">Do it!</button>
+            <button type="submit" name="submit_button" value="calculate">Calculate</button>
+            <button type="submit" name="submit_button" value="go_back">Go back</button>
     </form>
 
 </html>
