@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<body>
+    <form method="post">
+            <div class="form-group">
+                    <label>align_method</label>
+                    <select class="form-control" id="align_method" name="align_method">
+                        <option value="clustalw">clustalw</option>
+                        <option value="mafft">mafft</option>
+                        <option value="none" selected>none</option>
+                    </select>
+                    <label>input_type</label>
+                    <select class="form-control" id="input_type" name="input_type">
+                        <option value="nuc">nuc</option>
+                        <option value="ami">ami</option>
+                        <option value="none" selected>none</option>
+                    </select>
+                    <label>gapdel</label>
+                    <select class="form-control" id="gapdel" name="gapdel">
+                        <option value="comp">comp</option>
+                        <option value="pair">pair</option>
+                        <option value="none" selected>none</option>
+                    </select>
+                    <label>model</label>
+                    <select class="form-control" id="model" name="model">
+                        <option value="P">P</option>
+                        <option value="PC">PC</option>
+                        <option value="JS">JS</option>
+                        <option value="K2P">K2P</option>
+                        <option value="none" selected>none</option>
+                    </select>
+                    <label>tree</label>
+                    <select class="form-control" id="tree" name="tree">
+                        <option value="nj">nj</option>
+                        <option value="upgma">upgma</option>
+                        <option value="none" selected>none</option>
+                    </select>
+            </div>
+
+        <button type="submit">Do it!</button>
+    </form>
+
+</html>

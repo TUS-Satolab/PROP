@@ -1,4 +1,4 @@
-from flask import Flask, request, flash, redirect, url_for, send_from_directory, jsonify
+from flask import Flask, request, flash, redirect, url_for, send_from_directory, jsonify, render_template
 from calculation import alignment, distance_matrix, phylo_tree
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
@@ -25,10 +25,6 @@ def zipFilesInDir(dirName, zipFileName, filter):
                print(filename)
                # Add file to zip
                zipObj.write(os.path.join(dirName, filename), "./"+filename)
-
-@app.route('/')
-def index():
-    return('Blank Page. To be filled.')
 
 # Helper function for allowed files
 def allowed_file(filename):
@@ -96,7 +92,7 @@ def align(flag=0):
             print("I am here at align")
             return task_id
     else:
-        return 'Use POST'
+        return render_template('alignment_form.html')
 
 @app.route('/get_result', methods=['GET', 'POST'])
 def uploaded_file(result_id=None, flag=0):
@@ -268,3 +264,28 @@ def complete():
     #uploaded_file(task_id, flag)
     return task_id
     flag = 0
+
+
+# Website Stuff
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/alignment_form', methods=['GET', 'POST'])
+def alignment_form():
+    if request.method == 'POST':
+        # do stuff when the form is submitted
+
+        # redirect to end the POST handling
+        # the redirect can be to the same route or somewhere else
+        return redirect(url_for('index'))
+
+    # show the form, it wasn't submitted
+    return render_template('alignment_form.html')
+
+
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
