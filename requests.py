@@ -70,27 +70,30 @@ def upload_file(f_name):
 @app.route('/alignment', methods=['GET', 'POST'])
 def align(flag=0):
     if request.method == 'POST':
-        (filename, task_id) = upload_file('file')
-        if not filename.endswith('.fasta'):
-            flash('File format not correct. Choose fasta file')
-            return redirect(request.url)
-        align_method = request.form['align_method']
-        input_type = request.form['input_type']
-        align_clw_opt = request.form['align_clw_opt']
-        out_align = "align_"+ task_id +".txt"
-        print(out_align)
-        alignment(out_align, filename, input_type, align_method, align_clw_opt)
-        print("flag in align is", flag)
-        if flag == 0:
-            result = {
-                "jobID": task_id,
-                "input filename": filename,
-                "output filename": out_align
-            }
-            return jsonify(result)
-        else:
-            print("I am here at align")
-            return task_id
+        if request.form['submit_button'] == 'go_back':
+                return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'calculate':
+            (filename, task_id) = upload_file('file')
+            if not filename.endswith('.fasta'):
+                flash('File format not correct. Choose fasta file')
+                return redirect(request.url)
+            align_method = request.form['align_method']
+            input_type = request.form['input_type']
+            align_clw_opt = request.form['align_clw_opt']
+            out_align = "align_"+ task_id +".txt"
+            print(out_align)
+            alignment(out_align, filename, input_type, align_method, align_clw_opt)
+            print("flag in align is", flag)
+            if flag == 0:
+                result = {
+                    "jobID": task_id,
+                    "input filename": filename,
+                    "output filename": out_align
+                }
+                return jsonify(result)
+            else:
+                print("I am here at align")
+                return task_id
     else:
         return render_template('alignment_form.html')
 
