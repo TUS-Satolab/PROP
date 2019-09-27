@@ -160,7 +160,7 @@ def matrix(task_id=None, flag=0):
             gapdel = request.form.get("gapdel", None)
             input_type = request.form['input_type']
             model = request.form['model']
-            (score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)
+            (score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)            
             score_with_id = "score_" + task_id
             otus_with_id = "otus_" + task_id
             if flag == 0:
@@ -195,8 +195,11 @@ def tree(score=None, otus=None, task_id=None, flag=0):
         elif request.form['submit_button'] == 'calculate':
             if flag == 0:
                 # Upload distance matrix file OR input job ID
-                file = request.files['file']
-                if file.filename == '':
+                try:
+                    file = request.files['file']
+                    if file.filename == '':
+                        file = None
+                except:
                     file = None
                 task_id = request.form['task_id'] or None
             else:
@@ -223,7 +226,7 @@ def tree(score=None, otus=None, task_id=None, flag=0):
                         print("This happened at", n)
                         print(line_read)
                         otus.append(line_read.pop(0))
-                        pre_score = line_read.pop(0).lstrip()
+                        pre_score = line_read.pop(0)
                         print(pre_score)
                         score.append(list(map(float, pre_score.split(" ")[:-1:])))
                         
