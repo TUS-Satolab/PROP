@@ -120,7 +120,8 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
         #距離行列書き出し + Inter/Intra距離計算
         #f = open(os.path.join('./files', matrix_output))
         f = open(os.path.join('./files', matrix_output),"w")
-        f.write("%s\n" % str(len(otus)))
+        f.write(str(len(otus)))
+        f.write("\n")
         for n in range(len(otus)):
             f.write("%-30s " % otus[n][0:30])
             for m in range(len(otus)):

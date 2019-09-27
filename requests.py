@@ -161,7 +161,6 @@ def matrix(task_id=None, flag=0):
             input_type = request.form['input_type']
             model = request.form['model']
             (score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)
-
             score_with_id = "score_" + task_id
             otus_with_id = "otus_" + task_id
             if flag == 0:
@@ -195,49 +194,63 @@ def tree(score=None, otus=None, task_id=None, flag=0):
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'calculate':
             if flag == 0:
-                # Upload scores and otus OR input job ID
-                try:
-                    file_score = request.files['score']
-                    file_otus = request.files['otus']
-                    return(file_score.filename)
-
-                    if file_score.filename == '' or file_otus.filename == '':
-                        file_score = None
-                        file_otus = None
-                        return(file_score)
-                except:
-                    file_score = None
-                    file_otus = None
+                # Upload distance matrix file OR input job ID
+                file = request.files['file']
+                if file.filename == '':
+                    file = None
                 task_id = request.form['task_id'] or None
             else:
-                file_score = None
-                file_otus = None
+                file = None
             if task_id is not None:
-                if file_score is None and file_otus is None:
+                if file is None:
                     score_with_id = "score_" + task_id
                     otus_with_id = "otus_" + task_id
                 else:
                     flash("Either define a task ID or upload score and otus.")
             elif task_id is None:
-                if file_score is not None and file_otus is not None:
-                    # Upload of score and otus
-                    # changing of otus task id to score task id to have corresponding task ids
+                ########## Conversion from Distance Matrix to score and otus variables
+                if file is not None:
+                    # Upload of distance matrix
+                    # score and otus variables are calculated
                     (filename, task_id) = upload_file('file')
-                    (score_with_id, task_id) = upload_file('score')
-                    (otus_with_id, task_id_otus) = upload_file('otus')
-                    path_otus = os.path.join(UPLOAD_FOLDER,otus_with_id)
-                    newname_otus = path_otus.replace(task_id_otus, task_id)
-                    os.rename(path_otus,newname_otus)
-                    otus_with_id = os.path.basename(newname_otus)
+                    score = []
+                    otus = []
+                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+                    line_count = int(f.readline())
+                    for n in range(line_count):
+                        line = f.readline()
+                        line_read = line.split(" ",1)
+                        print("This happened at", n)
+                        print(line_read)
+                        otus.append(line_read.pop(0))
+                        pre_score = line_read.pop(0).lstrip()
+                        print(pre_score)
+                        score.append(list(map(float, pre_score.split(" ")[:-1:])))
+                        
+                        #score.append(line_read.pop(0))
+                        # otus_read = f.read(30)
+                        # print(otus_read)
+                        # otus.append(otus_read)
+                        # print(otus)
+                        # otus_read = ()
+                        # line = f.readline()
+                        # print(line)
+                        # l[n] = [int(num) for num in line.split(' ')]
+                        # line = ()
+                    print("foo_score_final")
+                    print(score)
+                    print(otus)
+                ######### End of conversion
                 else:
-                    flash("Upload score and otus file")
+                    flash("Upload Distance matrix file")
                     return redirect(request.url)
             else:
-                flash('Choose task ID or upload score and otus file to proceed')
+                flash('Choose task ID or upload distance matrix file to proceed')
                 return redirect(request.url)
             # TODO: Handle the case that user inputs wrong task ID
             
-            if flag == 0:
+
+            if flag == 0 and file == None:
                 # Pickle is used to preserve structure of list and dict
                 with open(UPLOAD_FOLDER+"/"+score_with_id, 'rb') as score_p_file:
                     score = pickle.load(score_p_file)
@@ -250,8 +263,6 @@ def tree(score=None, otus=None, task_id=None, flag=0):
             if flag == 0:
                 result = {
                     "jobID": task_id,
-                    "input filename score": score_with_id,
-                    "input filename otus": otus_with_id,
                     "output filename": out_tree
                 }
                 return jsonify(result)
