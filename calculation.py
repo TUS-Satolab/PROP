@@ -24,6 +24,15 @@ from flask import Flask, render_template, request
 from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
 
+def complete_calc(out_align, filename, input_type, align_method, 
+    align_clw_opt, matrix_output, gapdel, model, 
+    tree, UPLOAD_FOLDER, out_tree, plusgap_checked=None):
+    alignment(out_align, filename, input_type, align_method, align_clw_opt)
+    (score, otus) = distance_matrix(out_align, matrix_output, gapdel, input_type, model, plusgap_checked)            
+    phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
+
+
+
 def main(args):
     #タイムスタンプ取得(ファイル名に使うのみ)
     start = time.time()
@@ -93,6 +102,7 @@ def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None)
 #################################################################################
 def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap=""):
     # TODO: is it correct to input the aligned file? Get error otherwise
+    print("Filename is:", aligned_input)
     (otus, seqs) = parse_otus(aligned_input) 
     #Complete Deletionオプション(plusGapオプションなしの場合)
     if plusgap == "" and gapdel == "comp":

@@ -1,13 +1,18 @@
 from flask import Flask, request, flash, redirect, url_for, send_from_directory, jsonify, render_template
-from calculation import alignment, distance_matrix, phylo_tree
+from calculation import alignment, distance_matrix, phylo_tree, complete_calc
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
+from redis import Redis
+from rq import Queue
+from rq.job import Job
 import datetime, time, os, uuid, pickle, glob
+
+
 
 # Global variables
 UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
 ZIPPED_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/zipped"
-ALLOWED_EXTENSIONS = {'fasta', 'txt'}
+ALLOWED_EXTENSIONS = {'fasta', 'txt', 'fa'}
 
 app = Flask(__name__)
 app.secret_key = "Nj#z2L86|!'=Cw&CG"
@@ -67,7 +72,7 @@ def upload_file(f_name):
 # align_method: clustalw or mafft
 # input_type: nuc or ami [not necessary for mafft]
 @app.route('/alignment', methods=['GET', 'POST'])
-def align(flag=0):
+def align(task_id=None, filename=None):
     if request.method == 'POST':
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
@@ -80,28 +85,30 @@ def align(flag=0):
             input_type = request.form['input_type']
             align_clw_opt = request.form['align_clw_opt']
             out_align = "align_"+ task_id +".txt"
-            print(out_align)
-            alignment(out_align, filename, input_type, align_method, align_clw_opt)
-            if flag == 0:
-                result = {
-                    "jobID": task_id,
-                    "input filename": filename,
-                    "output filename": out_align
-                }
-                return jsonify(result)
-            else:
-                return task_id
+
+            q = Queue(connection=Redis('localhost', 6379))
+            #job = q.enqueue(complete_calc,job_id=task_id, task_id=task_id,filename=filename)
+            job = q.enqueue(alignment,
+                            job_id=task_id,
+                            ###############################
+                            ###############################
+                            job_timeout='30m', # TODO set it back to 30m
+                            ###############################
+                            ###############################
+                            args=(out_align, filename, input_type, 
+                                align_method, align_clw_opt))
+            return render_template('get_completed_results_form.html', msg=task_id)
+            #return render_template('get_result_form.html', msg=task_id)
     else:
         return render_template('alignment_form.html')
 
 @app.route('/get_result', methods=['GET', 'POST'])
-def get_result(result_id=None, flag=0):
+def get_result(result_id=None):
     if request.method == 'POST':
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'get_result':
-            if flag == 0:
-                result_id = request.form['result_id']
+            result_id = request.form['result_id']
             result_zip = 'results_' + result_id + '.zip'
             zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
 
@@ -114,6 +121,36 @@ def get_result(result_id=None, flag=0):
     else:
         return render_template('get_result_form.html')
 
+@app.route('/get_result_completed', methods=['GET', 'POST'])
+def get_result_completed(result_id=None):
+    if request.method == 'POST':
+        if request.form['submit_button'] == 'go_back':
+                return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'get_result':
+            result_id = request.form['result_id']
+            redis = Redis()
+            job = Job.fetch(result_id, connection=redis)
+            print('Status: %s' % job.get_status())
+            if job.get_status() == 'finished':
+                result_zip = 'results_' + result_id + '.zip'
+                zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+                if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
+                    return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
+                else:
+                    flash("Something went wrong.")
+                    return redirect(request.url)
+            elif job.get_status() == 'queued':
+                flash("The job is still in the queue")
+                return redirect(request.url)
+            elif job.get_status() == 'started':
+                flash("The job is still running")
+                return redirect(request.url)
+            elif job.get_status() == 'failed':
+                flash("The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
+                return redirect(request.url)
+    else:
+        return render_template('get_completed_results_form.html')
+
 # necessary input: 
 # file: or task ID
 # task_id: from previous step
@@ -123,7 +160,7 @@ def get_result(result_id=None, flag=0):
 # input_type: nuc or ami [not necessary for mafft]
 # model: P, PC, JS or K2P
 @app.route('/matrix', methods=['GET', 'POST'])
-def matrix(task_id, flag=0):
+def matrix(task_id=None):
     if request.method == 'POST':
         # get inputs from alignment call: out_align
         # either input the task ID if out_align was created in the previous step or upload out_align manually
@@ -131,16 +168,13 @@ def matrix(task_id, flag=0):
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'calculate':
-            if flag == 0:
-                try:
-                    file = request.files['file']
-                    if file.filename == '':
-                        file = None
-                except:
+            try:
+                file = request.files['file']
+                if file.filename == '':
                     file = None
-                task_id = request.form['task_id'] or None
-            else:
+            except:
                 file = None
+            task_id = request.form['task_id'] or None
             if task_id is not None and file is None:
                 filename = "align_" + task_id + ".txt"
             elif task_id is None and file is not None:
@@ -151,35 +185,37 @@ def matrix(task_id, flag=0):
             # TODO: Handle the case that user inputs wrong task ID
             else:
                 flash('Choose task ID or upload a file to proceed')
-                flash(request.form['flag'])
-                flash(task_id)
                 return redirect(request.url)
 
-            matrix_output = "matrix_"+task_id+".txt"
             if request.form.get("plusgap"):
                 plusgap_checked = "checked"
+            else:
+                plusgap_checked = None
             gapdel = request.form.get("gapdel", None)
             input_type = request.form['input_type']
             model = request.form['model']
-            (score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)            
-            score_with_id = "score_" + task_id
-            otus_with_id = "otus_" + task_id
-            if flag == 0:
-                # Pickle is used to preserve structure of list and dict
-                with open(UPLOAD_FOLDER+"/"+score_with_id, 'wb') as score_p_file:
-                    pickle.dump(score, score_p_file)
+            matrix_output = "matrix_"+task_id+".txt"
 
-                with open(UPLOAD_FOLDER+"/"+otus_with_id, 'wb') as otus_p_file:
-                    pickle.dump(otus, otus_p_file)
+            q = Queue(connection=Redis('localhost', 6379))
+            #job = q.enqueue(complete_calc,job_id=task_id, task_id=task_id,filename=filename)
+            job = q.enqueue(distance_matrix,
+                            job_id=task_id,
+                            job_timeout='30m', 
+                            args=(filename, matrix_output, gapdel, 
+                                input_type, model, plusgap_checked))
+            #score_with_id = "score_" + task_id
+            #otus_with_id = "otus_" + task_id
+            #(score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)            
+            # Pickle is used to preserve structure of list and dict
+            #with open(UPLOAD_FOLDER+"/"+score_with_id, 'wb') as score_p_file:
+            #    pickle.dump(score, score_p_file)
 
-                result = {
-                    "jobID": task_id,
-                    "input filename": filename,
-                    "output filename": matrix_output
-                }
-                return jsonify(result)
-            else:
-                return (score, otus)
+            #with open(UPLOAD_FOLDER+"/"+otus_with_id, 'wb') as otus_p_file:
+            #    pickle.dump(otus, otus_p_file)
+
+            #return render_template('get_result_form.html', msg=task_id)
+            return render_template('get_completed_results_form.html', msg=task_id)
+
     else:
         return render_template('distance_matrix_form.html')
 
@@ -189,22 +225,23 @@ def matrix(task_id, flag=0):
 # task_id: [if files are not specified]
 # tree: nj or upgma
 @app.route('/tree', methods=['GET', 'POST'])
-def tree(score=None, otus=None, task_id=None, flag=0):
+def tree(score=None, otus=None, task_id=None):
     if request.method == 'POST':
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'calculate':
-            if flag == 0:
-                # Upload distance matrix file OR input job ID
-                try:
-                    file = request.files['file']
-                    if file.filename == '':
-                        file = None
-                except:
-                    file = None
-                task_id = request.form['task_id'] or None
-            else:
+            # Upload distance matrix file OR input job ID
+            file = request.files['file']
+            if file.filename == '':
                 file = None
+            task_id = request.form['task_id'] or None
+
+            # Just upload Matrix file. Get rid of score and otus
+            # get rid of score_with_id and otus_with_id
+            # implement queueing system
+
+
+
             if task_id is not None:
                 if file is None:
                     score_with_id = "score_" + task_id
@@ -230,21 +267,6 @@ def tree(score=None, otus=None, task_id=None, flag=0):
                         pre_score = line_read.pop(0)
                         print(pre_score)
                         score.append(list(map(float, pre_score.split(" ")[:-1:])))
-                        
-                        #score.append(line_read.pop(0))
-                        # otus_read = f.read(30)
-                        # print(otus_read)
-                        # otus.append(otus_read)
-                        # print(otus)
-                        # otus_read = ()
-                        # line = f.readline()
-                        # print(line)
-                        # l[n] = [int(num) for num in line.split(' ')]
-                        # line = ()
-                    print("foo_score_final")
-                    print(score)
-                    print(otus)
-                ######### End of conversion
                 else:
                     flash("Upload Distance matrix file")
                     return redirect(request.url)
@@ -254,24 +276,16 @@ def tree(score=None, otus=None, task_id=None, flag=0):
             # TODO: Handle the case that user inputs wrong task ID
             
 
-            if flag == 0 and file == None:
+            if file == None:
                 # Pickle is used to preserve structure of list and dict
                 with open(UPLOAD_FOLDER+"/"+score_with_id, 'rb') as score_p_file:
                     score = pickle.load(score_p_file)
                 with open(UPLOAD_FOLDER+"/"+otus_with_id, 'rb') as otus_p_file:
                     otus = pickle.load(otus_p_file)
-
             tree = request.form['tree']
             out_tree = "tree_"+task_id+".txt"
             phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
-            if flag == 0:
-                result = {
-                    "jobID": task_id,
-                    "output filename": out_tree
-                }
-                return jsonify(result)
-            else:
-                return 'Finished'
+            return render_template('get_result_form.html', msg=task_id)
     else:
         return render_template('tree_form.html')
 
@@ -280,16 +294,17 @@ def tree(score=None, otus=None, task_id=None, flag=0):
 # MIND THE CORRECT NAMING
 # align_method: clustalw or mafft
 # input_type: nuc or ami [not necessary for mafft]
-# file: or task ID
-# task_id: from previous step
+# align_clw_opt: [string]
 # plusgap: "checked" / ""
 # gapdel: "comp" / "pair"
-# TODO: For the HTML dropdown list input: "comp" / "pair"
 # model: P, PC, JS or K2P
-# score: [file name]
-# otus: [file name]
-# task_id: [if files are not specified]
 # tree: nj or upgma
+
+#def complete_calc(task_id,filename,flag=1):
+#    align(task_id=task_id, filename=filename, flag=1)
+#    (score, otus) = matrix(task_id, flag=1)
+#    tree(score, otus, task_id, flag=1)
+#    return('This worked.')
 
 @app.route('/complete', methods=['GET', 'POST'])
 def complete():
@@ -297,12 +312,57 @@ def complete():
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'calculate':
-            # signal for directly computing everything
-            task_id = align(flag=1)
-            (score, otus) = matrix(task_id, flag=1)
-            tree(score, otus, task_id, flag=1)
+            (filename, task_id) = upload_file('file')
+            if not filename.endswith(('.fasta', '.fa')):
+                flash('File format not correct. Choose fasta file')
+                return redirect(request.url)
+            
+            align_method = request.form['align_method']
+            input_type = request.form['input_type']
+            align_clw_opt = request.form['align_clw_opt']
+            if request.form.get("plusgap"):
+                plusgap_checked = "checked"
+            gapdel = request.form.get("gapdel", None)
+            model = request.form['model']
+            tree = request.form['tree']
 
-            return render_template('get_result_form.html', msg=task_id)
+            out_align = "align_"+ task_id +".txt"
+            matrix_output = "matrix_"+task_id+".txt"
+            out_tree = "tree_"+task_id+".txt"
+
+            q = Queue(connection=Redis('localhost', 6379))
+            #job = q.enqueue(complete_calc,job_id=task_id, task_id=task_id,filename=filename)
+            job = q.enqueue(complete_calc,
+                            job_id=task_id,
+                            ###############################
+                            ###############################
+                            job_timeout='1m', # TODO set it back to 30m
+                            ###############################
+                            ###############################
+                            args=(out_align, filename, input_type, align_method, 
+                                align_clw_opt, matrix_output, gapdel, model, 
+                                tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
+            time.sleep(1)
+            queued_job_ids = q.job_ids
+            print(queued_job_ids)
+            ################################################################
+            ### This goes into the queue #########
+            #align(task_id=task_id, filename=filename, flag=1)
+            #(score, otus) = matrix(task_id, flag=1)
+            #tree(score, otus, task_id, flag=1)
+            ################################################################
+            ### This goes into the queue #########
+            
+            # this should change to "Redirect user to a page where he gets the task id" comment
+            #return render_template('get_result_form.html', msg=task_id)
+            # Put tasks in queue
+            # Redirect user to a page where he gets the task id
+            # Add a message on the get_result page, how far the calculation has proceeded 
+            return render_template('get_completed_results_form.html', msg=task_id)
+            
+            
+
+            
     else:
         return render_template('complete_calc_form.html')
 

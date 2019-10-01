@@ -2,3 +2,6 @@ Flask==1.1.1
 Biopython==1.74
 docopt==0.6.2
 WTForms==2.2.1
+rq==1.1.0
+redis==3.3.8
+requests==2.22.0
