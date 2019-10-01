@@ -71,6 +71,8 @@ def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None)
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
     d = input_type_dict[input_type]
     # d is either DNA or PROTEIN
+
+
     if align == "none":
         shutil.copy(input_file, out_align)
     elif align == "clustalw":
@@ -78,8 +80,8 @@ def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None)
                 -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
                 " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
     elif align == "mafft":
-        print(path)
-        print(out_align)
+        #print(path)
+        #print(out_align)
         subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
     else:
         raise Exception("Check datatype or align definitions")
@@ -133,8 +135,8 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
         f.close()
     except:
         raise Exception("遺伝的差異計算Error",0,0,0)
-    print(score)
-    print(otus)
+    #print(score)
+    #print(otus)
     return (score, otus)
 
 def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):

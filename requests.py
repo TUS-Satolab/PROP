@@ -8,7 +8,6 @@ import datetime, time, os, uuid, pickle, glob
 UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
 ZIPPED_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/zipped"
 ALLOWED_EXTENSIONS = {'fasta', 'txt'}
-flag = 0
 
 app = Flask(__name__)
 app.secret_key = "Nj#z2L86|!'=Cw&CG"
@@ -124,7 +123,7 @@ def get_result(result_id=None, flag=0):
 # input_type: nuc or ami [not necessary for mafft]
 # model: P, PC, JS or K2P
 @app.route('/matrix', methods=['GET', 'POST'])
-def matrix(task_id=None, flag=0):
+def matrix(task_id, flag=0):
     if request.method == 'POST':
         # get inputs from alignment call: out_align
         # either input the task ID if out_align was created in the previous step or upload out_align manually
@@ -152,6 +151,8 @@ def matrix(task_id=None, flag=0):
             # TODO: Handle the case that user inputs wrong task ID
             else:
                 flash('Choose task ID or upload a file to proceed')
+                flash(request.form['flag'])
+                flash(task_id)
                 return redirect(request.url)
 
             matrix_output = "matrix_"+task_id+".txt"
@@ -289,19 +290,21 @@ def tree(score=None, otus=None, task_id=None, flag=0):
 # otus: [file name]
 # task_id: [if files are not specified]
 # tree: nj or upgma
+
 @app.route('/complete', methods=['GET', 'POST'])
 def complete():
-    # signal for directly computing everything
-    flag = 1
+    if request.method == 'POST':
+        if request.form['submit_button'] == 'go_back':
+                return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'calculate':
+            # signal for directly computing everything
+            task_id = align(flag=1)
+            (score, otus) = matrix(task_id, flag=1)
+            tree(score, otus, task_id, flag=1)
 
-    task_id = align(flag)
-    (score, otus) = matrix(task_id, flag)
-    tree(score, otus, task_id, flag)
-
-    # output the three files align, matrix and tree
-    #uploaded_file(task_id, flag)
-    return task_id
-    flag = 0
+            return render_template('get_result_form.html', msg=task_id)
+    else:
+        return render_template('complete_calc_form.html')
 
 
 # Website Stuff
