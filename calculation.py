@@ -87,7 +87,7 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
     if align == "none":
         shutil.copy(input_file, out_align)
     elif align == "clustalw":
-        client.containers.run(image="my_clustalw", command="clustalw -INFILE=./files/"+input_file+ \
+        client.containers.run(image="my_clustalw", command="clustalw -INFILE=files/"+input_file+ \
                             " -OUTFILE=./files/"+ out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
                             + d + " " + align_clw_opt, \
                             volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)

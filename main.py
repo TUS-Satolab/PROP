@@ -3,8 +3,8 @@ from calculation import alignment, distance_matrix, phylo_tree, complete_calc
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from redis import Redis
-from rq import Queue, Connection, Worker, job, registry
-#from rq.job import Job
+from rq import Queue, Connection, Worker, registry
+from rq.job import Job
 import datetime, time, os, uuid, pickle, glob, redis, rq_dashboard
 
 

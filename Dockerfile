@@ -17,6 +17,4 @@ RUN chmod 0644 /etc/cron.d/cron_del_files && \
 
 # install numpy and requirements
 RUN bash -c 'mkdir -p /data/{files,zipped}' && \
-    # Numpy not necessary because it's pulled with biopython?
-    #pip install numpy && \
     pip install -r requirements.txt
