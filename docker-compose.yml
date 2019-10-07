@@ -56,7 +56,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_clustalw
-    image: myclustalw
+    image: my_clustalw
     # volumes:
     #   - type: volume
     #     source: mydata
@@ -69,7 +69,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_mafft
-    image: mymafft
+    image: my_mafft
     volumes:
       - type: volume
         source: mydata
