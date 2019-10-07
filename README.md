@@ -6,15 +6,18 @@
 
 ## Installation
 1. Pull this repo
-2. `docker build -f Dockerfile_clustalw -t my_clustalw .`
-3. `docker build -f Dockerfile_mafft -t my_mafft .`
-4. Install virtual environment   
+2. Install virtual environment   
    ```
    python3 -m venv venv
    source venv/bin/activate
    python3 -m pip install -r requirements.txt
    ``` 
-5. `python3 -m pip install -r requirements.txt`
+3. docker-compose up -d --build
+
+## Usage via browser
+1. Get the IP address of the server where the docker containers are running
+2. In your browser input: [IP-address]:5004
+   E.g. 
 
 ## Run the program locally
 (0.) program help page access:   
@@ -38,10 +41,10 @@ Options:
    ```
 1. Example:  
    `python3 calculation.py --input_file unaligned.fasta --type nuc --align clustalw --model P --plusgap checked --gapdel comp --tree nj`
-   
-## Run the program with flask
+  
+## Run the program with flask - CURRENTLY NOT WORKING
 1. In the folder canal_project: `source venv/bin/activate`
-2. flask run --host=0.0.0.0
+2. flask run --host=0.0.0.0   
 
 ## Query the program remotely (e.g. [Postman](https://www.getpostman.com))
 ### 1. Alignment
