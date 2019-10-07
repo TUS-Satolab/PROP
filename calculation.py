@@ -18,11 +18,15 @@ Options:
   --tree=<tree>                     "nj" / "upgma"
 """
 
-import datetime, time, subprocess, shutil, sys, os, Bio, math, pickle
+import datetime, time, shutil, sys, os, Bio, math, pickle, requests
+import docker
+#import subprocess 
+
 from docopt import docopt
 from flask import Flask, render_template, request
 from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
+client = docker.from_env()
 
 def complete_calc(out_align, filename, input_type, align_method, 
     align_clw_opt, matrix_output, gapdel, model, 
@@ -52,7 +56,7 @@ def main(args):
     plusgap = args["--plusgap"]
     gapdel = args["--gapdel"]
     tree = args["--tree"]
-
+    UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
     # Start a Docker instance and output an aligned file
     alignment(out_align, input_file, input_type, align, align_clw_opt)
 
@@ -75,23 +79,32 @@ def main(args):
 
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
-def alignment(out_align, input_file, input_type, align=None, align_clw_opt=None):
-    path = os.path.dirname(os.path.abspath(__file__)) + "/files"
+def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None):
+    #path = os.path.dirname(os.path.abspath(__file__)) + "/files"
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
     d = input_type_dict[input_type]
     # d is either DNA or PROTEIN
-
-
     if align == "none":
         shutil.copy(input_file, out_align)
     elif align == "clustalw":
-        subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
-                -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
-                " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
+        client.containers.run(image="my_clustalw", command="clustalw -INFILE=./files/"+input_file+ \
+                            " -OUTFILE=./files/"+ out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
+                            + d + " " + align_clw_opt, \
+                            volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+        # subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
+        #         -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
+        #         " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
     elif align == "mafft":
         #print(path)
         #print(out_align)
-        subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
+        client.containers.run(image="my_mafft", command="bash -c 'mafft " + "files/" + input_file + \
+                            " > files/" + out_align + "'", \
+                            volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+        # client.containers.run(image="my_mafft", command="mafft "+ "./files/" + input_file + \
+        #                     " > ./files/"+ out_align, \
+        #                     #volumes={path: {'bind': '/data', 'mode': 'rw'}},remove=True)
+        #                     volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+        # subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
     else:
         raise Exception("Check datatype or align definitions")
     print("Created alignment file")

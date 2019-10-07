@@ -1,27 +1,15 @@
 <!doctype html>
 <html>
 <body>
-        <!--{% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages() %}
         {% if messages %}
-          <ul class=flashes>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-          </ul>
+                <ul class=flashes>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
         {% endif %}
-      {% endwith %} -->
-      {% block content %}
-      <div class="container">
-          {% for message in get_flashed_messages() %}
-          <div class="alert alert-warning">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              {{ message }}
-          </div>
-          {% endfor %}
-
-          {% block page_content %}{% endblock %}
-      </div>
-      {% endblock %}
+        {% endwith %}
 <h3 id="header">Task is running.</h3>
 <h3 id="header">Copy this task ID: {{ msg }}</h3>
 <h3 id="header">Paste it here later to get the results</h3>

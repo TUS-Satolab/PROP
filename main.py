@@ -3,10 +3,9 @@ from calculation import alignment, distance_matrix, phylo_tree, complete_calc
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from redis import Redis
-from rq import Queue
-from rq.job import Job
-import datetime, time, os, uuid, pickle, glob
-
+from rq import Queue, Connection, Worker, job, registry
+#from rq.job import Job
+import datetime, time, os, uuid, pickle, glob, redis, rq_dashboard
 
 
 # Global variables
@@ -15,10 +14,29 @@ ZIPPED_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/zipped"
 ALLOWED_EXTENSIONS = {'fasta', 'txt', 'fa'}
 
 app = Flask(__name__)
+app.config.from_object(rq_dashboard.default_settings)
+app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 app.secret_key = "Nj#z2L86|!'=Cw&CG"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ZIPPED_FOLDER'] = ZIPPED_FOLDER
+app.config['REDIS_URL'] = 'redis://redis:6379/0'
+redis_url = app.config['REDIS_URL']
+redis_connection = redis.from_url(redis_url)
 
+def open_matrix(filename, otus, score):
+    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+    line_count = int(f.readline())
+    for n in range(line_count):
+        line = f.readline()
+        line_read = line.split(" ",1)
+        print("This happened at", n)
+        print(line_read)
+        otus.append(line_read.pop(0))
+        pre_score = line_read.pop(0)
+        print(pre_score)
+        score.append(list(map(float, pre_score.split(" ")[:-1:])))
+    f.close()
+    return (score, otus)
 
 def zipFilesInDir(dirName, zipFileName, filter):
    # create a ZipFile object
@@ -48,7 +66,6 @@ def upload_file(f_name):
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
-            #return redirect(request.url)
             return None
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -68,7 +85,6 @@ def upload_file(f_name):
 
 # necessary input: 
 # file: [select file]
-# MIND THE CORRECT NAMING
 # align_method: clustalw or mafft
 # input_type: nuc or ami [not necessary for mafft]
 @app.route('/alignment', methods=['GET', 'POST'])
@@ -86,40 +102,15 @@ def align(task_id=None, filename=None):
             align_clw_opt = request.form['align_clw_opt']
             out_align = "align_"+ task_id +".txt"
 
-            q = Queue(connection=Redis('localhost', 6379))
-            #job = q.enqueue(complete_calc,job_id=task_id, task_id=task_id,filename=filename)
+            q = Queue(connection=redis_connection)
             job = q.enqueue(alignment,
                             job_id=task_id,
-                            ###############################
-                            ###############################
-                            job_timeout='30m', # TODO set it back to 30m
-                            ###############################
-                            ###############################
-                            args=(out_align, filename, input_type, 
-                                align_method, align_clw_opt))
+                            job_timeout='30m',
+                            result_ttl='168h',
+                            args=(out_align, filename, input_type, align_method,  align_clw_opt))
             return render_template('get_completed_results_form.html', msg=task_id)
-            #return render_template('get_result_form.html', msg=task_id)
     else:
         return render_template('alignment_form.html')
-
-@app.route('/get_result', methods=['GET', 'POST'])
-def get_result(result_id=None):
-    if request.method == 'POST':
-        if request.form['submit_button'] == 'go_back':
-                return redirect(url_for('index'))
-        elif request.form['submit_button'] == 'get_result':
-            result_id = request.form['result_id']
-            result_zip = 'results_' + result_id + '.zip'
-            zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
-
-            #upload_file = "align_"+result_id+".txt"
-            #print(upload_file)
-            if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
-                return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
-            else:
-                return redirect(request.url)
-    else:
-        return render_template('get_result_form.html')
 
 @app.route('/get_result_completed', methods=['GET', 'POST'])
 def get_result_completed(result_id=None):
@@ -128,9 +119,11 @@ def get_result_completed(result_id=None):
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'get_result':
             result_id = request.form['result_id']
-            redis = Redis()
-            job = Job.fetch(result_id, connection=redis)
-            print('Status: %s' % job.get_status())
+            try:
+                job = Job.fetch(result_id, connection=redis_connection)
+            except:
+                flash("The job ID was not found. Make sure you have pasted the full ID")
+                return redirect(request.url)
             if job.get_status() == 'finished':
                 result_zip = 'results_' + result_id + '.zip'
                 zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
@@ -156,33 +149,35 @@ def get_result_completed(result_id=None):
 # task_id: from previous step
 # plusgap: "checked" / ""
 # gapdel: "comp" / "pair"
-# TODO: For the HTML dropdown list input: "comp" / "pair"
 # input_type: nuc or ami [not necessary for mafft]
 # model: P, PC, JS or K2P
 @app.route('/matrix', methods=['GET', 'POST'])
 def matrix(task_id=None):
     if request.method == 'POST':
-        # get inputs from alignment call: out_align
-        # either input the task ID if out_align was created in the previous step or upload out_align manually
-        # create matrix_output name with either task ID from previous step or give it new task ID
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'calculate':
-            try:
-                file = request.files['file']
-                if file.filename == '':
-                    file = None
-            except:
-                file = None
+            file = request.files['file'] or None
             task_id = request.form['task_id'] or None
             if task_id is not None and file is None:
                 filename = "align_" + task_id + ".txt"
+                try:
+                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+                    f.close()
+                except:
+                    flash("task ID was not found in the database. Make sure you pasted the complete ID.")
+                    return redirect(request.url)
             elif task_id is None and file is not None:
                 (filename, task_id) = upload_file('file')
             elif task_id is not None and file is not None:
-                flash('Choose either task ID or upload a file, not both')
-                return redirect(request.url)
-            # TODO: Handle the case that user inputs wrong task ID
+                try:
+                    filename = "align_" + task_id + ".txt"
+                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+                    f.close()
+                    flash("Task ID was used because Matrix File was found in the database")
+                except:
+                    (filename, task_id) = upload_file('file')
+                    flash("File was uploaded because task ID was not found")
             else:
                 flash('Choose task ID or upload a file to proceed')
                 return redirect(request.url)
@@ -196,24 +191,13 @@ def matrix(task_id=None):
             model = request.form['model']
             matrix_output = "matrix_"+task_id+".txt"
 
-            q = Queue(connection=Redis('localhost', 6379))
-            #job = q.enqueue(complete_calc,job_id=task_id, task_id=task_id,filename=filename)
+            q = Queue(connection=redis_connection)
             job = q.enqueue(distance_matrix,
                             job_id=task_id,
-                            job_timeout='30m', 
+                            job_timeout='30m',
+                            result_ttl='168h',
                             args=(filename, matrix_output, gapdel, 
                                 input_type, model, plusgap_checked))
-            #score_with_id = "score_" + task_id
-            #otus_with_id = "otus_" + task_id
-            #(score, otus) = distance_matrix(filename, matrix_output, gapdel, input_type, model, plusgap_checked)            
-            # Pickle is used to preserve structure of list and dict
-            #with open(UPLOAD_FOLDER+"/"+score_with_id, 'wb') as score_p_file:
-            #    pickle.dump(score, score_p_file)
-
-            #with open(UPLOAD_FOLDER+"/"+otus_with_id, 'wb') as otus_p_file:
-            #    pickle.dump(otus, otus_p_file)
-
-            #return render_template('get_result_form.html', msg=task_id)
             return render_template('get_completed_results_form.html', msg=task_id)
 
     else:
@@ -225,67 +209,47 @@ def matrix(task_id=None):
 # task_id: [if files are not specified]
 # tree: nj or upgma
 @app.route('/tree', methods=['GET', 'POST'])
-def tree(score=None, otus=None, task_id=None):
+def tree():
     if request.method == 'POST':
         if request.form['submit_button'] == 'go_back':
                 return redirect(url_for('index'))
         elif request.form['submit_button'] == 'calculate':
-            # Upload distance matrix file OR input job ID
-            file = request.files['file']
-            if file.filename == '':
-                file = None
+            file = request.files['file'] or None
             task_id = request.form['task_id'] or None
-
-            # Just upload Matrix file. Get rid of score and otus
-            # get rid of score_with_id and otus_with_id
-            # implement queueing system
-
-
-
-            if task_id is not None:
-                if file is None:
-                    score_with_id = "score_" + task_id
-                    otus_with_id = "otus_" + task_id
-                else:
-                    flash("Either define a task ID or upload score and otus.")
-            elif task_id is None:
-                ########## Conversion from Distance Matrix to score and otus variables
-                if file is not None:
-                    # Upload of distance matrix
-                    # score and otus variables are calculated
-                    (filename, task_id) = upload_file('file')
-                    score = []
-                    otus = []
-                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
-                    line_count = int(f.readline())
-                    for n in range(line_count):
-                        line = f.readline()
-                        line_read = line.split(" ",1)
-                        print("This happened at", n)
-                        print(line_read)
-                        otus.append(line_read.pop(0))
-                        pre_score = line_read.pop(0)
-                        print(pre_score)
-                        score.append(list(map(float, pre_score.split(" ")[:-1:])))
-                else:
-                    flash("Upload Distance matrix file")
-                    return redirect(request.url)
-            else:
-                flash('Choose task ID or upload distance matrix file to proceed')
-                return redirect(request.url)
-            # TODO: Handle the case that user inputs wrong task ID
-            
-
-            if file == None:
-                # Pickle is used to preserve structure of list and dict
-                with open(UPLOAD_FOLDER+"/"+score_with_id, 'rb') as score_p_file:
-                    score = pickle.load(score_p_file)
-                with open(UPLOAD_FOLDER+"/"+otus_with_id, 'rb') as otus_p_file:
-                    otus = pickle.load(otus_p_file)
             tree = request.form['tree']
+            score = []
+            otus = []
+            if task_id is not None and file is None:
+                try:
+                    filename = "matrix_" + task_id + ".txt"
+                    (score, otus) = open_matrix(filename, otus, score)
+                except:
+                    flash("task ID was not found in the database. Make sure you pasted the complete ID.")
+                    return redirect(request.url)
+            elif task_id is None and file is not None:
+                (filename, task_id) = upload_file('file')
+                (score, otus) = open_matrix(filename, otus, score)
+            elif task_id is not None and file is not None:
+                try:
+                    filename = "matrix_" + task_id + ".txt"
+                    (score, otus) = open_matrix(filename, otus, score)
+                    flash("Task ID was used because Matrix File was found in the database")
+                except:
+                    (filename, task_id) = upload_file('file')
+                    (score, otus) = open_matrix(filename, otus, score)
+                    flash("File was uploaded because task ID was not found")
+            else:
+                flash("Either upload a file or input a task ID")
+                return redirect(request.url)
+
             out_tree = "tree_"+task_id+".txt"
-            phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
-            return render_template('get_result_form.html', msg=task_id)
+            q = Queue(connection=redis_connection)
+            job = q.enqueue(phylo_tree,
+                            job_id=task_id,
+                            job_timeout='30m',
+                            result_ttl='168h',
+                            args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
+            return render_template('get_completed_results_form.html', msg=task_id)
     else:
         return render_template('tree_form.html')
 
@@ -299,12 +263,6 @@ def tree(score=None, otus=None, task_id=None):
 # gapdel: "comp" / "pair"
 # model: P, PC, JS or K2P
 # tree: nj or upgma
-
-#def complete_calc(task_id,filename,flag=1):
-#    align(task_id=task_id, filename=filename, flag=1)
-#    (score, otus) = matrix(task_id, flag=1)
-#    tree(score, otus, task_id, flag=1)
-#    return('This worked.')
 
 @app.route('/complete', methods=['GET', 'POST'])
 def complete():
@@ -329,51 +287,45 @@ def complete():
             out_align = "align_"+ task_id +".txt"
             matrix_output = "matrix_"+task_id+".txt"
             out_tree = "tree_"+task_id+".txt"
-
-            q = Queue(connection=Redis('localhost', 6379))
-            #job = q.enqueue(complete_calc,job_id=task_id, task_id=task_id,filename=filename)
+            q = Queue(connection=redis_connection)
             job = q.enqueue(complete_calc,
                             job_id=task_id,
-                            ###############################
-                            ###############################
-                            job_timeout='1m', # TODO set it back to 30m
-                            ###############################
-                            ###############################
+                            job_timeout='30m',
+                            result_ttl='168h',
                             args=(out_align, filename, input_type, align_method, 
                                 align_clw_opt, matrix_output, gapdel, model, 
                                 tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
-            time.sleep(1)
-            queued_job_ids = q.job_ids
-            print(queued_job_ids)
-            ################################################################
-            ### This goes into the queue #########
-            #align(task_id=task_id, filename=filename, flag=1)
-            #(score, otus) = matrix(task_id, flag=1)
-            #tree(score, otus, task_id, flag=1)
-            ################################################################
-            ### This goes into the queue #########
-            
-            # this should change to "Redirect user to a page where he gets the task id" comment
-            #return render_template('get_result_form.html', msg=task_id)
-            # Put tasks in queue
-            # Redirect user to a page where he gets the task id
-            # Add a message on the get_result page, how far the calculation has proceeded 
             return render_template('get_completed_results_form.html', msg=task_id)
-            
-            
-
-            
     else:
         return render_template('complete_calc_form.html')
-
 
 # Website Stuff
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# # Worker for rq
+def run_worker(redis_connection):
+    with Connection(redis_connection):
+        worker = Worker(app.config['QUEUES'])
+        worker.work()
 
-
+#################################################
+# TODO: Get job list and list all finished tasks
+# @app.route('/task_list')
+# def task_list():
+#     filename_list = ()
+#     date_created_list = ()
+#     registry = registry.FinishedJobRegistry('default', connection=redis)
+#     job_ids = registry.get_job_ids() # You can then turn these into Job instances
+#     for job_id in job_ids:
+#         job = Job.fetch(job_id, connection=redis_connection)
+#         sliced =  job.description
+#         b_sliced = sliced.split('\'')
+#         filename_list.append(b_sliced[3])
+#         date_created_list.append(job.created_at)
+#     return redirect(request.url)
+#################################################
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

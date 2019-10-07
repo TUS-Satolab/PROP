@@ -1,0 +1,69 @@
+version: '3.7'
+
+services:
+
+  requests:
+    build: .
+    image: requests
+    #container_name: requests
+    ports:
+      - '5004:5000'
+    expose:
+      - '80'
+      - '5004'
+    command: bash -c "cron && python3 main.py run -h 0.0.0.0"
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+    privileged: true
+    depends_on:
+      - redis
+
+  worker:
+    image: requests
+    command: rq worker --url redis://redis:6379/0
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+      #- ./:/data/
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    depends_on:
+      - redis
+      - requests
+    links:
+      - redis
+  
+  dashboard:
+    image: eoranged/rq-dashboard
+    ports:
+      - '9181:9181'
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://redis:6379
+      - RQ_DASHBOARD_USERNAME=rq
+      - RQ_DASHBOARD_PASSWORD=password
+      - RQ_DASHBOARD_interval=30000
+    depends_on:
+      - redis
+      - requests
+    links:
+      - redis
+
+  redis:
+    image: redis:5.0.6-alpine
+
+volumes:
+  mydata:
+    name: canal_project
+  # dashboard:
+  #   build: ./project/dashboard
+  #   image: dashboard
+  #   container_name: dashboard
+  #   ports:
+  #     - '9181:9181'
+  #   command: rq-dashboard -H redis

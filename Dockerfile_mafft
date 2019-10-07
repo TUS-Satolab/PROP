@@ -1,5 +1,5 @@
-FROM debian:testing
-MAINTAINER Diego Diez <diego10ruiz@gmail.com>
+#FROM debian:testing
+FROM biocontainers/biocontainers:debian-stretch-backports
 
 ENV VERSION=7.429
 
@@ -21,8 +21,8 @@ RUN apt-get update && \
 ENV PATH /opt/bin:$PATH
 
 # Set user.
-RUN useradd -ms /bin/bash biodev
-RUN echo 'biodev:biodev' | chpasswd
-USER biodev
+# RUN useradd -ms /bin/bash biodev
+# RUN echo 'biodev:biodev' | chpasswd
+# USER biodev
 #WORKDIR /home/biodev
 WORKDIR /data/

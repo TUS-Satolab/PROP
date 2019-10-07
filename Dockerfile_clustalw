@@ -1,5 +1,4 @@
 FROM biocontainers/biocontainers:debian-stretch-backports
-MAINTAINER biocontainers <biodocker@gmail.com>
 LABEL    software="clustalw" \ 
     container="clustalw" \ 
     about.summary="global multiple nucleotide or peptide sequence alignment" \ 
@@ -15,6 +14,5 @@ LABEL    software="clustalw" \
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y clustalw && apt-get clean && apt-get purge && rm -rf /var/lib/apt/lists/* /tmp/*
-USER biodocker
 
 WORKDIR /data/
