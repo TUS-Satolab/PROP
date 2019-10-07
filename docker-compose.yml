@@ -53,18 +53,22 @@ services:
       - redis
 
   my_clustalw:
-    build: Dockerfile_clustalw
+    build:
+      context: .
+      dockerfile: Dockerfile_clustalw
     image: myclustalw
-    volumes:
-      - type: volume
-        source: mydata
-        target: /data
+    # volumes:
+    #   - type: volume
+    #     source: mydata
+    #     target: /data
     links: 
       - requests
       - worker
 
   my_mafft:
-    build: Dockerfile_mafft
+    build:
+      context: .
+      dockerfile: Dockerfile_mafft
     image: mymafft
     volumes:
       - type: volume
