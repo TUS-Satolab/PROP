@@ -115,6 +115,7 @@ dmypy.json
 *.txt
 *.zip
 *.aln
+*.dnd
 files/
 zipped/
 flask_test/
