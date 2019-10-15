@@ -1,19 +1,23 @@
-from flask import Flask, request, flash, redirect, url_for, send_from_directory, jsonify, render_template
+from flask import Flask, request, flash, redirect, url_for, send_from_directory, send_file, jsonify, render_template
 from calculation import alignment, distance_matrix, phylo_tree, complete_calc
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from redis import Redis
 from rq import Queue, Connection, Worker, registry
 from rq.job import Job
+from flask_cors import CORS
 import datetime, time, os, uuid, pickle, glob, redis, rq_dashboard
 
 
 # Global variables
-UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
-ZIPPED_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/zipped"
+# UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
+# ZIPPED_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/zipped"
+UPLOAD_FOLDER = "/data/files"
+ZIPPED_FOLDER = "/data/zipped"
 ALLOWED_EXTENSIONS = {'fasta', 'txt', 'fa'}
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(rq_dashboard.default_settings)
 app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 app.secret_key = "Nj#z2L86|!'=Cw&CG"
@@ -90,9 +94,9 @@ def upload_file(f_name):
 @app.route('/alignment', methods=['GET', 'POST'])
 def align(task_id=None, filename=None):
     if request.method == 'POST':
-        if request.form['submit_button'] == 'go_back':
-                return redirect(url_for('index'))
-        elif request.form['submit_button'] == 'calculate':
+        # if request.form['submit_button'] == 'go_back':
+        #         return redirect(url_for('index'))
+        # elif request.form['submit_button'] == 'calculate':
             (filename, task_id) = upload_file('file')
             if not filename.endswith('.fasta'):
                 flash('File format not correct. Choose fasta file')
@@ -108,39 +112,70 @@ def align(task_id=None, filename=None):
                             job_timeout='30m',
                             result_ttl='168h',
                             args=(out_align, filename, input_type, align_method,  align_clw_opt))
-            return render_template('get_completed_results_form.html', msg=task_id)
+            #return render_template('get_completed_results_form.html', msg=task_id)
+            res = {'task_id': task_id}
+            return res
     else:
+        print("I am here")
         return render_template('alignment_form.html')
+
+@app.route('/task_query', methods=['GET', 'POST'])
+def task_query():
+    if request.method == 'POST':
+        result_id = request.form['result_id']
+        try:
+            job = Job.fetch(result_id, connection=redis_connection)
+        except:
+            flash("The job ID was not found. Make sure you have pasted the full ID")
+            return("Job ID was not found.")
+        if job.get_status() == 'finished':
+            return("Finished")
+        elif job.get_status() == 'queued':
+            flash("The job is still in the queue")
+            #return "redirect(request.url)"
+            return("The job is still in the queue")
+        elif job.get_status() == 'started':
+            flash("The job is still running")
+            #return redirect(request.url)
+            return("The job is still running")
+        elif job.get_status() == 'failed':
+            flash("The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
+            #return redirect(request.url)
+            return("The job failed.")
 
 @app.route('/get_result_completed', methods=['GET', 'POST'])
 def get_result_completed(result_id=None):
+    test = []
     if request.method == 'POST':
-        if request.form['submit_button'] == 'go_back':
-                return redirect(url_for('index'))
-        elif request.form['submit_button'] == 'get_result':
-            result_id = request.form['result_id']
-            try:
-                job = Job.fetch(result_id, connection=redis_connection)
-            except:
-                flash("The job ID was not found. Make sure you have pasted the full ID")
+        result_id = request.form['result_id']
+        try:
+            job = Job.fetch(result_id, connection=redis_connection)
+        except:
+            flash("The job ID was not found. Make sure you have pasted the full ID")
+            return redirect(request.url)
+        if job.get_status() == 'finished':
+            result_zip = 'results_' + result_id + '.zip'
+            zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+            if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
+                # return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
+                test = send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
+                return test
+                # return send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
+            else:
+                flash("Something went wrong.")
                 return redirect(request.url)
-            if job.get_status() == 'finished':
-                result_zip = 'results_' + result_id + '.zip'
-                zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
-                if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
-                    return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
-                else:
-                    flash("Something went wrong.")
-                    return redirect(request.url)
-            elif job.get_status() == 'queued':
-                flash("The job is still in the queue")
-                return redirect(request.url)
-            elif job.get_status() == 'started':
-                flash("The job is still running")
-                return redirect(request.url)
-            elif job.get_status() == 'failed':
-                flash("The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
-                return redirect(request.url)
+        elif job.get_status() == 'queued':
+            flash("The job is still in the queue")
+            #return "redirect(request.url)"
+            return("The job is still in the queue")
+        elif job.get_status() == 'started':
+            flash("The job is still running")
+            #return redirect(request.url)
+            return("The job is still running")
+        elif job.get_status() == 'failed':
+            flash("The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
+            #return redirect(request.url)
+            return("The job failed.")
     else:
         return render_template('get_completed_results_form.html')
 
@@ -267,35 +302,37 @@ def tree():
 @app.route('/complete', methods=['GET', 'POST'])
 def complete():
     if request.method == 'POST':
-        if request.form['submit_button'] == 'go_back':
-                return redirect(url_for('index'))
-        elif request.form['submit_button'] == 'calculate':
-            (filename, task_id) = upload_file('file')
-            if not filename.endswith(('.fasta', '.fa')):
-                flash('File format not correct. Choose fasta file')
-                return redirect(request.url)
-            
-            align_method = request.form['align_method']
-            input_type = request.form['input_type']
-            align_clw_opt = request.form['align_clw_opt']
-            if request.form.get("plusgap"):
-                plusgap_checked = "checked"
-            gapdel = request.form.get("gapdel", None)
-            model = request.form['model']
-            tree = request.form['tree']
+        (filename, task_id) = upload_file('file')
+        if not filename.endswith(('.fasta', '.fa')):
+            flash('File format not correct. Choose fasta file')
+            return redirect(request.url)
+        
+        align_method = request.form['align_method']
+        input_type = request.form['input_type']
+        align_clw_opt = request.form['align_clw_opt']
+        if request.form.get("plusgap"):
+            print("I am checked")
+            plusgap_checked = "checked"
+        else:
+            plusgap_checked = None
+        gapdel = request.form.get("gapdel", None)
+        model = request.form['model']
+        tree = request.form['tree']
 
-            out_align = "align_"+ task_id +".txt"
-            matrix_output = "matrix_"+task_id+".txt"
-            out_tree = "tree_"+task_id+".txt"
-            q = Queue(connection=redis_connection)
-            job = q.enqueue(complete_calc,
-                            job_id=task_id,
-                            job_timeout='30m',
-                            result_ttl='168h',
-                            args=(out_align, filename, input_type, align_method, 
-                                align_clw_opt, matrix_output, gapdel, model, 
-                                tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
-            return render_template('get_completed_results_form.html', msg=task_id)
+        out_align = "align_"+ task_id +".txt"
+        matrix_output = "matrix_"+task_id+".txt"
+        out_tree = "tree_"+task_id+".txt"
+        q = Queue(connection=redis_connection)
+        job = q.enqueue(complete_calc,
+                        job_id=task_id,
+                        job_timeout='30m',
+                        result_ttl='168h',
+                        args=(out_align, filename, input_type, align_method, 
+                            align_clw_opt, matrix_output, gapdel, model, 
+                            tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
+        #return render_template('get_completed_results_form.html', msg=task_id)
+        res = {'task_id': task_id}
+        return res
     else:
         return render_template('complete_calc_form.html')
 

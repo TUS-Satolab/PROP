@@ -1,0 +1,33 @@
+<h2>Alignment Calculation</h2>
+<div class="container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <input type="file" name="file" (change)="onFileSelect($event)">
+        </div>
+
+        <div class="form-group input-group-lg">
+            <label>align_clw_opt</label>
+            <input class="form-control" placeholder="Options" formControlName="align_clw_opt">
+        </div>
+        <div class="form-group">
+            <label>align_method</label>
+            <select class="form-control" placeholder="align_method" formControlName="align_method">
+                <option value="clustalw">clustalw</option>
+                <option value="mafft">mafft</option>
+                <option value="none" selected>none</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>input_type</label>
+            <select class="form-control" placeholder="input_type" formControlName="input_type">
+                <option value="nuc">nuc</option>
+                <option value="ami">ami</option>
+                <option value="none" selected>none</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <button class="btn btn-danger btn-block btn-lg">Create</button>
+        </div>
+    </form>
+</div>

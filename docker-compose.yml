@@ -10,8 +10,10 @@ services:
     expose:
       - '80'
       - '5004'
-    command: bash -c "cron && python3 main.py run -h 0.0.0.0"
+    # TODO: Revert back to calling main.py from within the docker container
+    command: bash -c "cron && python3 /py_file/main.py run -h 0.0.0.0"
     volumes:
+      - ./:/py_file/
       - type: volume
         source: mydata
         target: /data

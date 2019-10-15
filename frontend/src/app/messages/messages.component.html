@@ -1,0 +1,10 @@
+<div *ngIf="messageService.messages.length">
+
+        <h3>Messages</h3>
+        <script>
+                var msg_var = '{{ msg }}';
+        </script>
+         <div *ngFor='let message of messageService.messages'>{{message}}</div>
+         <div>{{ msg_var }}</div>
+         <!-- <button (click)="copyMessage({{ msg_var }})" value="click to copy" >Copy this</button> -->
+</div>
