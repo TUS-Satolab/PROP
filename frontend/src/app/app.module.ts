@@ -10,6 +10,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { GetResultComponent } from './get-result/get-result.component';
 import { CompleteCalcComponent } from './complete-calc/complete-calc.component';
 import { MatrixComponent } from './matrix/matrix.component';
+import { TreeComponent } from './tree/tree.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { MatrixComponent } from './matrix/matrix.component';
     GetResultComponent,
     CompleteCalcComponent,
     MatrixComponent,
+    TreeComponent,
   ],
   imports: [
     BrowserModule,

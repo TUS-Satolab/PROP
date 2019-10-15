@@ -5,22 +5,19 @@ import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 
 @Component({
-  selector: 'app-matrix',
-  templateUrl: './matrix.component.html',
-  styleUrls: ['./matrix.component.css']
+  selector: 'app-tree',
+  templateUrl: './tree.component.html',
+  styleUrls: ['./tree.component.css']
 })
-export class MatrixComponent implements OnInit {
-  SERVER_URL = 'http://localhost:5004/matrix';
+export class TreeComponent implements OnInit {
+  SERVER_URL = 'http://localhost:5004/tree';
   form: FormGroup;
 
   constructor(public fb: FormBuilder, private httpClient: HttpClient, private messageService: MessageService) { }
 
   ngOnInit() {
     this.form = this.fb.group({
-      input_type: [''],
-      gapdel: [''],
-      model: [''],
-      plusgap: [''],
+      tree: [''],
       file: [''],
       task_id: [''],
     });
@@ -35,10 +32,7 @@ export class MatrixComponent implements OnInit {
 
   onSubmit() {
     const formData: any = new FormData();
-    formData.append('input_type', this.form.get('input_type').value);
-    formData.append('gapdel', this.form.get('gapdel').value);
-    formData.append('model', this.form.get('model').value);
-    formData.append('plusgap', this.form.get('plusgap').value);
+    formData.append('tree', this.form.get('tree').value);
     formData.append('file', this.form.get('file').value);
     formData.append('task_id', this.form.get('task_id').value);
     if ((this.form.get('file').value === '') && (this.form.get('task_id').value === '')) {

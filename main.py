@@ -93,14 +93,19 @@ def upload_file(f_name):
 # input_type: nuc or ami [not necessary for mafft]
 @app.route('/alignment', methods=['GET', 'POST'])
 def align(task_id=None, filename=None):
+    res = {}
+    res['msg'] = ""
     if request.method == 'POST':
         # if request.form['submit_button'] == 'go_back':
         #         return redirect(url_for('index'))
         # elif request.form['submit_button'] == 'calculate':
             (filename, task_id) = upload_file('file')
             if not filename.endswith('.fasta'):
-                flash('File format not correct. Choose fasta file')
-                return redirect(request.url)
+                # flash('File format not correct. Choose fasta file')
+                # return redirect(request.url)
+                res = {'task_id': "None",
+                        'msg': "File format not correct. Choose fasta file"}
+                return res
             align_method = request.form['align_method']
             input_type = request.form['input_type']
             align_clw_opt = request.form['align_clw_opt']
@@ -113,10 +118,10 @@ def align(task_id=None, filename=None):
                             result_ttl='168h',
                             args=(out_align, filename, input_type, align_method,  align_clw_opt))
             #return render_template('get_completed_results_form.html', msg=task_id)
-            res = {'task_id': task_id}
+            res = {'task_id': task_id,
+                    'msg': "Task ID returned"}
             return res
     else:
-        print("I am here")
         return render_template('alignment_form.html')
 
 @app.route('/task_query', methods=['GET', 'POST'])
@@ -155,7 +160,12 @@ def get_result_completed(result_id=None):
             return redirect(request.url)
         if job.get_status() == 'finished':
             result_zip = 'results_' + result_id + '.zip'
-            zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+            # Check if zip file was generated in a previous step and delete that to avoid duplicates
+            if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
+                os.remove(ZIPPED_FOLDER+"/"+result_zip)
+                zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+            else:
+                zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
             if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
                 # return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
                 test = send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
@@ -188,53 +198,68 @@ def get_result_completed(result_id=None):
 # model: P, PC, JS or K2P
 @app.route('/matrix', methods=['GET', 'POST'])
 def matrix(task_id=None):
+    res = {}
+    res['msg'] = ""
     if request.method == 'POST':
-        if request.form['submit_button'] == 'go_back':
-                return redirect(url_for('index'))
-        elif request.form['submit_button'] == 'calculate':
-            file = request.files['file'] or None
-            task_id = request.form['task_id'] or None
-            if task_id is not None and file is None:
+        # file = request.files['file'] or None
+        try:
+            file = request.files['file']
+        except:
+            file = None
+        task_id = request.form['task_id'] or None
+        if task_id is not None and file is None:
+            filename = "align_" + task_id + ".txt"
+            try:
+                f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+                f.close()
+            except:
+                #flash("task ID was not found in the database. Make sure you pasted the complete ID.")
+                #return redirect(request.url)
+                res = {'task_id': "None",
+                        'msg': "task ID was not found in the database. Make sure you pasted the complete ID."}
+                return res
+        elif task_id is None and file is not None:
+            (filename, task_id) = upload_file('file')
+        elif task_id is not None and file is not None:
+            try:
                 filename = "align_" + task_id + ".txt"
-                try:
-                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
-                    f.close()
-                except:
-                    flash("task ID was not found in the database. Make sure you pasted the complete ID.")
-                    return redirect(request.url)
-            elif task_id is None and file is not None:
+                f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+                f.close()
+                #print("Task ID was used because Matrix File was found in the database")
+                res = { 'msg': "Task ID was used because Matrix File was found in the database"}
+            except:
                 (filename, task_id) = upload_file('file')
-            elif task_id is not None and file is not None:
-                try:
-                    filename = "align_" + task_id + ".txt"
-                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
-                    f.close()
-                    flash("Task ID was used because Matrix File was found in the database")
-                except:
-                    (filename, task_id) = upload_file('file')
-                    flash("File was uploaded because task ID was not found")
-            else:
-                flash('Choose task ID or upload a file to proceed')
-                return redirect(request.url)
+                #print("File was uploaded because task ID was not found")
+                res = { 'msg': "File was uploaded because task ID was not found"}
+        else:
+            # flash('Choose task ID or upload a file to proceed')
+            # return redirect(request.url)
+            res = {'task_id': "None",
+                        'msg': "Either upload a file or input a task ID"}
+            return res
+            
+        if request.form.get("plusgap"):
+            plusgap_checked = "checked"
+        else:
+            plusgap_checked = None
+        gapdel = request.form.get("gapdel", None)
+        input_type = request.form['input_type']
+        model = request.form['model']
+        matrix_output = "matrix_"+task_id+".txt"
 
-            if request.form.get("plusgap"):
-                plusgap_checked = "checked"
-            else:
-                plusgap_checked = None
-            gapdel = request.form.get("gapdel", None)
-            input_type = request.form['input_type']
-            model = request.form['model']
-            matrix_output = "matrix_"+task_id+".txt"
-
-            q = Queue(connection=redis_connection)
-            job = q.enqueue(distance_matrix,
-                            job_id=task_id,
-                            job_timeout='30m',
-                            result_ttl='168h',
-                            args=(filename, matrix_output, gapdel, 
-                                input_type, model, plusgap_checked))
-            return render_template('get_completed_results_form.html', msg=task_id)
-
+        q = Queue(connection=redis_connection)
+        job = q.enqueue(distance_matrix,
+                        job_id=task_id,
+                        job_timeout='30m',
+                        result_ttl='168h',
+                        args=(filename, matrix_output, gapdel, 
+                            input_type, model, plusgap_checked))
+        #return render_template('get_completed_results_form.html', msg=task_id)
+        if res['msg'] == '':
+            res['msg'] = "Task ID returned"
+        
+        res['task_id'] = task_id
+        return res
     else:
         return render_template('distance_matrix_form.html')
 
@@ -245,46 +270,61 @@ def matrix(task_id=None):
 # tree: nj or upgma
 @app.route('/tree', methods=['GET', 'POST'])
 def tree():
+    res = {}
+    res['msg'] = ""
     if request.method == 'POST':
-        if request.form['submit_button'] == 'go_back':
-                return redirect(url_for('index'))
-        elif request.form['submit_button'] == 'calculate':
-            file = request.files['file'] or None
-            task_id = request.form['task_id'] or None
-            tree = request.form['tree']
-            score = []
-            otus = []
-            if task_id is not None and file is None:
-                try:
-                    filename = "matrix_" + task_id + ".txt"
-                    (score, otus) = open_matrix(filename, otus, score)
-                except:
-                    flash("task ID was not found in the database. Make sure you pasted the complete ID.")
-                    return redirect(request.url)
-            elif task_id is None and file is not None:
+        try:
+            file = request.files['file']
+        except:
+            file = None
+        task_id = request.form['task_id'] or None
+        tree = request.form['tree']
+        score = []
+        otus = []
+        if task_id is not None and file is None:
+            try:
+                filename = "matrix_" + task_id + ".txt"
+                (score, otus) = open_matrix(filename, otus, score)
+            except:
+                # flash("task ID was not found in the database. Make sure you pasted the complete ID.")
+                # return redirect(request.url)
+                res = {'task_id': "None",
+                        'msg': "task ID was not found in the database. Make sure you pasted the complete ID."}
+                return res
+        elif task_id is None and file is not None:
+            (filename, task_id) = upload_file('file')
+            (score, otus) = open_matrix(filename, otus, score)
+        elif task_id is not None and file is not None:
+            try:
+                filename = "matrix_" + task_id + ".txt"
+                (score, otus) = open_matrix(filename, otus, score)
+                #flash("Task ID was used because Matrix File was found in the database")
+                res = { 'msg': "Task ID was used because Matrix File was found in the database"}
+            except:
                 (filename, task_id) = upload_file('file')
                 (score, otus) = open_matrix(filename, otus, score)
-            elif task_id is not None and file is not None:
-                try:
-                    filename = "matrix_" + task_id + ".txt"
-                    (score, otus) = open_matrix(filename, otus, score)
-                    flash("Task ID was used because Matrix File was found in the database")
-                except:
-                    (filename, task_id) = upload_file('file')
-                    (score, otus) = open_matrix(filename, otus, score)
-                    flash("File was uploaded because task ID was not found")
-            else:
-                flash("Either upload a file or input a task ID")
-                return redirect(request.url)
+                #flash("File was uploaded because task ID was not found")
+                res = { 'msg': "File was uploaded because task ID was not found"}
+        else:
+            flash("Either upload a file or input a task ID")
+            return redirect(request.url)
+            res = {'task_id': "None",
+                        'msg': "Either upload a file or input a task ID"}
+            return res
 
-            out_tree = "tree_"+task_id+".txt"
-            q = Queue(connection=redis_connection)
-            job = q.enqueue(phylo_tree,
-                            job_id=task_id,
-                            job_timeout='30m',
-                            result_ttl='168h',
-                            args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
-            return render_template('get_completed_results_form.html', msg=task_id)
+        out_tree = "tree_"+task_id+".txt"
+        q = Queue(connection=redis_connection)
+        job = q.enqueue(phylo_tree,
+                        job_id=task_id,
+                        job_timeout='30m',
+                        result_ttl='168h',
+                        args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
+        # return render_template('get_completed_results_form.html', msg=task_id)
+        if res['msg'] == '':
+            res['msg'] = "Task ID returned"
+        
+        res['task_id'] = task_id
+        return res
     else:
         return render_template('tree_form.html')
 

@@ -1,1 +1,47 @@
-<p>matrix works!</p>
+<h2>Distance Matrix Calculation</h2>
+<div class="container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label>input_type</label>
+            <select class="form-control" placeholder="input_type" formControlName="input_type">
+                <option value="nuc">nuc</option>
+                <option value="ami">ami</option>
+                <option value="none" selected>none</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>gapdel</label>
+            <select class="form-control" placeholder="gapdel" formControlName="gapdel">
+                <option value="comp">comp</option>
+                <option value="pair">pair</option>
+                <option value="none" selected>none</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>model</label>
+            <select class="form-control" placeholder="model" formControlName="model">
+                <option value="P">P</option>
+                <option value="PC">PC</option>
+                <option value="JS">JS</option>
+                <option value="K2P">K2P</option>
+                <option value="none" selected>none</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Plusgap</label>
+            <input type="checkbox" class="form-control" placeholder="plusgap" formControlName="plusgap">
+        </div>
+        <div class="form-group">
+            <input type="file" name="file" (change)="onFileSelect($event)">
+        </div>
+
+        <div class="form-group input-group-lg">
+            <label>task ID</label>
+            <input class="form-control" placeholder="Options" formControlName="task_id">
+        </div>
+        
+        <div class="form-group">
+            <button class="btn btn-danger btn-block btn-lg">Create</button>
+        </div>
+    </form>
+</div>
