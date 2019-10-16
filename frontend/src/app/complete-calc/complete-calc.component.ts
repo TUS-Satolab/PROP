@@ -18,14 +18,18 @@ export class CompleteCalcComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       file: [''],
-      align_method: [''],
-      input_type: [''],
-      gapdel: [''],
-      model: [''],
+      align_method: ['none'],
+      input_type: ['none'],
+      gapdel: ['none'],
+      model: ['none'],
       plusgap: [''],
-      tree: [''],
+      tree: ['none'],
       align_clw_opt: [''],
     });
+  }
+
+  reset() {
+    this.form.reset();
   }
 
   onFileSelect(event) {
@@ -52,9 +56,12 @@ export class CompleteCalcComponent implements OnInit {
       observe: 'response'
     }).subscribe(data => {
       console.log(data);
-      var unparsed = data.body["task_id"];
-      var parsed = unparsed.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-      this.messageService.add(parsed);
+      var unparsed_id = data.body["task_id"];
+      var parsed_id = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+      var unparsed_msg = data.body["msg"];
+      var parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+      this.messageService.add(parsed_msg);
+      this.messageService.add(parsed_id);
     });
   }
 

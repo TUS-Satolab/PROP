@@ -11,6 +11,8 @@ import { GetResultComponent } from './get-result/get-result.component';
 import { CompleteCalcComponent } from './complete-calc/complete-calc.component';
 import { MatrixComponent } from './matrix/matrix.component';
 import { TreeComponent } from './tree/tree.component';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { TreeComponent } from './tree/tree.component';
     CompleteCalcComponent,
     MatrixComponent,
     TreeComponent,
+    FooterComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

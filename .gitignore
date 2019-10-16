@@ -119,3 +119,5 @@ dmypy.json
 files/
 zipped/
 flask_test/
+.DS_Store
+requests_BACKUP_PRE_docker_compose.py

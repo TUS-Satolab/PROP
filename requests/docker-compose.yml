@@ -1,9 +1,10 @@
 version: '3.7'
 
 services:
-
   requests:
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     image: requests
     ports:
       - '5004:5000'
@@ -57,7 +58,7 @@ services:
   my_clustalw:
     build:
       context: .
-      dockerfile: Dockerfile_clustalw
+      dockerfile: ../algorithms/Dockerfile_clustalw
     image: my_clustalw
     # volumes:
     #   - type: volume
@@ -70,7 +71,7 @@ services:
   my_mafft:
     build:
       context: .
-      dockerfile: Dockerfile_mafft
+      dockerfile: ../algorithms/Dockerfile_mafft
     image: my_mafft
     volumes:
       - type: volume
@@ -79,6 +80,22 @@ services:
     links: 
       - requests
       - worker
+
+  angular-service:
+      build: 
+        context: .
+        dockerfile: ../frontend/Dockerfile_frontend
+      image: angularcontainer
+      volumes:
+        - ../frontend:/usr/src/app
+      ports:
+        - '4200:4200'
+      expose:
+        - '80'
+        - '4200'
+      command: yarn run start
+      links:
+        - requests
 
   redis:
     image: redis:5.0.6-alpine

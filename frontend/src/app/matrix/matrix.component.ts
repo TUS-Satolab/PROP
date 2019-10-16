@@ -26,6 +26,10 @@ export class MatrixComponent implements OnInit {
     });
   }
 
+  reset() {
+    this.form.reset();
+  }
+
   onFileSelect(event) {
     if (event.target.files.length === 1) {
       const file = event.target.files[0];

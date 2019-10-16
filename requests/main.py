@@ -341,17 +341,26 @@ def tree():
 
 @app.route('/complete', methods=['GET', 'POST'])
 def complete():
+    res = {}
+    res['msg'] = ""
     if request.method == 'POST':
-        (filename, task_id) = upload_file('file')
+        try:
+            (filename, task_id) = upload_file('file')
+        except:
+            res = {'task_id': "None",
+                    'msg': "Upload a fasta file to start the calculation"}
+            return res
         if not filename.endswith(('.fasta', '.fa')):
             flash('File format not correct. Choose fasta file')
             return redirect(request.url)
+            res = {'task_id': "None",
+                    'msg': "File format not correct. Choose fasta file"}
+            return res
         
         align_method = request.form['align_method']
         input_type = request.form['input_type']
         align_clw_opt = request.form['align_clw_opt']
         if request.form.get("plusgap"):
-            print("I am checked")
             plusgap_checked = "checked"
         else:
             plusgap_checked = None
@@ -371,7 +380,9 @@ def complete():
                             align_clw_opt, matrix_output, gapdel, model, 
                             tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
         #return render_template('get_completed_results_form.html', msg=task_id)
-        res = {'task_id': task_id}
+        if res['msg'] == '':
+            res['msg'] = 'Complete calculation job sent. Task ID is as follows :'
+        res['task_id'] = task_id
         return res
     else:
         return render_template('complete_calc_form.html')

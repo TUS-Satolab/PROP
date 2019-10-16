@@ -1,0 +1,13 @@
+.hr {
+  display: inline-block;
+}
+.hr:after {
+  content: '';
+  display: block;
+  border-top: 3px solid rgb(246, 8, 68);
+  /* margin-top: 0.5em; */
+}
+
+label, h1, h2, h3 {
+  color: rgb(246, 8, 68);
+}

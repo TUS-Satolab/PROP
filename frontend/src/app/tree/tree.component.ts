@@ -30,6 +30,10 @@ export class TreeComponent implements OnInit {
     }
   }
 
+  reset() {
+    this.form.reset();
+  }
+
   onSubmit() {
     const formData: any = new FormData();
     formData.append('tree', this.form.get('tree').value);

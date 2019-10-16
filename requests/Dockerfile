@@ -1,5 +1,5 @@
 # base image
-FROM python:slim
+FROM python:slim-jessie
 
 # set working directory
 WORKDIR /data
@@ -11,7 +11,8 @@ COPY project /data/project/
 
 # Add cronjob to delete files after one week
 COPY cron_del_files /etc/cron.d/cron_del_files
-RUN apt-get update && apt-get -y install cron
+RUN apt-get update && apt-get -y install cron && \
+    apt-get -y install gcc
 RUN chmod 0644 /etc/cron.d/cron_del_files && \
     crontab /etc/cron.d/cron_del_files && \
     cron

@@ -4,9 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { saveAs } from 'file-saver';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-
-
 
 @Component({
   selector: 'app-get-result',
@@ -28,6 +25,7 @@ export class GetResultComponent implements OnInit {
 //     const blob = new Blob([data], {type: 'application/zip'});
 //     saveAs(blob, 'results.zip');
 //  }
+
   onSubmit() {
     const formData: any = new FormData();
     let res: [''];

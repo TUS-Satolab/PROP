@@ -1,0 +1,18 @@
+# FROM node:alpine
+
+# # RUN mkdir /usr/src/app 
+ 
+# WORKDIR /usr/src/app
+# RUN npm install -g @angular/cli 
+# COPY . . 
+
+FROM node:alpine
+
+WORKDIR /usr/src/app
+ENV HOME=/usr/src/app
+
+RUN yarn global add @angular/cli
+
+EXPOSE 4200
+
+USER 1000

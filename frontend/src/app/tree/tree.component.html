@@ -1,23 +1,46 @@
-<h2>Alignment Calculation</h2>
-<div class="container">
+<div class="container" style="margin-top: 70px;">
+    <h2 class="col-sm-6 text-center">Tree Calculation</h2>
+    <h3  class="hr col-sm-6"></h3>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="form-group">
+        <div class="form-group row">
+            <label for="file" class="col-sm-2 col-form-label">Input File</label>
+            <input type="file" name="file" (change)="onFileSelect($event)">
+        </div>
+        <!-- <div class="form-group">
+            <input type="file" name="file" (change)="onFileSelect($event)">
+        </div> -->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">OR</label>
+            <input class="border-3 border-danger form-control form-control-sm col-sm-4" placeholder="task ID" formControlName="task_id" id="task_id">
+        </div>
+
+        <!-- <div class="form-group input-group-lg">
+            <label>task ID</label>
+            <input class="form-control" placeholder="Options" formControlName="task_id">
+        </div> -->
+
+        <div class="form-group row">
+            <label for="gapdel" class="col-sm-2 col-form-label">Tree</label>
+            <div class="radio radio-danger form-check form-check-inline col-sm-2">
+                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree" value="nj">
+                <label class="form-check-label" for="tree">NJ</label>
+            </div>
+            <div class="radio radio-danger form-check form-check-inline col-sm-2">
+                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree" value="upgma">
+                <label class="form-check-label" for="tree">UPGMA</label>
+            </div>
+        </div>
+        <!-- <div class="form-group">
             <label>Tree</label>
             <select class="form-control" placeholder="tree" formControlName="tree">
                 <option value="nj">nj</option>
                 <option value="upgma">upgma</option>
                 <option value="none" selected>none</option>
             </select>
-        </div>
-        <div class="form-group">
-            <input type="file" name="file" (change)="onFileSelect($event)">
-        </div>
-        <div class="form-group input-group-lg">
-            <label>task ID</label>
-            <input class="form-control" placeholder="Options" formControlName="task_id">
-        </div>
-        <div class="form-group">
-            <button class="btn btn-danger btn-block btn-lg">Create</button>
+        </div> -->
+        <div class="form-group row">
+            <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit">Create</button>
+            <button class="btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="form.reset()">Reset</button>
         </div>
     </form>
 </div>

@@ -1,9 +1,19 @@
-<h3>Messages</h3>
-<div *ngIf="messageService.messages.length">  
-        <script>
-                var msg_var = '{{ msg }}';
-        </script>
-         <div *ngFor='let message of messageService.messages'>{{message}}</div>
-         <div>{{ msg_var }}</div>
-         <!-- <button (click)="copyMessage({{ msg_var }})" value="click to copy" >Copy this</button> -->
+<div class="container">
+        <div style="height: 10px;"></div>
+        <h3 class="col-sm-6 text-center">Messages</h3>
+        <h3 class="hr col-sm-6"></h3> 
+        <div *ngIf="messageService.messages.length; else noMessage">  
+                <script>
+                        var msg_var = '{{ msg }}';
+                </script>
+                <div *ngFor='let message of messageService.messages'>{{message}}</div>
+                <div>{{ msg_var }}</div>
+                <!-- <button (click)="copyMessage({{ msg_var }})" value="click to copy" >Copy this</button> -->
+        </div>
+
+        <ng-template #noMessage>
+                <p>
+                No messages
+                </p>
+        </ng-template>
 </div>
