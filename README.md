@@ -6,12 +6,7 @@
 
 ## Installation
 1. Pull this repo
-2. Install virtual environment   
-   ```
-   python3 -m venv venv
-   source venv/bin/activate
-   python3 -m pip install -r requirements.txt
-   ``` 
+2. `cd requests`
 3. docker-compose up -d --build
 
 ## Usage via browser
