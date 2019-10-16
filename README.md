@@ -10,7 +10,7 @@
 3. docker-compose up -d --build
 
 ## Usage via browser
-1. Get the IP address of the server where the docker containers are running 
+1. Get the IP address of the server where the docker containers are running   
    If it's locally: `http://localhost:4200/`
 2. In your browser input: [IP-address]:5004
    E.g. 
