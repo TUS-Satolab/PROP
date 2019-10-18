@@ -10,7 +10,7 @@ import { MessageService } from '../message.service';
   styleUrls: ['./complete-calc.component.css']
 })
 export class CompleteCalcComponent implements OnInit {
-  SERVER_URL = 'http://localhost:5004/complete';
+  SERVER_URL = 'http://52.198.155.126:5004/complete';
   form: FormGroup;
 
   constructor(public fb: FormBuilder, private httpClient: HttpClient, private messageService: MessageService) { }
