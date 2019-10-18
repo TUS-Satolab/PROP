@@ -131,46 +131,57 @@ def task_query():
         try:
             job = Job.fetch(result_id, connection=redis_connection)
         except:
-            flash("The job ID was not found. Make sure you have pasted the full ID")
-            return("Job ID was not found.")
+            flash("INFO : The job ID was not found. Make sure you have pasted the full ID")
+            return("INFO : Job ID was not found.")
         if job.get_status() == 'finished':
             return("Finished")
         elif job.get_status() == 'queued':
-            flash("The job is still in the queue")
+            flash("INFO : The job is still in the queue")
             #return "redirect(request.url)"
-            return("The job is still in the queue")
+            return("INFO : The job is still in the queue")
         elif job.get_status() == 'started':
-            flash("The job is still running")
+            flash("INFO\: The job is still running")
             #return redirect(request.url)
-            return("The job is still running")
+            return("INFO : The job is still running")
         elif job.get_status() == 'failed':
-            flash("The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
+            flash("INFO : The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
             #return redirect(request.url)
-            return("The job failed.")
+            return("INFO : The job failed.")
 
 @app.route('/get_result_completed', methods=['GET', 'POST'])
-def get_result_completed(result_id=None):
+def get_result_completed(result_id=None, result_kind=None):
     test = []
     if request.method == 'POST':
         result_id = request.form['result_id']
+        result_kind = request.form['result_kind']
         try:
             job = Job.fetch(result_id, connection=redis_connection)
         except:
             flash("The job ID was not found. Make sure you have pasted the full ID")
             return redirect(request.url)
         if job.get_status() == 'finished':
-            result_zip = 'results_' + result_id + '.zip'
-            # Check if zip file was generated in a previous step and delete that to avoid duplicates
-            if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
-                os.remove(ZIPPED_FOLDER+"/"+result_zip)
-                zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
-            else:
-                zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
-            if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
-                # return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
-                test = send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
-                return test
-                # return send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
+            if result_kind == 'complete':
+                result_zip = 'results_' + result_id + '.zip'
+                # Check if zip file was generated in a previous step and delete that to avoid duplicates
+                if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
+                    os.remove(ZIPPED_FOLDER+"/"+result_zip)
+                    zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+                else:
+                    zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+                if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
+                    # return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
+                    test = send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
+                    return test
+                    # return send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
+            elif result_kind == 'tree':
+                tree_file = "tree_"+result_id+".txt"
+                if os.path.exists(UPLOAD_FOLDER+"/"+tree_file):
+                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], tree_file), "r")
+                    output = f.read().replace('\n', '')
+                    f.close()
+                    return output
+                else:
+                    return("Tree file not found. Run the calculation first.")
             else:
                 flash("Something went wrong.")
                 return redirect(request.url)
@@ -348,7 +359,7 @@ def complete():
             (filename, task_id) = upload_file('file')
         except:
             res = {'task_id': "None",
-                    'msg': "Upload a fasta file to start the calculation"}
+                    'msg': "INFO : Upload a fasta file to start the calculation"}
             return res
         if not filename.endswith(('.fasta', '.fa')):
             flash('File format not correct. Choose fasta file')
@@ -363,7 +374,7 @@ def complete():
         if request.form.get("plusgap"):
             plusgap_checked = "checked"
         else:
-            plusgap_checked = None
+            plusgap_checked = ""
         gapdel = request.form.get("gapdel", None)
         model = request.form['model']
         tree = request.form['tree']
@@ -381,7 +392,7 @@ def complete():
                             tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
         #return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = 'Complete calculation job sent. Task ID is as follows :'
+            res['msg'] = 'INFO : Complete calculation job sent. Task ID is as follows :'
         res['task_id'] = task_id
         return res
     else:

@@ -3,6 +3,10 @@
         <h3 class="col-sm-6 text-center">Messages</h3>
         <h3 class="hr col-sm-6"></h3> 
         <div *ngIf="messageService.messages.length; else noMessage">  
+                <button class="clear"
+                (click)="messageService.clear()">clear</button>
+                <button class="clear Info"
+                (click)="messageService.clear_info()">clear Info</button>
                 <script>
                         var msg_var = '{{ msg }}';
                 </script>
