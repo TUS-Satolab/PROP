@@ -10,7 +10,7 @@ import { MessageService } from '../message.service';
   styleUrls: ['./align.component.css']
 })
 export class AlignComponent implements OnInit {
-  SERVER_URL = 'http://localhost:5004/alignment';
+  SERVER_URL = 'http://52.198.155.126:5004/alignment';
   form: FormGroup;
 
   constructor(public fb: FormBuilder, private httpClient: HttpClient, private messageService: MessageService) { }
