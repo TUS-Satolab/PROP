@@ -112,7 +112,6 @@ dmypy.json
 
 # This project
 *.fasta
-*.txt
 *.zip
 *.aln
 *.dnd
