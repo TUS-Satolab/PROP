@@ -10,7 +10,7 @@ import { MessageService } from '../message.service';
   styleUrls: ['./tree.component.css']
 })
 export class TreeComponent implements OnInit {
-  SERVER_URL = 'http://localhost:5004/tree';
+  SERVER_URL = 'http://52.198.155.126:5004/tree';
   form: FormGroup;
 
   constructor(public fb: FormBuilder, private httpClient: HttpClient, private messageService: MessageService) { }

@@ -10,7 +10,7 @@ import { MessageService } from '../message.service';
   styleUrls: ['./matrix.component.css']
 })
 export class MatrixComponent implements OnInit {
-  SERVER_URL = 'http://localhost:5004/matrix';
+  SERVER_URL = 'http://52.198.155.126:5004/matrix';
   form: FormGroup;
 
   constructor(public fb: FormBuilder, private httpClient: HttpClient, private messageService: MessageService) { }

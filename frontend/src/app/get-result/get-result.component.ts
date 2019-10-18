@@ -16,7 +16,7 @@ import 'phylotree/build/phylotree.css';
   styleUrls: ['./get-result.component.css']
 })
 export class GetResultComponent implements OnInit {
-  SERVER_URL = 'http://localhost:5004/get_result_completed';
+  SERVER_URL = 'http://52.198.155.126:5004/get_result_completed';
   form: FormGroup;
   phylotreeData: JSON;
 
@@ -44,7 +44,7 @@ showTree() {
   };
   formData.append('result_id', this.form.get('result_id').value);
   formData.append('result_kind', 'tree');
-  this.httpClient.post('http://localhost:5004/task_query', formData, {responseType: 'text'}).subscribe(query => {
+  this.httpClient.post('http://52.198.155.126:5004/task_query', formData, {responseType: 'text'}).subscribe(query => {
       if (query === 'Finished') {
         console.log(query);
         this.httpClient.post(this.SERVER_URL, formData, {responseType: 'text'}).subscribe(data => {
@@ -103,7 +103,7 @@ deleteTree() {
     };
     formData.append('result_id', this.form.get('result_id').value);
     formData.append('result_kind', 'complete');
-    this.httpClient.post('http://localhost:5004/task_query', formData, {responseType: 'text'}).subscribe(query => {
+    this.httpClient.post('http://52.198.155.126:5004/task_query', formData, {responseType: 'text'}).subscribe(query => {
       if (query === 'Finished') {
         console.log(query);
         this.httpClient.post(this.SERVER_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
