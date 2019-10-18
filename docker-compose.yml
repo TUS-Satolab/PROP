@@ -88,7 +88,6 @@ services:
       image: angularcontainer
       volumes:
         - ../frontend:/usr/src/app
-        - /usr/src/app/node_modules/
       ports:
         - '4200:4200'
       expose:
