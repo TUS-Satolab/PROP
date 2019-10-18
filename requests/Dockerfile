@@ -5,7 +5,7 @@ FROM python:slim-jessie
 WORKDIR /data
 # Add requirements and py-files
 #COPY requirements.txt main.py calculation.py /data/
-COPY ./requests/requirements.txt calculation.py /data/
+COPY ./requests/requirements.txt ./requests/calculation.py /data/
 COPY ./requests/templates /data/templates/
 COPY ./requests/project /data/project/
 
