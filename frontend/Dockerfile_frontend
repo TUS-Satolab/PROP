@@ -13,6 +13,8 @@ ENV HOME=/usr/src/app
 
 RUN yarn global add @angular/cli
 COPY ../frontend/package.json ./
+COPY ../frontend/package-lock.json ./
+RUN npm install
 
 EXPOSE 4200
 
