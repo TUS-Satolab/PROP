@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 ENV HOME=/usr/src/app
 
 RUN yarn global add @angular/cli
-COPY package.json ./
+COPY ../frontend/package.json ./
 
 EXPOSE 4200
 
