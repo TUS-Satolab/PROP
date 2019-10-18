@@ -84,10 +84,11 @@ services:
   angular-service:
       build: 
         context: .
-        dockerfile: ./Dockerfile_frontend
+        dockerfile: ../frontend/Dockerfile_frontend
       image: angularcontainer
       volumes:
         - ../frontend:/usr/src/app
+        - /usr/src/app/node_modules/
       ports:
         - '4200:4200'
       expose:

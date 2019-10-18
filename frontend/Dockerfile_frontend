@@ -3,10 +3,17 @@ FROM node:alpine
 WORKDIR /usr/src/app
 ENV HOME=/usr/src/app
 
-RUN yarn global add @angular/cli
+RUN rm -rf node_modules/
+
+RUN npm i --save
+
+RUN npm i npm@latest -g
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
+
+RUN yarn global add @angular/cli
+
 
 EXPOSE 4200
 
