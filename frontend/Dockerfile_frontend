@@ -8,8 +8,8 @@ RUN rm -rf node_modules/
 RUN npm i --save
 
 RUN npm i npm@latest -g
-COPY ../frontend/package.json ./
-COPY ../frontend/package-lock.json ./
+COPY ./frontend/package.json ./
+COPY ./frontend/package-lock.json ./
 RUN npm install
 
 RUN yarn global add @angular/cli

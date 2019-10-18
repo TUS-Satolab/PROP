@@ -1,0 +1,112 @@
+version: '3.7'
+
+services:
+  requests:
+    build:
+      context: .
+      dockerfile: ./requests/Dockerfile
+    image: requests
+    ports:
+      - '5004:5000'
+    expose:
+      - '80'
+      - '5004'
+    # TODO: Revert back to calling main.py from within the docker container
+    command: bash -c "cron && python3 /py_file/main.py run -h 0.0.0.0"
+    volumes:
+      - ./:/py_file/
+      - type: volume
+        source: mydata
+        target: /data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+    privileged: true
+    depends_on:
+      - redis
+
+  worker:
+    image: requests
+    command: rq worker --url redis://redis:6379/0
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    depends_on:
+      - redis
+      - requests
+    links:
+      - redis
+  
+  dashboard:
+    image: eoranged/rq-dashboard
+    ports:
+      - '9181:9181'
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://redis:6379
+      - RQ_DASHBOARD_USERNAME=rq
+      - RQ_DASHBOARD_PASSWORD=password
+      - RQ_DASHBOARD_interval=30000
+    depends_on:
+      - redis
+      - requests
+    links:
+      - redis
+
+  my_clustalw:
+    build:
+      context: .
+      dockerfile: ./algorithms/Dockerfile_clustalw
+    image: my_clustalw
+    # volumes:
+    #   - type: volume
+    #     source: mydata
+    #     target: /data
+    links: 
+      - requests
+      - worker
+
+  my_mafft:
+    build:
+      context: .
+      dockerfile: ./algorithms/Dockerfile_mafft
+    image: my_mafft
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+    links: 
+      - requests
+      - worker
+
+  angular-service:
+      build: 
+        context: .
+        dockerfile: ./frontend/Dockerfile_frontend
+      image: angularcontainer
+      volumes:
+        - ../frontend:/usr/src/app
+      ports:
+        - '4200:4200'
+      expose:
+        - '80'
+        - '4200'
+      command: yarn run start
+      links:
+        - requests
+
+  redis:
+    image: redis:5.0.6-alpine
+
+volumes:
+  mydata:
+    name: canal_project
+  # dashboard:
+  #   build: ./project/dashboard
+  #   image: dashboard
+  #   container_name: dashboard
+  #   ports:
+  #     - '9181:9181'
+  #   command: rq-dashboard -H redis
