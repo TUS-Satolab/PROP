@@ -84,7 +84,7 @@ services:
   angular-service:
       build: 
         context: .
-        dockerfile: ../frontend/Dockerfile_frontend
+        dockerfile: ./Dockerfile_frontend
       image: angularcontainer
       volumes:
         - ../frontend:/usr/src/app
