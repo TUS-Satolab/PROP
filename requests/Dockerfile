@@ -5,12 +5,12 @@ FROM python:slim-jessie
 WORKDIR /data
 # Add requirements and py-files
 #COPY requirements.txt main.py calculation.py /data/
-COPY requirements.txt calculation.py /data/
-COPY templates /data/templates/
-COPY project /data/project/
+COPY ./requests/requirements.txt calculation.py /data/
+COPY ./requests/templates /data/templates/
+COPY ./requests/project /data/project/
 
 # Add cronjob to delete files after one week
-COPY cron_del_files /etc/cron.d/cron_del_files
+COPY ./requests/cron_del_files /etc/cron.d/cron_del_files
 RUN apt-get update && apt-get -y install cron && \
     apt-get -y install gcc
 RUN chmod 0644 /etc/cron.d/cron_del_files && \
