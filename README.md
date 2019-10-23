@@ -2,7 +2,6 @@
 
 ## Prerequisites
 - Docker
-- Python3 & pip
 
 ## Installation
 1. Pull this repo
