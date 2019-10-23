@@ -33,24 +33,22 @@ def open_matrix(filename, otus, score):
     for n in range(line_count):
         line = f.readline()
         line_read = line.split(" ",1)
-        print("This happened at", n)
-        print(line_read)
         otus.append(line_read.pop(0))
         pre_score = line_read.pop(0)
-        print(pre_score)
         score.append(list(map(float, pre_score.split(" ")[:-1:])))
     f.close()
     return (score, otus)
 
-def zipFilesInDir(dirName, zipFileName, filter):
+def zipFilesInDir(dirName, zipFileName, filter, result_id):
    # create a ZipFile object
    with ZipFile(zipFileName, 'w') as zipObj:
        # Iterate over all the files in directory
        for filename in os.listdir(dirName):
            if filter(filename):
+               filename_new = filename.replace("_"+result_id, '')
                print(filename)
                # Add file to zip
-               zipObj.write(os.path.join(dirName, filename), "./"+filename)
+               zipObj.write(os.path.join(dirName, filename), "./"+filename_new)
 
 # Helper function for allowed files
 def allowed_file(filename):
@@ -104,7 +102,7 @@ def align(task_id=None, filename=None):
                 # flash('File format not correct. Choose fasta file')
                 # return redirect(request.url)
                 res = {'task_id': "None",
-                        'msg': "File format not correct. Choose fasta file"}
+                        'msg': "INFO : File format not correct. Choose fasta file"}
                 return res
             align_method = request.form['align_method']
             input_type = request.form['input_type']
@@ -119,7 +117,7 @@ def align(task_id=None, filename=None):
                             args=(out_align, filename, input_type, align_method,  align_clw_opt))
             #return render_template('get_completed_results_form.html', msg=task_id)
             res = {'task_id': task_id,
-                    'msg': "Task ID returned"}
+                    'msg': "INFO : Task ID returned"}
             return res
     else:
         return render_template('alignment_form.html')
@@ -165,13 +163,13 @@ def get_result_completed(result_id=None, result_kind=None):
                 # Check if zip file was generated in a previous step and delete that to avoid duplicates
                 if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
                     os.remove(ZIPPED_FOLDER+"/"+result_zip)
-                    zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+                    zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name, result_id)
                 else:
-                    zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name)
+                    zipFilesInDir(UPLOAD_FOLDER, ZIPPED_FOLDER+"/"+result_zip, lambda name : result_id in name, result_id)
                 if os.path.exists(ZIPPED_FOLDER+"/"+result_zip):
                     # return send_from_directory(app.config['ZIPPED_FOLDER'], result_zip)
-                    test = send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
-                    return test
+                    send = send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
+                    return send
                     # return send_file(app.config['ZIPPED_FOLDER']+"/"+result_zip,as_attachment=True)
             elif result_kind == 'tree':
                 tree_file = "tree_"+result_id+".txt"
@@ -217,7 +215,13 @@ def matrix(task_id=None):
             file = request.files['file']
         except:
             file = None
-        task_id = request.form['task_id'] or None
+        try:
+            task_id = request.form['task_id']
+            filename = "align_" + task_id + ".txt"
+            f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
+            f.close()
+        except:
+            task_id = None
         if task_id is not None and file is None:
             filename = "align_" + task_id + ".txt"
             try:
@@ -227,7 +231,7 @@ def matrix(task_id=None):
                 #flash("task ID was not found in the database. Make sure you pasted the complete ID.")
                 #return redirect(request.url)
                 res = {'task_id': "None",
-                        'msg': "task ID was not found in the database. Make sure you pasted the complete ID."}
+                        'msg': "INFO : Task ID was not found in the database. Make sure you pasted the complete ID."}
                 return res
         elif task_id is None and file is not None:
             (filename, task_id) = upload_file('file')
@@ -237,22 +241,22 @@ def matrix(task_id=None):
                 f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
                 f.close()
                 #print("Task ID was used because Matrix File was found in the database")
-                res = { 'msg': "Task ID was used because Matrix File was found in the database"}
+                res = { 'msg': "INFO : Task ID was used because Matrix File was found in the database"}
             except:
                 (filename, task_id) = upload_file('file')
                 #print("File was uploaded because task ID was not found")
-                res = { 'msg': "File was uploaded because task ID was not found"}
+                res = { 'msg': "INFO : File was uploaded because task ID was not found"}
         else:
             # flash('Choose task ID or upload a file to proceed')
             # return redirect(request.url)
             res = {'task_id': "None",
-                        'msg': "Either upload a file or input a task ID"}
+                        'msg': "INFO : Either upload a file or input a task ID"}
             return res
             
         if request.form.get("plusgap"):
             plusgap_checked = "checked"
         else:
-            plusgap_checked = None
+            plusgap_checked = ""
         gapdel = request.form.get("gapdel", None)
         input_type = request.form['input_type']
         model = request.form['model']
@@ -267,7 +271,7 @@ def matrix(task_id=None):
                             input_type, model, plusgap_checked))
         #return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = "Task ID returned"
+            res['msg'] = "INFO : Task ID returned"
         
         res['task_id'] = task_id
         return res
@@ -300,7 +304,7 @@ def tree():
                 # flash("task ID was not found in the database. Make sure you pasted the complete ID.")
                 # return redirect(request.url)
                 res = {'task_id': "None",
-                        'msg': "task ID was not found in the database. Make sure you pasted the complete ID."}
+                        'msg': "INFO : Task ID was not found in the database. Make sure you pasted the complete ID."}
                 return res
         elif task_id is None and file is not None:
             (filename, task_id) = upload_file('file')
@@ -310,17 +314,17 @@ def tree():
                 filename = "matrix_" + task_id + ".txt"
                 (score, otus) = open_matrix(filename, otus, score)
                 #flash("Task ID was used because Matrix File was found in the database")
-                res = { 'msg': "Task ID was used because Matrix File was found in the database"}
+                res = { 'msg': "INFO : Task ID was used because Matrix File was found in the database"}
             except:
                 (filename, task_id) = upload_file('file')
                 (score, otus) = open_matrix(filename, otus, score)
                 #flash("File was uploaded because task ID was not found")
-                res = { 'msg': "File was uploaded because task ID was not found"}
+                res = { 'msg': "INFO : File was uploaded because task ID was not found"}
         else:
             flash("Either upload a file or input a task ID")
             return redirect(request.url)
             res = {'task_id': "None",
-                        'msg': "Either upload a file or input a task ID"}
+                        'msg': "INFO : Either upload a file or input a task ID"}
             return res
 
         out_tree = "tree_"+task_id+".txt"
@@ -332,7 +336,7 @@ def tree():
                         args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
         # return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = "Task ID returned"
+            res['msg'] = "INFO : Task ID returned"
         
         res['task_id'] = task_id
         return res
@@ -365,7 +369,7 @@ def complete():
             flash('File format not correct. Choose fasta file')
             return redirect(request.url)
             res = {'task_id': "None",
-                    'msg': "File format not correct. Choose fasta file"}
+                    'msg': "INFO : File format not correct. Choose fasta file"}
             return res
         
         align_method = request.form['align_method']
@@ -392,7 +396,7 @@ def complete():
                             tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
         #return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = 'INFO : Complete calculation job sent. Task ID is as follows :'
+            res['msg'] = 'INFO : Complete calculation job sent'
         res['task_id'] = task_id
         return res
     else:

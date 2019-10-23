@@ -18,6 +18,14 @@
             </select>
         </div> -->
         <div class="form-group row">
+            <label for="align_method" class="col-sm-2 col-form-label">Alignment</label>
+            <select class="border-3 border-danger form-control form-control-sm col-sm-4" formControlName="align_method" id="align_method">
+                <option value="none" selected>none</option>
+                <option value="clustalw">Clustal W2</option>
+                <option value="mafft">MAFFT</option>
+            </select>
+        </div>
+        <div class="form-group row">
             <label for="input_type" class="col-sm-2 col-form-label">Type</label>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
                 <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="nuc">
@@ -27,15 +35,6 @@
                 <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="ami">
                 <label class="form-check-label" for="input_type">Protein</label>
             </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="align_method" class="col-sm-2 col-form-label">Alignment</label>
-            <select class="border-3 border-danger form-control form-control-sm col-sm-4" formControlName="align_method" id="align_method">
-                <option value="none" selected>none</option>
-                <option value="clustalw">Clustal W2</option>
-                <option value="mafft">MAFFT</option>
-            </select>
         </div>
         <div class="form-group row">
             <label for="options" class="col-sm-2 col-form-label"></label>

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../message.service';
+import {PopoverModule} from 'ngx-smart-popover';
+
 
 @Component({
   selector: 'app-messages',
@@ -7,7 +9,7 @@ import { MessageService } from '../message.service';
   styleUrls: ['./messages.component.css']
 })
 export class MessagesComponent implements OnInit {
-
+  
   constructor(public messageService: MessageService) { }
 
   ngOnInit() {

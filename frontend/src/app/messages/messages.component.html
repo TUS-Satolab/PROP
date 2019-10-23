@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
         <div style="height: 10px;"></div>
         <h3 class="col-sm-6 text-center">Messages</h3>
         <h3 class="hr col-sm-6"></h3> 
@@ -12,7 +12,37 @@
                 </script>
                 <div *ngFor='let message of messageService.messages'>{{message}}</div>
                 <div>{{ msg_var }}</div>
-                <!-- <button (click)="copyMessage({{ msg_var }})" value="click to copy" >Copy this</button> -->
+        </div>
+
+        <ng-template #noMessage>
+                <p>
+                No messages
+                </p>
+        </ng-template>
+</div> -->
+
+<div class="container">
+        <div style="height: 10px;"></div>
+        <h3 class="col-sm-6 text-center">Messages</h3>
+        <h3 class="hr col-sm-6"></h3> 
+        <div *ngIf="messageService.messagesId.length; else noMessage">  
+                <button class="clear"
+                (click)="messageService.clear()">clear all</button>
+                <button class="clear Info"
+                (click)="messageService.clear_info()">clear Info</button>
+                <!-- <script>
+                        var msg_var = '{{ msg }}';
+                </script> -->
+                <div *ngFor='let messageMsg of messageService.messagesMsg'>{{messageMsg}}</div>
+                <h4 *ngIf="messageService.messagesMsg.length" class="hr col-sm-6"></h4> 
+                <div *ngFor='let messageId of messageService.messagesId'>{{messageId}}
+                <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(messageId)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
+                </div>
+                <!-- <div>
+                        {{ msg_var }} 
+                </div> -->
+                
+
         </div>
 
         <ng-template #noMessage>

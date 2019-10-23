@@ -4,18 +4,36 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MessageService {
-  messages: string[] = [];
+  messagesMsg: string[] = [];
+  messagesId: string[] = [];
+  constructor() { }
 
-  add(message: string) {
-    this.messages.push(message);
+  add_msg(message: string) {
+    this.messagesMsg.push(message);
+  }
+  add_id(message: string) {
+    this.messagesId.push(message);
   }
   clear() {
-    this.messages = [];
+    this.messagesId = [];
+    this.messagesMsg = [];
   }
   clear_info() {
-    for ( let i = this.messages.length - 1; i--;) {
-      if ( this.messages[i].indexOf('INFO') !== -1) { this.messages.splice(i, 1); }
-    }
+    this.messagesMsg = [];
   }
-  constructor() { }
+
+  /* To copy any Text */
+  copyText(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
 }

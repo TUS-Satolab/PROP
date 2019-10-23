@@ -8,6 +8,7 @@ import { saveAs } from 'file-saver';
 import * as d3 from 'd3';
 import { phylotree } from 'phylotree';
 import 'phylotree/build/phylotree.css';
+import { GET_RESULT_URL, QUERY_URL } from '../globals';
 
 
 @Component({
@@ -16,7 +17,9 @@ import 'phylotree/build/phylotree.css';
   styleUrls: ['./get-result.component.css']
 })
 export class GetResultComponent implements OnInit {
-  SERVER_URL = 'http://52.198.155.126:5004/get_result_completed';
+  // GET_RESULT_URL = 'http://localhost:5004/get_result_completed';
+  // QUERY_URL = 'http://localhost:5004/task_query';
+
   form: FormGroup;
   phylotreeData: JSON;
 
@@ -44,10 +47,10 @@ showTree() {
   };
   formData.append('result_id', this.form.get('result_id').value);
   formData.append('result_kind', 'tree');
-  this.httpClient.post('http://52.198.155.126:5004/task_query', formData, {responseType: 'text'}).subscribe(query => {
+  this.httpClient.post(QUERY_URL, formData, {responseType: 'text'}).subscribe(query => {
       if (query === 'Finished') {
         console.log(query);
-        this.httpClient.post(this.SERVER_URL, formData, {responseType: 'text'}).subscribe(data => {
+        this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
           console.log(data)
           let tree = new phylotree(data);
           const height = 900;
@@ -103,10 +106,10 @@ deleteTree() {
     };
     formData.append('result_id', this.form.get('result_id').value);
     formData.append('result_kind', 'complete');
-    this.httpClient.post('http://52.198.155.126:5004/task_query', formData, {responseType: 'text'}).subscribe(query => {
+    this.httpClient.post(QUERY_URL, formData, {responseType: 'text'}).subscribe(query => {
       if (query === 'Finished') {
         console.log(query);
-        this.httpClient.post(this.SERVER_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
+        this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
           const blob = new Blob([data], {
             type: 'application/zip'
           });
@@ -115,7 +118,7 @@ deleteTree() {
       } else {
         console.log(query);
         var parsed = query.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-        this.messageService.add(parsed);
+        this.messageService.add_msg(parsed);
       }
     });
   }
