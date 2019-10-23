@@ -5,8 +5,6 @@ import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { SERVER_URL } from '../globals';
 
-
-
 @Component({
   selector: 'app-complete-calc',
   templateUrl: './complete-calc.component.html',
@@ -36,8 +34,6 @@ export class CompleteCalcComponent implements OnInit {
       tree: ['none'],
       align_clw_opt: [''],
     });
-    // foo = process.env.NODE_ENV;
-    // console.log(process.env.USERNAME);
   }
 
   reset() {

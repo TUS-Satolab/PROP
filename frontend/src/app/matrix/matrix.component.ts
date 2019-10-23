@@ -52,7 +52,7 @@ export class MatrixComponent implements OnInit {
     }
     // formData.append('plusgap', this.form.get('plusgap').value);
     if ((this.form.get('file').value === '') && (this.form.get('task_id').value === '')) {
-      return this.messageService.add('Add either a file or a task ID');
+      return this.messageService.add_msg('Add either a file or a task ID');
     } else {
       return this.httpClient.post(MATRIX_URL, formData, {observe: 'response' }).subscribe(data => {
         console.log(data);

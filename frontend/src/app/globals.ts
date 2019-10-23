@@ -1,31 +1,43 @@
 'use strict';
 
-// export const SERVER_URL = 'http://localhost:5004/complete';
-// export const QUERY_URL = 'http://localhost:5004/task_query';
-// export const GET_RESULT_URL = 'http://localhost:5004/get_result_completed';
-// export const ALIGN_URL = 'http://localhost:5004/alignment';
-// export const MATRIX_URL = 'http://localhost:5004/matrix';
-// export const TREE_URL = 'http://localhost:5004/tree';
-
-
-
+var SERVER_URL_TEMP = '';
+var QUERY_URL_TEMP = '';
+var GET_RESULT_URL_TEMP = '';
+var ALIGN_URL_TEMP = '';
+var MATRIX_URL_TEMP = '';
+var TREE_URL_TEMP = '';
 
 const arrList = require('./env.json');
-const IP = String ( arrList.env[0].ip_address ) ;
-const first = 'http://';
-const lastComplete = ':5004/complete';
-const lastQuery = ':5004/task_query';
-const lastResComp = ':5004/get_result_completed';
-const lastAlign = ':5004/alignment';
-const lastMatrix = ':5004/matrix';
-const lastTree = ':5004/tree';
 
-export const SERVER_URL = String ( first + IP + lastComplete );
-export const QUERY_URL = String ( first + IP + lastQuery );
-export const GET_RESULT_URL = String ( first + IP + lastResComp );
-export const ALIGN_URL = String ( first + IP + lastAlign );
-export const MATRIX_URL = String ( first + IP + lastMatrix );
-export const TREE_URL = String ( first + IP + lastTree );
+if (String ( arrList.env[1].local_flag ) === '1') {
+    var SERVER_URL_TEMP = 'http://localhost:5004/complete';
+    var QUERY_URL_TEMP = 'http://localhost:5004/task_query';
+    var GET_RESULT_URL_TEMP = 'http://localhost:5004/get_result_completed';
+    var ALIGN_URL_TEMP = 'http://localhost:5004/alignment';
+    var MATRIX_URL_TEMP = 'http://localhost:5004/matrix';
+    var TREE_URL_TEMP = 'http://localhost:5004/tree';
+} else {
+    var IP = String ( arrList.env[0].ip_address ) ;
+    var first = 'http://';
+    var lastComplete = ':5004/complete';
+    var lastQuery = ':5004/task_query';
+    var lastResComp = ':5004/get_result_completed';
+    var lastAlign = ':5004/alignment';
+    var lastMatrix = ':5004/matrix';
+    var lastTree = ':5004/tree';
 
+    var SERVER_URL_TEMP = String ( first + IP + lastComplete );
+    var QUERY_URL_TEMP = String ( first + IP + lastQuery );
+    var GET_RESULT_URL_TEMP = String ( first + IP + lastResComp );
+    var ALIGN_URL_TEMP = String ( first + IP + lastAlign );
+    var MATRIX_URL_TEMP = String ( first + IP + lastMatrix );
+    var TREE_URL_TEMP = String ( first + IP + lastTree );
+}
 
+export const SERVER_URL = SERVER_URL_TEMP;
+export const QUERY_URL = QUERY_URL_TEMP;
+export const GET_RESULT_URL = GET_RESULT_URL_TEMP;
+export const ALIGN_URL = ALIGN_URL_TEMP;
+export const MATRIX_URL = MATRIX_URL_TEMP;
+export const TREE_URL = TREE_URL_TEMP;
 
