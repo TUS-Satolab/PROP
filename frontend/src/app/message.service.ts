@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -6,7 +8,7 @@ import { Injectable } from '@angular/core';
 export class MessageService {
   messagesMsg: string[] = [];
   messagesId: string[] = [];
-  constructor() { }
+  constructor(private cookieService: CookieService) { }
 
   add_msg(message: string) {
     this.messagesMsg.push(message);
@@ -17,6 +19,8 @@ export class MessageService {
   clear() {
     this.messagesId = [];
     this.messagesMsg = [];
+    this.cookieService.deleteAll();
+
   }
   clear_info() {
     this.messagesMsg = [];

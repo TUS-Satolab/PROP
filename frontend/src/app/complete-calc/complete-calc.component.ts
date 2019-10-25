@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { SERVER_URL } from '../globals';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-complete-calc',
@@ -21,13 +22,14 @@ export class CompleteCalcComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(public fb: FormBuilder, private httpClient: HttpClient, private messageService: MessageService) { }
+  constructor(private cookieService: CookieService, public fb: FormBuilder,
+              private httpClient: HttpClient, private messageService: MessageService) { }
 
   ngOnInit() {
     this.form = this.fb.group({
       file: [''],
       align_method: ['none'],
-      input_type: ['none'],
+      input_type: [{value: 'none', disabled: false}],
       gapdel: ['none'],
       model: ['none'],
       plusgap: [''],
@@ -47,7 +49,6 @@ export class CompleteCalcComponent implements OnInit {
     }
   }
   onSubmit() {
-    console.log(SERVER_URL)
     const formData: any = new FormData();
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
@@ -60,7 +61,6 @@ export class CompleteCalcComponent implements OnInit {
     }
     formData.append('tree', this.form.get('tree').value);
     formData.append('align_clw_opt', this.form.get('align_clw_opt').value);
-    console.log(formData.task_id);
     return this.httpClient.post(SERVER_URL, formData, {
       observe: 'response'
     }).subscribe(data => {
@@ -71,7 +71,18 @@ export class CompleteCalcComponent implements OnInit {
       var parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
       this.messageService.add_msg(parsed_msg);
       this.messageService.add_id(parsed_id);
+      const allCookies: {} = this.cookieService.getAll();
+      console.log(Object.keys(allCookies).length);
+      let i = Object.keys(allCookies).length + 1;
+      console.log(i);
+      if (parsed_id !== 'None') {
+        this.cookieService.set(String ( i ), parsed_id);
+      }
     });
   }
-
+  mafftselected() {
+    if (this.form.get('align_method').value === 'mafft') {
+      return true;
+    }
+  }
 }

@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule} from '@angular/common/http';
-import {PopoverModule} from 'ngx-smart-popover';
+import { PopoverModule } from 'ngx-smart-popover';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -36,7 +37,7 @@ import { HeaderComponent } from './header/header.component';
     HttpClientModule,
     PopoverModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [ CookieService ],
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }

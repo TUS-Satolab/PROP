@@ -374,6 +374,9 @@ def complete():
         
         align_method = request.form['align_method']
         input_type = request.form['input_type']
+        # 'null' if MAFFT is selected because it doesn't really need it. Just used this step to keep the code working
+        if input_type == 'null':
+            input_type = 'nuc'
         align_clw_opt = request.form['align_clw_opt']
         if request.form.get("plusgap"):
             plusgap_checked = "checked"

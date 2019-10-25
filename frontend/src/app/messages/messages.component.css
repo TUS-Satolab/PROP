@@ -8,6 +8,7 @@
   /* margin-top: 0.5em; */
 }
 
-label, h1, h2, h3 {
+label, h1, h2, h3, h4, h5 {
   color: rgb(246, 8, 68);
+  line-height: 10pt;
 }

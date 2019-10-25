@@ -10,6 +10,13 @@ label, h1, h2, h3 {
   border-width:2px !important;
 }
 
+.alert {
+  text-align: center;
+  margin-bottom: 1px;
+  height: 30px;
+  line-height:30px;
+  padding:0px 0px;
+}
 
 .hr {
     display: inline-block;
