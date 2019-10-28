@@ -27,13 +27,13 @@ export class CompleteCalcComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      file: [''],
-      align_method: ['none'],
-      input_type: [{value: 'none', disabled: false}],
-      gapdel: ['none'],
-      model: ['none'],
+      file: ['', Validators.required],
+      align_method: ['none', Validators.required],
+      input_type: [{value: 'none', disabled: false}, Validators.required],
+      gapdel: ['none', Validators.required],
+      model: ['none', Validators.required],
       plusgap: [''],
-      tree: ['none'],
+      tree: ['none', Validators.required],
       align_clw_opt: [''],
     });
   }
