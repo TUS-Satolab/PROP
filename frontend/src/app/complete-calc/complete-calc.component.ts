@@ -63,7 +63,7 @@ export class CompleteCalcComponent implements OnInit {
     formData.append('input_type', this.form.get('input_type').value);
     formData.append('gapdel', this.form.get('gapdel').value);
     formData.append('model', this.form.get('model').value);
-    console.log(this.form.get('plusgap').value);
+    // console.log(this.form.get('plusgap').value);
     if (this.form.get('plusgap').value === true) {
       formData.append('plusgap', this.form.get('plusgap').value);
     }
@@ -72,7 +72,7 @@ export class CompleteCalcComponent implements OnInit {
     return this.httpClient.post(SERVER_URL, formData, {
       observe: 'response'
     }).subscribe(data => {
-      console.log(data);
+      // console.log(data);
       var unparsed_id = data.body["task_id"];
       var parsed_id = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
       var unparsed_msg = data.body["msg"];
@@ -80,9 +80,9 @@ export class CompleteCalcComponent implements OnInit {
       this.messageService.add_msg(parsed_msg);
       this.messageService.add_id(parsed_id);
       const allCookies: {} = this.cookieService.getAll();
-      console.log(Object.keys(allCookies).length);
+      // console.log(Object.keys(allCookies).length);
       let i = Object.keys(allCookies).length + 1;
-      console.log(i);
+      // console.log(i);
       if (parsed_id !== 'None') {
         this.cookieService.set(String ( i ), parsed_id);
       }
