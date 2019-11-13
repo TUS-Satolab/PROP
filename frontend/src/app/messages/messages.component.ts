@@ -17,7 +17,6 @@ export class MessagesComponent implements OnInit {
 
   ngOnInit() {
     const allCookies: {} = this.cookieService.getAll();
-    console.log(allCookies);
     var prevIds = [];
     for (const key in allCookies) {
       const value = allCookies[key];

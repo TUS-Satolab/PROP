@@ -49,15 +49,11 @@ showTree() {
   formData.append('result_kind', 'tree');
   this.httpClient.post(QUERY_URL, formData, {responseType: 'text'}).subscribe(query => {
       if (query === 'Finished') {
-        console.log(query);
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
-          console.log(data)
           this.tree = new phylotree(data);
           let svg = document.createElement('div');
           svg.setAttribute('id', 'tree_display');
           document.body.appendChild(svg);
-          console.log("here we goasf")
-          console.log(this.tree)
           this.out_tree = this.tree.render(
             '#tree_display', 
             {
@@ -74,7 +70,6 @@ showTree() {
           return this.out_tree
         });
       } else {
-        console.log(query);
         var parsed = query.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
         this.messageService.add_msg(parsed);
       }
@@ -114,7 +109,6 @@ deleteTree() {
     formData.append('result_kind', 'complete');
     this.httpClient.post(QUERY_URL, formData, {responseType: 'text'}).subscribe(query => {
       if (query === 'Finished') {
-        console.log(query);
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
           const blob = new Blob([data], {
             type: 'application/zip'
@@ -122,7 +116,6 @@ deleteTree() {
           saveAs(blob, 'results.zip');
         });
       } else {
-        console.log(query);
         var parsed = query.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
         this.messageService.add_msg(parsed);
       }
