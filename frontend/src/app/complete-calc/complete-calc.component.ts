@@ -19,23 +19,31 @@ export class CompleteCalcComponent implements OnInit {
   // IP = process.env.IP_ADDRESS;
   // SERVER_URL = String ( this.first + this.IP + this.last );
   // SERVER_URL = 'http://localhost:5004/complete';
-
   form: FormGroup;
-
   constructor(private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
-
+  differences = ['P', 'JS', 'K2P']
   ngOnInit() {
     this.form = this.fb.group({
       file: ['', Validators.required],
-      align_method: ['', Validators.required],
-      input_type: [{value: '', disabled: false}, Validators.required],
-      gapdel: ['', Validators.required],
-      model: ['', Validators.required],
-      plusgap: [''],
-      tree: ['', Validators.required],
+      align_method: ['clustalw', Validators.required],
+      input_type: [{value: 'nuc', disabled: false}, Validators.required],
+      gapdel: [''],
+      model: ['K2P', Validators.required],
+      plusgap: [true],
+      tree: ['nj', Validators.required],
       align_clw_opt: [''],
     });
+  }
+
+  onTypeSelect(input){
+    // var differences = [''];
+    if (input == 'nuc') {
+      this.differences = ['P', 'JS', 'K2P'];
+    } else if (input == 'ami') {
+      this.differences = ['P', 'JS', 'PC'];
+    };
+    return this.differences
   }
 
   reset() {
@@ -79,9 +87,11 @@ export class CompleteCalcComponent implements OnInit {
         this.cookieService.set(String ( i ), parsed_id);
       }
     });
-  }
-  mafftselected() {
-    if (this.form.get('align_method').value === 'mafft') {
+  };
+
+  plusgapselected() {
+    if (this.form.get('plusgap').value === true) {
+      this.form.controls['gapdel'].reset();
       return true;
     }
   }

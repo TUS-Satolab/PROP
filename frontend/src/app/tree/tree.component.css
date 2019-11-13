@@ -10,6 +10,11 @@ label, h1, h2, h3 {
   border-width:2px !important;
 }
 
+#toolbar {
+  display: flex;
+  justify-content: space-between;
+  width: 550px;
+}
 
 .hr {
     display: inline-block;

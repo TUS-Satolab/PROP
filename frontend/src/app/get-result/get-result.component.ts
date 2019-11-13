@@ -10,7 +10,6 @@ import { phylotree } from 'phylotree';
 import 'phylotree/build/phylotree.css';
 import { GET_RESULT_URL, QUERY_URL } from '../globals';
 
-
 @Component({
   selector: 'app-get-result',
   templateUrl: './get-result.component.html',
@@ -22,11 +21,12 @@ export class GetResultComponent implements OnInit {
 
   form: FormGroup;
   phylotreeData: JSON;
-
-
+  tree: any;
+  out_tree: any;
+  
   constructor(public fb: FormBuilder, private httpClient: HttpClient,
               private messageService: MessageService, private router: Router) { }
-
+  // tree = []
   ngOnInit() {
     this.form = this.fb.group({
       result_id: [''],
@@ -52,20 +52,26 @@ showTree() {
         console.log(query);
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
           console.log(data)
-          let tree = new phylotree(data);
-          const height = 900;
-          const width = 900;
+          this.tree = new phylotree(data);
           let svg = document.createElement('div');
           svg.setAttribute('id', 'tree_display');
           document.body.appendChild(svg);
-          tree.render(
-            '#tree_display', {
-              height:height,
-              width:width,
-              'left-right-spacing': 'fit-to-size',
-              'top-bottom-spacing': 'fit-to-size'
+          console.log("here we goasf")
+          console.log(this.tree)
+          this.out_tree = this.tree.render(
+            '#tree_display', 
+            {
+              height:500,
+              width:500,
+              'left-right-spacing': 'fixed-step',
+              'top-bottom-spacing': 'fixed-step',
+              "minimum-per-node-spacing": 15,
+              "maximum-per-node-spacing": 100,
+              "is-radial": false,
+              "max-radius": 768,
             }
-  );
+          );
+          return this.out_tree
         });
       } else {
         console.log(query);
@@ -122,4 +128,38 @@ deleteTree() {
       }
     });
   }
+  vertical_increase() {
+    if (this.tree.display.phylotree.display.fixed_width[0] < this.tree.display.phylotree.display.options["maximum-per-node-spacing"]) {
+      this.tree.display.phylotree.display.fixed_width[0] = this.tree.display.phylotree.display.fixed_width[0] + 1;
+      this.tree.display.update()
+    }
+  }
+  vertical_decrease() {
+    if (this.tree.display.phylotree.display.fixed_width[0] > this.tree.display.phylotree.display.options["minimum-per-node-spacing"]) {
+      this.tree.display.phylotree.display.fixed_width[0] = this.tree.display.phylotree.display.fixed_width[0] - 1;
+      this.tree.display.update()
+    }
+  }
+  horizontal_increase() {
+    if (this.tree.display.phylotree.display.fixed_width[1] < this.tree.display.phylotree.display.options["maximum-per-node-spacing"]) {
+      this.tree.display.phylotree.display.fixed_width[1] = this.tree.display.phylotree.display.fixed_width[1] + 1;
+      this.tree.display.update()
+    }
+  }
+  horizontal_decrease() {
+    if (this.tree.display.phylotree.display.fixed_width[1] > this.tree.display.phylotree.display.options["minimum-per-node-spacing"]) {
+      this.tree.display.phylotree.display.fixed_width[1] = this.tree.display.phylotree.display.fixed_width[1] - 1;
+      this.tree.display.update()
+    }
+  }
+  radial() {
+    this.tree.display.phylotree.display.options["is-radial"] = true;
+    this.tree.display.phylotree.display.options["minimum-per-node-spacing"] = 2;
+    this.tree.display.update();
+  };
+  linear() {
+    this.tree.display.phylotree.display.options["is-radial"] = false;
+    this.tree.display.phylotree.display.options["minimum-per-node-spacing"] = 15;
+    this.tree.display.update();
+  };
 }

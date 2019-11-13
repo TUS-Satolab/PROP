@@ -49,7 +49,7 @@
                 <h5 class="col-sm-6 text-center">Previously started tasks</h5>
                 <h4 class="hr col-sm-6"></h4>
                 <div *ngFor='let cookieID of prevIdArray'>{{cookieID}}
-                        <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(messageId)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
+                        <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
                 </div>
         </div>
         <br>
