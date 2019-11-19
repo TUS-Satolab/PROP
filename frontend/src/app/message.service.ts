@@ -8,6 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class MessageService {
   messagesMsg: string[] = [];
   messagesId: string[] = [];
+  // messagesDate: string[] = [];
   constructor(private cookieService: CookieService) { }
 
   add_msg(message: string) {
@@ -16,6 +17,9 @@ export class MessageService {
   add_id(message: string) {
     this.messagesId.push(message);
   }
+  // add_date(message: string) {
+  //   this.messagesDate.push(message);
+  // }
   clear() {
     this.messagesId = [];
     this.messagesMsg = [];

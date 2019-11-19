@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {formatDate} from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -6,10 +7,11 @@ import { MessageService } from '../message.service';
 import { SERVER_URL } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
 
+
 @Component({
   selector: 'app-complete-calc',
   templateUrl: './complete-calc.component.html',
-  styleUrls: ['./complete-calc.component.css']
+  styleUrls: ['./complete-calc.component.css'],
 })
 export class CompleteCalcComponent implements OnInit {
   // arrList = require('../env.json');
@@ -42,8 +44,8 @@ export class CompleteCalcComponent implements OnInit {
       this.differences = ['P', 'JS', 'K2P'];
     } else if (input == 'ami') {
       this.differences = ['P', 'JS', 'PC'];
-    };
-    return this.differences
+    }
+    return this.differences;
   }
 
   reset() {
@@ -56,8 +58,11 @@ export class CompleteCalcComponent implements OnInit {
       this.form.get('file').setValue(file);
     }
   }
+
   onSubmit() {
     const formData: any = new FormData();
+    // const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
+    // console.log(dateTime);
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
     formData.append('input_type', this.form.get('input_type').value);
@@ -79,6 +84,7 @@ export class CompleteCalcComponent implements OnInit {
       var parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
       this.messageService.add_msg(parsed_msg);
       this.messageService.add_id(parsed_id);
+      // this.messageService.add_date(dateTime);
       const allCookies: {} = this.cookieService.getAll();
       // console.log(Object.keys(allCookies).length);
       let i = Object.keys(allCookies).length + 1;

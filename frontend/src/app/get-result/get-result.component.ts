@@ -9,6 +9,7 @@ import * as d3 from 'd3';
 import { phylotree } from 'phylotree';
 import 'phylotree/build/phylotree.css';
 import { GET_RESULT_URL, QUERY_URL } from '../globals';
+import * as svg_download from 'save-svg-as-png';
 
 @Component({
   selector: 'app-get-result',
@@ -37,6 +38,13 @@ export class GetResultComponent implements OnInit {
 //     const blob = new Blob([data], {type: 'application/zip'});
 //     saveAs(blob, 'results.zip');
 //  }
+downloadTree() {
+  // console.log(this.out_tree.svg._groups[0][0])
+  svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");
+  // svg.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
+  //   console.log('png base 64 encoded', uri);
+  // });
+}
 showTree() {
   const formData: any = new FormData();
   const httpOptions: { headers: any; responseType: any; } = {
