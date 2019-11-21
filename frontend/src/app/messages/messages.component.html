@@ -1,65 +1,87 @@
-<!-- <div class="container">
-        <div style="height: 10px;"></div>
-        <h3 class="col-sm-6 text-center">Messages</h3>
-        <h3 class="hr col-sm-6"></h3> 
-        <div *ngIf="messageService.messages.length; else noMessage">  
-                <button class="clear"
-                (click)="messageService.clear()">clear</button>
-                <button class="clear Info"
-                (click)="messageService.clear_info()">clear Info</button>
-                <script>
-                        var msg_var = '{{ msg }}';
-                </script>
-                <div *ngFor='let message of messageService.messages'>{{message}}</div>
-                <div>{{ msg_var }}</div>
-        </div>
-
-        <ng-template #noMessage>
-                <p>
-                No messages
-                </p>
-        </ng-template>
-</div> -->
-
 <div class="container">
-        <div style="height: 10px;"></div>
+        <div style="height: 50px;"></div>
         <h5 class="col-sm-6 text-center">Messages</h5>
-        <h3 class="hr col-sm-6"></h3> 
         <br>
-        <div *ngIf="messageService.messagesMsg.length">  
-                
-                <!-- <script>
-                        var msg_var = '{{ msg }}';
-                </script> -->
-                <div *ngFor='let messageMsg of messageService.messagesMsg'>{{messageMsg}}</div>
-                <!-- <div>
-                        {{ msg_var }} 
-                </div> -->
-        </div>
-        <div *ngIf="messageService.messagesId.length">
-                <br>
-                <h5 class="col-sm-6 text-center">Started Tasks</h5>
-                <h4 class="hr col-sm-6"></h4> 
-                <div *ngFor='let messageId of messageService.messagesId'>{{messageId}}
-                        <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(messageId)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
-                </div>
-        </div>       
         <div *ngIf="prevIdArray">
-                        <br>
-                <h5 class="col-sm-6 text-center">Previously started tasks</h5>
-                <h4 class="hr col-sm-6"></h4>
-                <div *ngFor='let cookieID of prevIdArray'>{{cookieID}}
-                        <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
+                <div class="row">
+                        <div class="col-sm-1">Number</div>
+                        <div class="col-sm-2">Time</div>
+                        <div class="col-sm-1">Status</div>
+                        <div class="col-sm-1">Result</div>
+                </div>
+                <h3 class="hr_thin col-sm-6"></h3> 
+                <div *ngFor='let cookieID of prevIdArray' class="row">
+                        <div class="col-sm-1">{{cookieID.number}}</div>
+                        <div class="col-sm-2">{{cookieID.time}}</div>
+                        <div class="col-sm-1">{{cookieID.msg}}</div>
+                        <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg" class="col-sm-1">
+                                        
+                        <div class="col-sm-1"><button (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
+                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock" class="col-sm-1"><button (click)="showTree(cookieID.id)" class="btn-danger btn-sm">View</button></div>
+                        <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
+                        <ng-template #elseBlock>
+                                <div class="col-sm-1">{{ cookieID.type }}</div>
+                        </ng-template>
+                        
+                        </div>
+                        <ng-template #errormsg>
+                                        <div class="col-sm-2">{{cookieID.id}}</div>
+                        </ng-template>
                 </div>
         </div>
+        <!-- <div *ngIf="messageService.messagesMsg.length">  
+                        <div *ngFor='let messageMsg of messageService.messagesMsg'>
+                                <div *ngIf="messageMsg.msg=='Started'">
+                                        {{messageMsg.number}}
+                                        {{messageMsg.time}}
+                                        {{messageMsg.msg}}
+                                        <button (click)="downloadFiles(messageMsg.id)" class="btn-outline-danger btn-sm">Download</button>
+                                        <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(messageMsg.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
+                                </div>
+                        </div>
+                </div> -->
         <br>
         <h4 class="hr col-sm-6"></h4>
         <br>
-        <div>
-                <button class="clear"
-                        (click)="messageService.clear()">clear everything</button>
-                        <button class="clear Info"
-                        (click)="messageService.clear_info()">clear messages</button>
+        <div class="button-group row">
+                <div>
+                        <button class="clear col-sm-12 border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="messageService.clear()">
+                                Clear history
+                        </button>
+                </div>
+                <div *ngIf = "showButton === true">
+                                <button class="col-sm-12 border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="deleteTree()">Delete Tree</button>
+                </div>
         </div>
-
+        <br>
+        <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-light btn-sm" data-direction = 'vertical' data-amount = '1' title = "Expand vertical spacing" (click)=vertical_increase()>
+                      <i class="fa fa-arrows-v" ></i>
+                  </button>
+                    <button type="button" class="btn btn-light btn-sm" data-direction = 'vertical' data-amount = '-1' title = "Compress vertical spacing" (click)=vertical_decrease()>
+                      <i class="fa  fa-compress fa-rotate-135" ></i>
+                  </button>
+                  <button type="button" class="btn btn-light btn-sm" data-direction = 'horizontal' data-amount = '1' title = "Expand horizonal spacing" (click)=horizontal_increase()>
+                      <i class="fa fa-arrows-h" ></i>
+                  </button>
+                    <button type="button" class="btn btn-light btn-sm" data-direction = 'horizontal' data-amount = '-1' title = "Compress horizonal spacing" (click)=horizontal_decrease()>
+                      <i class="fa  fa-compress fa-rotate-45" ></i>
+                  </button>
+                  <button type="button" class="btn btn-light btn-sm" (click)=linear()>
+                    Linear
+                  </button>
+                  <button type="button" class="btn btn-light btn-sm" (click)=radial()>
+                    Radial
+                  </button>
+                  <button type="button" class="btn btn-light btn-sm" (click)=downloadTree()>
+                    Download
+                  </button>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'">
+                  <div class="mt-10">
+                      <div id="tree_display" height="900" width="900"></div>
+                  </div>
+              </div>
 </div>

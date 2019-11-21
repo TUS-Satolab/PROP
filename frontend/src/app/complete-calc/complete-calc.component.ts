@@ -6,6 +6,8 @@ import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { SERVER_URL } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
+import { checkstatus } from '../checkstatus.service';
+
 
 
 @Component({
@@ -22,9 +24,9 @@ export class CompleteCalcComponent implements OnInit {
   // SERVER_URL = String ( this.first + this.IP + this.last );
   // SERVER_URL = 'http://localhost:5004/complete';
   form: FormGroup;
-  constructor(private cookieService: CookieService, public fb: FormBuilder,
+  constructor(private _checkstatus: checkstatus, private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
-  differences = ['P', 'JS', 'K2P']
+  differences = ['P', 'K2P'];
   ngOnInit() {
     this.form = this.fb.group({
       file: ['', Validators.required],
@@ -41,9 +43,10 @@ export class CompleteCalcComponent implements OnInit {
   onTypeSelect(input){
     // var differences = [''];
     if (input == 'nuc') {
-      this.differences = ['P', 'JS', 'K2P'];
+      this.differences = ['P', 'K2P'];
     } else if (input == 'ami') {
-      this.differences = ['P', 'JS', 'PC'];
+      this.form.get('model').setValue('PC');
+      this.differences = ['P', 'PC'];
     }
     return this.differences;
   }
@@ -61,8 +64,8 @@ export class CompleteCalcComponent implements OnInit {
 
   onSubmit() {
     const formData: any = new FormData();
-    // const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
-    // console.log(dateTime);
+    const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
+    console.log(dateTime);
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
     formData.append('input_type', this.form.get('input_type').value);
@@ -79,19 +82,16 @@ export class CompleteCalcComponent implements OnInit {
     }).subscribe(data => {
       // console.log(data);
       var unparsed_id = data.body["task_id"];
-      var parsed_id = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+      var parsed_id: string = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
       var unparsed_msg = data.body["msg"];
-      var parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-      this.messageService.add_msg(parsed_msg);
-      this.messageService.add_id(parsed_id);
-      // this.messageService.add_date(dateTime);
+      var parsed_msg: string = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+      this.messageService.add_msg({id: parsed_id, msg: parsed_msg, time: dateTime});
       const allCookies: {} = this.cookieService.getAll();
-      // console.log(Object.keys(allCookies).length);
       let i = Object.keys(allCookies).length + 1;
-      // console.log(i);
-      if (parsed_id !== 'None') {
-        this.cookieService.set(String ( i ), parsed_id);
-      }
+      this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'complete');
+      // if (parsed_id !== 'None') {
+      //   this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'complete');
+      // }
     });
   };
 

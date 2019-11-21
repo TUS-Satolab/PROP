@@ -10,10 +10,10 @@
         <!-- <div class="form-group">
             <input type="file" name="file" (change)="onFileSelect($event)">
         </div> -->
-        <div class="form-group row">
+        <!-- <div class="form-group row">
             <label class="col-sm-2 col-form-label">OR</label>
             <input class="border-3 border-danger form-control form-control-sm col-sm-4" placeholder="task ID" formControlName="task_id" id="task_id">
-        </div>
+        </div> -->
 
         <!-- <div class="form-group input-group-lg">
             <label>task ID</label>
@@ -21,7 +21,12 @@
         </div> -->
 
         <div class="form-group row">
-            <label for="gapdel" class="col-sm-2 col-form-label">Tree</label>
+            <label for="gapdel" class="col-sm-2 col-form-label">Tree
+                <div class="tooltip5">
+                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="description5">説明を入力してください。 </div>
+                </div>
+            </label>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
                 <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree" value="nj">
                 <label class="form-check-label" for="tree">NJ</label>
@@ -40,7 +45,7 @@
             </select>
         </div> -->
         <div class="form-group row">
-            <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit">Create</button>
+            <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
             <button class="btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="form.reset()">Reset</button>
         </div>
     </form>

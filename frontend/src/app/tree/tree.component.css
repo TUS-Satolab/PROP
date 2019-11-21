@@ -381,3 +381,38 @@ label, h1, h2, h3 {
     top: 32px;
   }
   
+  /* Help box styling */
+  .tooltip5{
+    position: relative;
+    cursor: pointer;
+    display:  inline-block;
+}
+.tooltip5 img{
+    width: 20px;
+}
+.description5 {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.6em;
+    color: #fff;
+    border-radius: 5px;
+    background: #000;
+    width: 100px;
+}
+
+.description5:before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    border: 15px solid transparent;
+    border-top: 15px solid #000;
+    margin-left: -15px;
+}
+.tooltip5:hover .description5{
+    display: inline-block;
+    top: -75px;
+    left: -50px;
+}

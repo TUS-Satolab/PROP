@@ -7,6 +7,7 @@ from rq import Queue, Connection, Worker, registry
 from rq.job import Job
 from flask_cors import CORS
 import datetime, time, os, uuid, pickle, glob, redis, rq_dashboard
+import shutil
 
 
 # Global variables
@@ -102,7 +103,7 @@ def align(task_id=None, filename=None):
                 # flash('File format not correct. Choose fasta file')
                 # return redirect(request.url)
                 res = {'task_id': "None",
-                        'msg': "INFO : File format not correct. Choose fasta file"}
+                        'msg': "ERROR: File format"}
                 return res
             align_method = request.form['align_method']
             input_type = request.form['input_type']
@@ -117,34 +118,64 @@ def align(task_id=None, filename=None):
                             args=(out_align, filename, input_type, align_method,  align_clw_opt))
             #return render_template('get_completed_results_form.html', msg=task_id)
             res = {'task_id': task_id,
-                    'msg': "INFO : Task ID returned"}
+                    'msg': "Started"}
             return res
     else:
         return render_template('alignment_form.html')
 
 @app.route('/task_query', methods=['GET', 'POST'])
 def task_query():
+
     if request.method == 'POST':
+        res = {}
         result_id = request.form['result_id']
         try:
             job = Job.fetch(result_id, connection=redis_connection)
+            try:
+                i = job.meta['times']
+            except:
+                i = 0
         except:
-            flash("INFO : The job ID was not found. Make sure you have pasted the full ID")
             return("INFO : Job ID was not found.")
         if job.get_status() == 'finished':
-            return("Finished")
+            res['msg'] = "Finished"
+            res['result_id'] = result_id
+            return(res)
         elif job.get_status() == 'queued':
-            flash("INFO : The job is still in the queue")
-            #return "redirect(request.url)"
-            return("INFO : The job is still in the queue")
+            q = Queue(connection=redis_connection)
+            current_q = q.get_job_ids()
+            index = current_q.index(result_id)
+            res['msg'] = f"In queue ({index+1})"
+            res['result_id'] = result_id
+            return(res)
         elif job.get_status() == 'started':
-            flash("INFO\: The job is still running")
-            #return redirect(request.url)
-            return("INFO : The job is still running")
+            # res['msg'] = "Running"
+            res['result_id'] = result_id
+            job.meta['times'] = i + 1
+            job.save_meta()
+            if (job.meta['times'] % 2) == 0:
+                res['msg'] = "Running."
+            else:
+                res['msg'] = "Running.."
+            return(res)
         elif job.get_status() == 'failed':
-            flash("INFO : The job failed. Either it took longer than 30 minutes or the provided file is not correct.")
-            #return redirect(request.url)
-            return("INFO : The job failed.")
+            # q = Queue(connection=redis_connection)
+            # ids = q.failed_job_registry.get_job_ids() 
+            # print(ids)
+            # job = Job.fetch(ids[0], connection=redis_connection)
+
+            # job.__dict__["exc_info"].split("raise")[-1]
+            # print(job.__dict__["exc_info"].split("raise")[-1])
+            
+            res['msg'] = "Failed"
+            data = job.__dict__["exc_info"].split("raise")[-1]
+            output = data.splitlines()
+            output_exception = output[1].split(': ')
+            try:
+                res['result_id'] = output_exception[1]
+            except:
+                res['result_id'] = output
+            return(res)
 
 @app.route('/get_result_completed', methods=['GET', 'POST'])
 def get_result_completed(result_id=None, result_kind=None):
@@ -256,7 +287,7 @@ def matrix(task_id=None):
         if request.form.get("plusgap"):
             plusgap_checked = "checked"
         else:
-            plusgap_checked = ""
+            plusgap_checked = "not_checked"
         gapdel = request.form.get("gapdel", None)
         input_type = request.form['input_type']
         model = request.form['model']
@@ -271,7 +302,7 @@ def matrix(task_id=None):
                             input_type, model, plusgap_checked))
         #return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = "INFO : Task ID returned"
+            res['msg'] = "Started"
         
         res['task_id'] = task_id
         return res
@@ -336,7 +367,7 @@ def tree():
                         args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
         # return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = "INFO : Task ID returned"
+            res['msg'] = "Started"
         
         res['task_id'] = task_id
         return res
@@ -359,20 +390,19 @@ def complete():
     res = {}
     res['msg'] = ""
     if request.method == 'POST':
+        align_method = request.form['align_method']
         try:
             (filename, task_id) = upload_file('file')
         except:
-            res = {'task_id': "None",
-                    'msg': "INFO : Upload a fasta file to start the calculation"}
+            res = {'task_id': "File format",
+                    'msg': "Error"}
             return res
-        if not filename.endswith(('.fasta', '.fa')):
+        if not filename.endswith(('.fasta', '.fa', '.txt')):
             flash('File format not correct. Choose fasta file')
-            return redirect(request.url)
-            res = {'task_id': "None",
-                    'msg': "INFO : File format not correct. Choose fasta file"}
+            # return redirect(request.url)
+            res = {'task_id': "File format",
+                    'msg': 'Error'}
             return res
-        
-        align_method = request.form['align_method']
         input_type = request.form['input_type']
         # 'null' if MAFFT is selected because it doesn't really need it. Just used this step to keep the code working
         if input_type == 'null':
@@ -381,7 +411,7 @@ def complete():
         if request.form.get("plusgap"):
             plusgap_checked = "checked"
         else:
-            plusgap_checked = ""
+            plusgap_checked = "not_checked"
         gapdel = request.form.get("gapdel", None)
         model = request.form['model']
         tree = request.form['tree']
@@ -390,6 +420,8 @@ def complete():
         matrix_output = "matrix_"+task_id+".txt"
         out_tree = "tree_"+task_id+".txt"
         q = Queue(connection=redis_connection)
+        if align_method == "None":
+            shutil.copy(os.path.join(app.config['UPLOAD_FOLDER'], filename), os.path.join(app.config['UPLOAD_FOLDER'], out_align))
         job = q.enqueue(complete_calc,
                         job_id=task_id,
                         job_timeout='30m',
@@ -397,9 +429,8 @@ def complete():
                         args=(out_align, filename, input_type, align_method, 
                             align_clw_opt, matrix_output, gapdel, model, 
                             tree, UPLOAD_FOLDER, out_tree, plusgap_checked))
-        #return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
-            res['msg'] = 'INFO : Complete calculation job sent'
+            res['msg'] = 'Started'
         res['task_id'] = task_id
         return res
     else:

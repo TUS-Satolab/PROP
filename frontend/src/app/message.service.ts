@@ -6,22 +6,22 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root'
 })
 export class MessageService {
-  messagesMsg: string[] = [];
-  messagesId: string[] = [];
+  messagesMsg: any[] = [];
+  // messagesId: string[] = [];
   // messagesDate: string[] = [];
   constructor(private cookieService: CookieService) { }
 
-  add_msg(message: string) {
+  add_msg(message) {
     this.messagesMsg.push(message);
   }
-  add_id(message: string) {
-    this.messagesId.push(message);
-  }
+  // add_id(message: string) {
+  //   this.messagesId.push(message);
+  // }
   // add_date(message: string) {
   //   this.messagesDate.push(message);
   // }
   clear() {
-    this.messagesId = [];
+    // this.messagesId = [];
     this.messagesMsg = [];
     this.cookieService.deleteAll();
     location.reload();

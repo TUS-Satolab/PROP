@@ -13,7 +13,7 @@ Options:
   --align=<align>                   clustalw, mafft or none
   --align_clw_opt=<align_clw_opt>   string of options [default: ]
   --model=<model>                   P, PC, JS or K2P
-  --plusgap=<plusgap>               "checked" / "" [default: ]
+  --plusgap=<plusgap>               "checked" / "not_checked" [default: not_checked]
   --gapdel=<gapdel>                 "comp" / "pair" 
   --tree=<tree>                     "nj" / "upgma"
 """
@@ -30,7 +30,7 @@ client = docker.from_env()
 
 def complete_calc(out_align, filename, input_type, align_method, 
     align_clw_opt, matrix_output, gapdel, model, 
-    tree, UPLOAD_FOLDER, out_tree, plusgap_checked=None):
+    tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
     alignment(out_align, filename, input_type, align_method, align_clw_opt)
     (score, otus) = distance_matrix(out_align, matrix_output, gapdel, input_type, model, plusgap_checked)            
     phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
@@ -84,27 +84,32 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
     d = input_type_dict[input_type]
     # d is either DNA or PROTEIN
-    if align == "none":
-        shutil.copy(input_file, out_align)
+    if align == "None":
+        pass
+        # shutil.copy(input_file, out_align)
     elif align == "clustalw":
-        client.containers.run(image="my_clustalw", command="clustalw -INFILE=files/"+input_file+ \
-                            " -OUTFILE=./files/"+ out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
-                            + d + " " + align_clw_opt, \
-                            volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
-        # subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
-        #         -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
-        #         " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
+        try:
+            client.containers.run(image="my_clustalw", command="clustalw -INFILE=files/"+input_file+ \
+                                " -OUTFILE=./files/"+ out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
+                                + d + " " + align_clw_opt, \
+                                volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+            # subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
+            #         -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
+            #         " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
+        except:
+            raise Exception("File not aligned")
     elif align == "mafft":
-        #print(path)
-        #print(out_align)
-        client.containers.run(image="my_mafft", command="bash -c 'mafft " + "files/" + input_file + \
-                            " > files/" + out_align + "'", \
-                            volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
-        # client.containers.run(image="my_mafft", command="mafft "+ "./files/" + input_file + \
-        #                     " > ./files/"+ out_align, \
-        #                     #volumes={path: {'bind': '/data', 'mode': 'rw'}},remove=True)
-        #                     volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
-        # subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
+        try:
+            client.containers.run(image="my_mafft", command="bash -c 'mafft " + "files/" + input_file + \
+                                " > files/" + out_align + "'", \
+                                volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+            # client.containers.run(image="my_mafft", command="mafft "+ "./files/" + input_file + \
+            #                     " > ./files/"+ out_align, \
+            #                     #volumes={path: {'bind': '/data', 'mode': 'rw'}},remove=True)
+            #                     volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+            # subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
+        except: 
+            raise Exception("File not aligned")
     else:
         raise Exception("Check datatype or align definitions")
     print("Created alignment file")
@@ -113,12 +118,12 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
 # INPUTS: out_align, matrix_output, plusgap, gapdel, input_type, model
 # OUTPUTS: score, otus, matrix_output
 #################################################################################
-def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap=""):
+def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap):
     # TODO: is it correct to input the aligned file? Get error otherwise
     print("Filename is:", aligned_input)
     (otus, seqs) = parse_otus(aligned_input) 
     #Complete Deletionオプション(plusGapオプションなしの場合)
-    if plusgap == "" and gapdel == "comp":
+    if plusgap == "not_checked" and gapdel == "comp":
         for i in range(len(seqs[0])):
             for j in range(len(otus)):
                 if seqs[j][i] == "-":
@@ -130,8 +135,8 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
     #距離行列作成
     print("Create Distance Matrix...")
     function_mapping = {
-        'nuc': 'calcDiff_ami',
-        'ami': 'calcDiff_nuc'
+        'nuc': 'calcDiff_nuc',
+        'ami': 'calcDiff_ami'
     }
     try:
         matrix_func = globals()[function_mapping[input_type]]
@@ -157,7 +162,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
             f.write("\r")
         f.close()
     except:
-        raise Exception("遺伝的差異計算Error",0,0,0)
+        raise Exception("遺伝的差異計算Error")
     #print(score)
     #print(otus)
     return (score, otus)
@@ -173,7 +178,7 @@ def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
             print("upgma")
             Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
-        raise Exception("系統樹作成Error",0,0,0)
+        raise Exception("系統樹作成Error")
 
     #print(output_tree)
 
@@ -215,7 +220,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                     D += 1
 
             ###変更箇所(1)ここから
-            if plusgap == "":
+            if plusgap == "not_checked":
                 lgs = S + D
                 S = S / lgs
                 if model == "P":
@@ -308,7 +313,7 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                     r[0][0]+=1
 
             ###変更箇所(2)ここから
-            if plusgap == "":
+            if plusgap == "not_checked":
                 lgs = r[1][1] + r[1][2] + r[1][3] + r[1][4] + r[2][1] + r[2][2] + r[2][3] + r[2][4] + r[3][1] + r[3][2] + r[3][3] + r[3][4] + r[4][1] + r[4][2] + r[4][3] + r[4][4]
                 S = (r[1][1]+r[2][2]+r[3][3]+r[4][4])/lgs
 
