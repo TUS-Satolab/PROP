@@ -37,7 +37,7 @@ export class MessagesComponent implements OnInit {
     setInterval(() => {
       this._checkstatus.checkStatus();
       this.prevIdArray = this._checkstatus.getStatus();
-   }, 5000);
+   }, 3000);
   }
 
   downloadFiles(input) {

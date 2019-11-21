@@ -22,6 +22,8 @@ export class checkstatus {
         let valueSplit = value.split(';');
         if ( error_arr.includes(valueSplit[0])) {
           // pass
+        } else if (valueSplit[1] === 'Finished') {
+          //pass
         } else {
           formStatus.set('result_id', valueSplit[0]);
           formStatus.set('result_kind', 'complete');
