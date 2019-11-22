@@ -14,7 +14,9 @@ export class checkstatus {
     checkStatus() {
       let formStatus = new FormData();
       const error_arr = ['Error', 'File format', 'None', 'File not aligned', '遺伝的差異計算Error',
-                        '系統樹作成Error', 'Check datatype or align definitions'];
+                        '系統樹作成Error', 'Check datatype or align definitions', 'Cancelled',
+                        'log(0) in Distance Matrix Calculation. Check Type and Genetic Difference'];
+      const sec_arr = ['Finished', 'Cancelled'];
       const allCookies: {} = this.cookieService.getAll();
       // tslint:disable-next-line: forin
       for (let key in allCookies) {
@@ -22,7 +24,7 @@ export class checkstatus {
         let valueSplit = value.split(';');
         if ( error_arr.includes(valueSplit[0])) {
           // pass
-        } else if (valueSplit[1] === 'Finished') {
+        } else if (sec_arr.includes(valueSplit[1])) {
           //pass
         } else {
           formStatus.set('result_id', valueSplit[0]);

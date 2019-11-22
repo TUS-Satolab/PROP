@@ -24,6 +24,8 @@ export class CompleteCalcComponent implements OnInit {
   // SERVER_URL = String ( this.first + this.IP + this.last );
   // SERVER_URL = 'http://localhost:5004/complete';
   form: FormGroup;
+  filename = "";
+  _originalData = [];
   constructor(private _checkstatus: checkstatus, private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
   differences = ['P', 'K2P'];
@@ -38,8 +40,8 @@ export class CompleteCalcComponent implements OnInit {
       tree: ['nj', Validators.required],
       align_clw_opt: [''],
     });
+    this._originalData = this.form.value;
   }
-
   onTypeSelect(input){
     // var differences = [''];
     if (input == 'nuc') {
@@ -52,13 +54,16 @@ export class CompleteCalcComponent implements OnInit {
   }
 
   reset() {
-    this.form.reset();
+    this.form.setValue(this._originalData);
+    this.filename = "";
+    console.log(this.form)
   }
 
   onFileSelect(event) {
     if (event.target.files.length === 1) {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
+      this.filename = file.name;
     }
   }
 
@@ -98,6 +103,12 @@ export class CompleteCalcComponent implements OnInit {
   plusgapselected() {
     if (this.form.get('plusgap').value === true) {
       this.form.controls['gapdel'].reset();
+      return true;
+    }
+  }
+  noalign() {
+    if (this.form.get('align_method').value === 'None') {
+      this.form.controls['align_clw_opt'].reset();
       return true;
     }
   }

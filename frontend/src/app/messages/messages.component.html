@@ -1,6 +1,6 @@
 <div class="container">
         <div style="height: 50px;"></div>
-        <h5 class="col-sm-6 text-center">Messages</h5>
+        <h5 class="col-sm-6 text-center">Tasks</h5>
         <br>
         <div *ngIf="prevIdArray">
                 <div class="row">
@@ -15,10 +15,17 @@
                         <div class="col-sm-2">{{cookieID.time}}</div>
                         <div class="col-sm-1">{{cookieID.msg}}</div>
                         <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg" class="col-sm-1">
-                                        
-                        <div class="col-sm-1"><button (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
-                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock" class="col-sm-1"><button (click)="showTree(cookieID.id)" class="btn-danger btn-sm">View</button></div>
+                        <div *ngIf="started(cookieID.msg); else elseCancel">
+                                <div class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
+                                <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock" class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn-danger btn-sm">View</button></div>
+                        </div>
+                        <ng-template #elseCancel>
+                                <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
+                        </ng-template>
                         <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
+                        <ng-template #showCancelBtn>
+                                <button (click)="cancelJob(cookieID.id)" class="btn-danger btn-sm">Cancel Task</button>
+                        </ng-template>
                         <ng-template #elseBlock>
                                 <div class="col-sm-1">{{ cookieID.type }}</div>
                         </ng-template>
@@ -43,45 +50,53 @@
         <br>
         <h4 class="hr col-sm-6"></h4>
         <br>
-        <div class="button-group row">
-                <div>
-                        <button class="clear col-sm-12 border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="messageService.clear()">
-                                Clear history
-                        </button>
-                </div>
-                <div *ngIf = "showButton === true">
-                                <button class="col-sm-12 border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="deleteTree()">Delete Tree</button>
-                </div>
+        <!-- <div class="button-group row"> -->
+        <div class="col-sm-3">
+                <button class="clear border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="messageService.clear()">
+                        Clear history
+                </button>
         </div>
         <br>
-        <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-light btn-sm" data-direction = 'vertical' data-amount = '1' title = "Expand vertical spacing" (click)=vertical_increase()>
-                      <i class="fa fa-arrows-v" ></i>
-                  </button>
-                    <button type="button" class="btn btn-light btn-sm" data-direction = 'vertical' data-amount = '-1' title = "Compress vertical spacing" (click)=vertical_decrease()>
-                      <i class="fa  fa-compress fa-rotate-135" ></i>
-                  </button>
-                  <button type="button" class="btn btn-light btn-sm" data-direction = 'horizontal' data-amount = '1' title = "Expand horizonal spacing" (click)=horizontal_increase()>
-                      <i class="fa fa-arrows-h" ></i>
-                  </button>
-                    <button type="button" class="btn btn-light btn-sm" data-direction = 'horizontal' data-amount = '-1' title = "Compress horizonal spacing" (click)=horizontal_decrease()>
-                      <i class="fa  fa-compress fa-rotate-45" ></i>
-                  </button>
-                  <button type="button" class="btn btn-light btn-sm" (click)=linear()>
-                    Linear
-                  </button>
-                  <button type="button" class="btn btn-light btn-sm" (click)=radial()>
-                    Radial
-                  </button>
-                  <button type="button" class="btn btn-light btn-sm" (click)=downloadTree()>
-                    Download
-                  </button>
+        <h4 class="hr col-sm-6"></h4>
+        <h5 class="col-sm-6 text-center">Phylogenetic Tree</h5>
+                <div *ngIf = "showButton === true">
+                        <br>
+                        <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'">
+                                <div class="btn-group">
+                                        <button type="button" class="btn btn-light btn-sm" data-direction = 'vertical' data-amount = '1' title = "Expand vertical spacing" (click)=vertical_increase()>
+                                        <i class="fa fa-arrows-v" ></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-sm" data-direction = 'vertical' data-amount = '-1' title = "Compress vertical spacing" (click)=vertical_decrease()>
+                                        <i class="fa  fa-compress fa-rotate-135" ></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-sm" data-direction = 'horizontal' data-amount = '1' title = "Expand horizonal spacing" (click)=horizontal_increase()>
+                                        <i class="fa fa-arrows-h" ></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-sm" data-direction = 'horizontal' data-amount = '-1' title = "Compress horizonal spacing" (click)=horizontal_decrease()>
+                                        <i class="fa  fa-compress fa-rotate-45" ></i>
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-sm" (click)=linear()>
+                                        Linear
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-sm" (click)=radial()>
+                                        Radial
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-sm" (click)=downloadTree()>
+                                        Download
+                                        </button>
+                                        <button class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
+                                                Delete Tree
+                                        </button>
+                                </div>
+                        </div>
                 </div>
-              </div>
+        
+        
               <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'">
                   <div class="mt-10">
                       <div id="tree_display" height="900" width="900"></div>
                   </div>
+                  <br>
+                  <label *ngIf="showButton === false" class="col-sm-6 text-center"> Click the View button to show a Phylogenetic Tree here</label>
               </div>
 </div>

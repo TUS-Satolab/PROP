@@ -138,17 +138,17 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
         'nuc': 'calcDiff_nuc',
         'ami': 'calcDiff_ami'
     }
+    matrix_func = globals()[function_mapping[input_type]]
+    #score = function_mapping[input_type](model,plusgap,seqs,len(otus))
+    #if input_type == "nuc":
+    score = matrix_func(model,plusgap,seqs,len(otus))
+        #score = calcDiff(model,plusgap,seqs,len(otus))
+    #elif input_type == "ami":
+        #score = matrix_func(model,plusgap,seqs,len(otus))
+        #score = calcDiffProtein(model,plusgap,seqs,len(otus))
+    #距離行列書き出し + Inter/Intra距離計算
+    #f = open(os.path.join('./files', matrix_output))
     try:
-        matrix_func = globals()[function_mapping[input_type]]
-        #score = function_mapping[input_type](model,plusgap,seqs,len(otus))
-        #if input_type == "nuc":
-        score = matrix_func(model,plusgap,seqs,len(otus))
-            #score = calcDiff(model,plusgap,seqs,len(otus))
-        #elif input_type == "ami":
-            #score = matrix_func(model,plusgap,seqs,len(otus))
-            #score = calcDiffProtein(model,plusgap,seqs,len(otus))
-        #距離行列書き出し + Inter/Intra距離計算
-        #f = open(os.path.join('./files', matrix_output))
         f = open(os.path.join('./files', matrix_output),"w")
         f.write(str(len(otus)))
         f.write("\n")
@@ -162,7 +162,8 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
             f.write("\r")
         f.close()
     except:
-        raise Exception("遺伝的差異計算Error")
+        # raise Exception("遺伝的差異計算Error")
+        raise Exception("Calculating Genetic Difference Error")
     #print(score)
     #print(otus)
     return (score, otus)
@@ -178,7 +179,8 @@ def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
             print("upgma")
             Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
-        raise Exception("系統樹作成Error")
+        # raise Exception("系統樹作成Error")
+        raise Exception("Phylogenetic Tree Generation Error")
 
     #print(output_tree)
 
@@ -226,9 +228,15 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                 if model == "P":
                     score[a][b] = 1 - S
                 elif model == "PC":
-                    score[a][b] = 0 - math.log(S)
+                    try:
+                        score[a][b] = 0 - math.log(S)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                 elif model == "JC":
-                    score[a][b] = 0 - (19 / 20) * math.log((20 * S / 19) - 1 / 19)
+                    try:
+                        score[a][b] = 0 - (19 / 20) * math.log((20 * S / 19) - 1 / 19)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
 
             elif plusgap == "checked":
                 lgs = X + G + S + D
@@ -240,9 +248,15 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                 if model == "P":
                     score[a][b] = 1 - X - S
                 elif model == "PC":
-                    score[a][b] = 0 - w * math.log(S/w)
+                    try:
+                        score[a][b] = 0 - w * math.log(S/w)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                 elif model == "JC":
-                    score[a][b] = 0 - (19 * w / 20) * math.log((S - D / 19) / w)
+                    try:
+                        score[a][b] = 0 - (19 * w / 20) * math.log((S - D / 19) / w)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
             ###変更箇所(2)ここまで
 
             score[b][a] = score[a][b]
@@ -321,15 +335,24 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                     score[a][b] = 1 - S
 
                 elif model == "PC":
-                    score[a][b] = 0 - math.log(S)
+                    try:
+                        score[a][b] = 0 - math.log(S)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
 
                 elif model == "JC":
-                    score[a][b] = 0 - (3 / 4) * math.log((4 * S / 3) - 1 / 3)
+                    try:
+                        score[a][b] = 0 - (3 / 4) * math.log((4 * S / 3) - 1 / 3)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
 
                 elif model == "K2P":
                     P = (r[1][3] + r[3][1] + r[2][4] + r[4][2]) / lgs
                     Q = (r[1][2] + r[2][1] + r[1][4] + r[4][1] + r[2][3] + r[3][2] + r[3][4] + r[4][3]) / lgs
-                    score[a][b] = 0 - math.log(1 - 2 * P - Q) / 2 - math.log(1 - 2 * Q) / 4
+                    try:
+                        score[a][b] = 0 - math.log(1 - 2 * P - Q) / 2 - math.log(1 - 2 * Q) / 4
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
 
             elif plusgap == "checked":
                 lgs = sum(r[0])+sum(r[1])+sum(r[2])+sum(r[3])+sum(r[4])
@@ -343,16 +366,25 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                     score[a][b] = 1 - S - X
 
                 elif model == "PC":
-                    score[a][b] = 0 - w * math.log(S/w)
+                    try:
+                        score[a][b] = 0 - w * math.log(S/w)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
 
                 elif model == "JC":
                     D = 1 - S - G - X
-                    score[a][b] = 0 - (3 * w / 4) * math.log((S - D / 3) / w)
+                    try:
+                        score[a][b] = 0 - (3 * w / 4) * math.log((S - D / 3) / w)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
 
                 elif model == "K2P":
                     P = (r[1][3]+r[3][1]+r[2][4]+r[4][2])/lgs
                     Q = (r[1][2]+r[2][1]+r[1][4]+r[4][1]+r[2][3]+r[3][2]+r[3][4]+r[4][3])/lgs
-                    score[a][b] = 0.75 * w * math.log(w) - 0.5 * w * math.log((S-P) * math.sqrt(S+P-Q))
+                    try:
+                        score[a][b] = 0.75 * w * math.log(w) - 0.5 * w * math.log((S-P) * math.sqrt(S+P-Q))
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                 ###変更箇所(2)ここまで
 
             score[b][a] = score[a][b]

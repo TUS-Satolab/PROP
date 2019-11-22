@@ -3,7 +3,7 @@ from calculation import alignment, distance_matrix, phylo_tree, complete_calc
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from redis import Redis
-from rq import Queue, Connection, Worker, registry
+from rq import Queue, Connection, Worker, registry, cancel_job, get_current_job
 from rq.job import Job
 from flask_cors import CORS
 import datetime, time, os, uuid, pickle, glob, redis, rq_dashboard
@@ -122,6 +122,24 @@ def align(task_id=None, filename=None):
             return res
     else:
         return render_template('alignment_form.html')
+
+@app.route('/cancel_job', methods=['GET', 'POST'])
+def cancel_job():
+    if request.method == 'POST':
+        res = {}
+        res['result_id'] = request.form['result_id']
+        print(res['result_id'])
+        job = Job.fetch(res['result_id'], connection=redis_connection)
+        try:
+            job.cancel()
+            # cancel_job(res['result_id'],connection=redis_connection)
+            res['msg'] = "Cancelled"
+        except:
+            res['msg'] = "INFO : Job ID was not found."
+        finally:
+            return res
+
+
 
 @app.route('/task_query', methods=['GET', 'POST'])
 def task_query():

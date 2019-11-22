@@ -18,3 +18,8 @@ label, h1, h2, h3, h4, h5 {
   color: rgb(246, 8, 68);
   line-height: 10pt;
 }
+.btn-danger.btn-sm[disabled] {
+  background-color: #969b99;
+  border-color: #969b99;
+  opacity: 0.5;
+}

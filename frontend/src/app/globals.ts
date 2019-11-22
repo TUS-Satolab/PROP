@@ -6,6 +6,7 @@ var GET_RESULT_URL_TEMP = '';
 var ALIGN_URL_TEMP = '';
 var MATRIX_URL_TEMP = '';
 var TREE_URL_TEMP = '';
+var CANCEL_URL_TEMP = '';
 
 const arrList = require('./env.json');
 
@@ -16,6 +17,7 @@ if (String ( arrList.env[1].local_flag ) === '1') {
     var ALIGN_URL_TEMP = 'http://localhost:5004/alignment';
     var MATRIX_URL_TEMP = 'http://localhost:5004/matrix';
     var TREE_URL_TEMP = 'http://localhost:5004/tree';
+    var CANCEL_URL_TEMP = 'http://localhost:5004/cancel_job';
 } else {
     var IP = String ( arrList.env[0].ip_address ) ;
     var first = 'http://';
@@ -25,6 +27,8 @@ if (String ( arrList.env[1].local_flag ) === '1') {
     var lastAlign = ':5004/alignment';
     var lastMatrix = ':5004/matrix';
     var lastTree = ':5004/tree';
+    var lastCancel = ':5004/cancel_job';
+
 
     var SERVER_URL_TEMP = String ( first + IP + lastComplete );
     var QUERY_URL_TEMP = String ( first + IP + lastQuery );
@@ -32,6 +36,7 @@ if (String ( arrList.env[1].local_flag ) === '1') {
     var ALIGN_URL_TEMP = String ( first + IP + lastAlign );
     var MATRIX_URL_TEMP = String ( first + IP + lastMatrix );
     var TREE_URL_TEMP = String ( first + IP + lastTree );
+    var CANCEL_URL_TEMP = String ( first + IP + lastCancel );
 }
 
 export const SERVER_URL = SERVER_URL_TEMP;
@@ -40,4 +45,6 @@ export const GET_RESULT_URL = GET_RESULT_URL_TEMP;
 export const ALIGN_URL = ALIGN_URL_TEMP;
 export const MATRIX_URL = MATRIX_URL_TEMP;
 export const TREE_URL = TREE_URL_TEMP;
+export const CANCEL_URL = CANCEL_URL_TEMP;
+
 

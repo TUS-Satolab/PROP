@@ -6,9 +6,28 @@
     </p> -->
     <h3  class="hr col-sm-6"></h3> 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="border-2 border-danger form-group row">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Input File
+                <div class="tooltip5">
+                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="description5">説明を入力してください。 </div>
+                </div>
+            </label>
+            <label class="filename col-sm-3">
+                    <span>{{filename}}</span> 
+            </label>
+            <label for="browse" class="btn btn-danger btn-lg col-sm-1">
+                    Browse <input id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
+            </label>
+        
+        <!-- <button type="button" (click)="fileInput.click()">
+            <span>Upload</span>
+            <input #fileInput type="file" (change)="onFileSelect($event)" required style="display:none;" />
+        </button> -->
+        <!-- <div class="border-2 border-danger form-group row">
             <label for="file" class="col-sm-2 col-form-label">Input File</label>
             <input type="file" name="file" (change)="onFileSelect($event)" required>
+        </div> -->
         </div>
         <div class="form-group row">
             <label for="input_type" class="col-sm-2 col-form-label">Type
@@ -39,7 +58,7 @@
             <select class="border-3 border-danger form-control form-control-sm col-sm-4" formControlName="align_method" id="align_method" required>
                 <option value="clustalw" [selected]='true' selected>Clustal W2</option>
                 <option value="mafft">MAFFT</option>
-                <option value="None">アライメント不要</option>
+                <option value="None">No alignment necessary</option>
             </select>
         </div>
         <!-- <div [hidden]="!mafftselected()" class="form-group row">
@@ -51,7 +70,7 @@
         <div class="form-group row">
             <label for="options" class="col-sm-2 col-form-label">
             </label>
-            <input class="border-2 border-danger form-control form-control-sm col-sm-4" placeholder="Options" formControlName="align_clw_opt" id="options">
+            <input [attr.disabled]="noalign()" class="border-2 border-danger form-control form-control-sm col-sm-4" placeholder="Options" formControlName="align_clw_opt" id="options">
         </div>
         <h3  class="hr"></h3> 
         <div class="form-group row">
@@ -117,7 +136,7 @@
         </div>
         <div class="form-group row">
             <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="form.reset()">Reset</button>
+            <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="reset()">Reset</button>
         </div>
     </form>
 </div>

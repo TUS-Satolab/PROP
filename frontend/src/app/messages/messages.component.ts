@@ -4,7 +4,7 @@ import { MessageService } from '../message.service';
 import {PopoverModule} from 'ngx-smart-popover';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { GET_RESULT_URL, QUERY_URL } from '../globals';
+import { GET_RESULT_URL, QUERY_URL, CANCEL_URL } from '../globals';
 import { saveAs } from 'file-saver';
 import { checkstatus } from '../checkstatus.service';
 import * as d3 from 'd3';
@@ -77,6 +77,44 @@ downloadTree() {
   //   console.log('png base 64 encoded', uri);
   // });
 }
+
+notfinished(input) {
+  if (input !== 'Finished') {
+    return true;
+  }
+}
+
+started(input) {
+  const array = ['Running.', 'Running..', 'Finished'];
+  if ( array.includes(input)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+cancelJob(input) {
+  const formData: any = new FormData();
+  formData.append('result_id', input);
+  const allCookies: {} = this.cookieService.getAll();
+
+  this.httpClient.post(CANCEL_URL, formData, {observe: 'response'}).subscribe(query => {
+    // tslint:disable-next-line: forin
+    for (let key in allCookies) {
+      let value = allCookies[key];
+      let valueSplit = value.split(';');
+      if (valueSplit[0] === input) {
+        console.log(input)
+        valueSplit[1] = query.body['msg'];
+        this.cookieService.set(key, valueSplit[0] + ';' + valueSplit[1] + ';' + valueSplit[2] +
+        ';' + valueSplit[3] + ';' + valueSplit[4]);
+      }
+    }
+    // query.body['msg'];
+  });
+}
+
+
 showTree(input) {
   const formData: any = new FormData();
   const httpOptions: { headers: any; responseType: any; } = {
