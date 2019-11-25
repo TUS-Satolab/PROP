@@ -71,7 +71,7 @@ export class MessagesComponent implements OnInit {
 
 // Phylotree part
 downloadTree() {
-  console.log(document.getElementById('tree_display'))
+  console.log(document.getElementById('svg')('tree_display'))
   // svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");
   // svg_download.svgAsPngUri(this.out_tree.svg._groups[0][0], {}, (uri) => {
   svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
@@ -162,9 +162,9 @@ showTree(input) {
       if (query.body['msg'] === 'Finished') {
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
           this.tree = new phylotree(data);
-          let svg = document.createElement('svg');
-          svg.setAttribute('id', 'tree_display');
-          document.body.appendChild(svg);
+          // let svg = document.createElement('svg');
+          // svg.setAttribute('id', 'tree_display');
+          // document.body.appendChild(svg);
           this.out_tree = this.tree.render(
             '#tree_display',
             {
