@@ -73,7 +73,7 @@ export class MessagesComponent implements OnInit {
 downloadTree() {
   console.log(this.out_tree)
   // svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");  
-  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
+  svg_download.svgAsPngUri(this.out_tree.svg._groups[0][0], {}, (uri) => {
     console.log(uri)
     const output = this.dataURItoBlob(uri)
     saveAs(output, 'phylotree.png')
