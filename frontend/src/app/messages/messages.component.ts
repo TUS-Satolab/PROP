@@ -73,7 +73,8 @@ export class MessagesComponent implements OnInit {
 downloadTree() {
   console.log(this.out_tree)
   // svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");  
-  svg_download.svgAsPngUri(this.out_tree.svg._groups[0][0], {}, (uri) => {
+  // svg_download.svgAsPngUri(this.out_tree.svg._groups[0][0], {}, (uri) => {
+  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
     console.log(uri)
     const output = this.dataURItoBlob(uri)
     saveAs(output, 'phylotree.png')
@@ -88,7 +89,6 @@ downloadTree() {
 dataURItoBlob(dataURI) {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  console.log(dataURI)
   var byteString = atob(dataURI.split(',')[1]);
 
   // separate out the mime component
