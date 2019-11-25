@@ -74,7 +74,7 @@ downloadTree() {
   console.log(document.getElementById('tree_display'))
   // svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");
   // svg_download.svgAsPngUri(this.out_tree.svg._groups[0][0], {}, (uri) => {
-  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
+  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
     console.log(uri)
     const output = this.dataURItoBlob(uri)
     saveAs(output, 'phylotree.png')
