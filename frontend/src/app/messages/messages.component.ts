@@ -162,12 +162,13 @@ showTree(input) {
       if (query.body['msg'] === 'Finished') {
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
           this.tree = new phylotree(data);
-          // let svg = document.createElement('svg');
-          // svg.setAttribute('id', 'tree_display');
-          // document.body.appendChild(svg);
+          let svg = document.createElement('svg');
+          svg.setAttribute('id', 'tree_display');
+          document.body.appendChild(svg);
           this.out_tree = this.tree.render(
             '#tree_display',
             {
+              id: 'tree_display',
               height: 500,
               width: 500,
               'left-right-spacing': 'fixed-step',
