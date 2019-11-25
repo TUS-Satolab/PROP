@@ -71,16 +71,14 @@ export class MessagesComponent implements OnInit {
 
 // Phylotree part
 downloadTree() {
-  console.log(this.out_tree.svg._groups[0][0])
-  // console.log(document)
-  const yes = this.out_tree.svg._groups[0][0]
-  svg_download.saveSvgAsPng(yes, "phylotree.png");
-  // svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
-  //   console.log(uri)
-  //   const output = this.dataURItoBlob(uri)
-  //   saveAs(output, 'phylotree.png')
-  //  // pass
-  // });
+  console.log(this.out_tree)
+  // svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");  
+  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
+    console.log(uri)
+    const output = this.dataURItoBlob(uri)
+    saveAs(output, 'phylotree.png')
+   // pass
+  });
   // data:image/png;base64,
   // svg.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
   //   console.log('png base 64 encoded', uri);
@@ -164,11 +162,9 @@ showTree(input) {
       if (query.body['msg'] === 'Finished') {
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
           this.tree = new phylotree(data);
-          // let svg = document.createElement('div');
-          // svg.setAttribute('id', 'tree_display');
-          // let svg = document.createElement('div');
-          // svg.setAttribute('id', 'tree_display');
-          // document.body.appendChild(svg);
+          let svg = document.createElement('svg');
+          svg.setAttribute('id', 'tree_display');
+          document.body.appendChild(svg);
           this.out_tree = this.tree.render(
             '#tree_display',
             {
