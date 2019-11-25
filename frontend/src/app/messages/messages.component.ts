@@ -72,13 +72,13 @@ export class MessagesComponent implements OnInit {
 // Phylotree part
 downloadTree() {
   console.log(this.out_tree)
-  // svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");  
-  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
-    console.log(uri)
-    const output = this.dataURItoBlob(uri)
-    saveAs(output, 'phylotree.png')
-   // pass
-  });
+  svg_download.saveSvgAsPng(this.out_tree.svg._groups[0][0], "phylotree.png");  
+  // svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
+  //   console.log(uri)
+  //   const output = this.dataURItoBlob(uri)
+  //   saveAs(output, 'phylotree.png')
+  //  // pass
+  // });
   // data:image/png;base64,
   // svg.svgAsPngUri(document.getElementById('tree_display'), {}, (uri) => {
   //   console.log('png base 64 encoded', uri);
