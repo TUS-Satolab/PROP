@@ -4,8 +4,18 @@
     <h3 class="hr col-sm-6"></h3> 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="form-group row">
-            <label for="file" class="col-sm-2 col-form-label">Input File</label>
-            <input type="file" name="file" (change)="onFileSelect($event)">
+            <label class="col-sm-2 col-form-label">Input File
+                <div class="tooltip5">
+                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="description5">説明を入力してください。 </div>
+                </div>
+            </label>
+            <label class="filename col-sm-3">
+                    <span>{{filename}}</span> 
+            </label>
+            <label for="browse" class="btn btn-danger btn-lg col-sm-1">
+                    Browse <input id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
+            </label>
         </div>
         <!-- <div class="form-group">
             <input type="file" name="file" (change)="onFileSelect($event)">

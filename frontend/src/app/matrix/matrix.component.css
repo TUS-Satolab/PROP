@@ -1,5 +1,19 @@
+.filename {
+  border: 3px;
+  border-style: solid;
+  font-size:15px;
+  border-radius: 3px;
+  text-align: left;
+}
+
 label, h1, h2, h3 {
   color: rgb(246, 8, 68);
+}
+label[for^=browse] {
+  color: #ffffff;
+  font-size:15px;
+	/* font-weight: bold;
+    background: red; */
 }
 
 .border-3 {

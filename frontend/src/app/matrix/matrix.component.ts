@@ -17,6 +17,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class MatrixComponent implements OnInit {
   // SERVER_URL = 'http://52.198.155.126:5004/matrix';
   form: FormGroup;
+  filename = "";
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient, 
               private messageService: MessageService) { }
@@ -40,6 +41,7 @@ export class MatrixComponent implements OnInit {
     if (event.target.files.length === 1) {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
+      this.filename = file.name;
     }
   }
 
