@@ -4,7 +4,7 @@ import { MessageService } from '../message.service';
 import {PopoverModule} from 'ngx-smart-popover';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { GET_RESULT_URL, QUERY_URL, CANCEL_URL } from '../globals';
+import { GET_RESULT_URL, QUERY_URL, CANCEL_URL, VERSION } from '../globals';
 import { saveAs } from 'file-saver';
 import { checkstatus } from '../checkstatus.service';
 import * as d3 from 'd3';
@@ -41,6 +41,8 @@ export class MessagesComponent implements OnInit {
     const firstCookie: string = this.cookieService.get('1');
     let valueSplit = firstCookie.split(';');
     if (valueSplit.length < 6) {
+      this.cookieService.deleteAll();
+    } else if (Number(valueSplit[5]) !== VERSION) {
       this.cookieService.deleteAll();
     }
 
