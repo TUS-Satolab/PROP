@@ -4,6 +4,7 @@ import { ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule} from '@angular/common/http';
 import { PopoverModule } from 'ngx-smart-popover';
 import { CookieService } from 'ngx-cookie-service';
+import { AngularDraggableModule } from 'angular2-draggable';
 
 
 
@@ -35,7 +36,8 @@ import { HeaderComponent } from './header/header.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    PopoverModule
+    PopoverModule,
+    AngularDraggableModule
   ],
   providers: [ CookieService ],
   bootstrap: [ AppComponent ]

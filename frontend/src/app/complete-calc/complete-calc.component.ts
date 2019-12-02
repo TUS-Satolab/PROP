@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
-import { SERVER_URL } from '../globals';
+import { SERVER_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
 import { checkstatus } from '../checkstatus.service';
 
@@ -26,6 +26,7 @@ export class CompleteCalcComponent implements OnInit {
   form: FormGroup;
   filename = "";
   _originalData = [];
+
   constructor(private _checkstatus: checkstatus, private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
   differences = ['P', 'K2P'];
@@ -56,7 +57,6 @@ export class CompleteCalcComponent implements OnInit {
   reset() {
     this.form.setValue(this._originalData);
     this.filename = "";
-    console.log(this.form)
   }
 
   onFileSelect(event) {
@@ -70,7 +70,6 @@ export class CompleteCalcComponent implements OnInit {
   onSubmit() {
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
-    console.log(dateTime);
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
     formData.append('input_type', this.form.get('input_type').value);
@@ -93,7 +92,8 @@ export class CompleteCalcComponent implements OnInit {
       this.messageService.add_msg({id: parsed_id, msg: parsed_msg, time: dateTime});
       const allCookies: {} = this.cookieService.getAll();
       let i = Object.keys(allCookies).length + 1;
-      this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'complete');
+      this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';'
+                                          + i + ';' + 'complete' + ';' + String(VERSION));
       // if (parsed_id !== 'None') {
       //   this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'complete');
       // }
@@ -108,7 +108,8 @@ export class CompleteCalcComponent implements OnInit {
   }
   noalign() {
     if (this.form.get('align_method').value === 'None') {
-      this.form.controls['align_clw_opt'].reset();
+      // this.form.controls['align_clw_opt'].reset();
+      this.form.get('align_clw_opt').setValue('');
       return true;
     }
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QUERY_URL } from './globals';
+import { QUERY_URL, VERSION } from './globals';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -13,7 +13,7 @@ export class checkstatus {
 
     checkStatus() {
       let formStatus = new FormData();
-      const error_arr = ['Error', 'File format', 'None', 'File not aligned', '遺伝的差異計算Error',
+      const error_arr = ['Error', 'File format', 'None', 'File not aligned', 'File is not aligned', '遺伝的差異計算Error',
                         '系統樹作成Error', 'Check datatype or align definitions', 'Cancelled',
                         'log(0) in Distance Matrix Calculation. Check Type and Genetic Difference'];
       const sec_arr = ['Finished', 'Cancelled'];
@@ -34,7 +34,7 @@ export class checkstatus {
             // valueSplit[1] = query;
             valueSplit[0] = query.body['result_id'];
             this.cookieService.set(key, valueSplit[0] + ';' + valueSplit[1] + ';' + valueSplit[2] +
-            ';' + valueSplit[3] + ';' + valueSplit[4]);
+            ';' + valueSplit[3] + ';' + valueSplit[4] + ';' + String(VERSION));
           });
         }
         formStatus.delete('result_id');
@@ -49,7 +49,7 @@ export class checkstatus {
     for (var key in allCookies) {
         var value = allCookies[key];
         var valueSplit = value.split(';');
-        prevIds.push({id: valueSplit[0], msg: valueSplit[1], time: valueSplit[2], number: valueSplit[3], type: valueSplit[4]});
+        prevIds.push({id: valueSplit[0], msg: valueSplit[1], time: valueSplit[2], number: valueSplit[3], type: valueSplit[4], version: valueSplit[5]});
       }
     this.prevIdArray = prevIds;
     return this.prevIdArray;

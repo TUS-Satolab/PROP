@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
-import { MATRIX_URL } from '../globals';
+import { MATRIX_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
 
 
@@ -72,7 +72,7 @@ export class MatrixComponent implements OnInit {
         // console.log(i);
         if (parsed_id !== 'None') {
           // this.cookieService.set(String ( i ), parsed_id);
-          this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'matrix');
+          this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'matrix' + ';' + VERSION);
         }
         });
       }

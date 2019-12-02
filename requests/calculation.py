@@ -274,57 +274,60 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
     for a in range(otu):
         for b in range(a):
             r = [[0 for a in range(5)] for b in range(5)] # 0=A 1=T 2=G 3=C
-            for i in range(len(seqData[0])):
-                if seqData[a][i] == '-' and seqData[b][i] == 'A':
-                    r[0][1]+=1
-                elif seqData[a][i] == '-' and seqData[b][i] == 'T':
-                    r[0][2]+=1
-                elif seqData[a][i] == '-' and seqData[b][i] == 'G':
-                    r[0][3]+=1
-                elif seqData[a][i] == '-' and seqData[b][i] == 'C':
-                    r[0][4]+=1
-                elif seqData[a][i] == 'A' and seqData[b][i] == '-':
-                    r[1][0]+=1
-                elif seqData[a][i] == 'A' and seqData[b][i] == 'A':
-                    r[1][1]+=1
-                elif seqData[a][i] == 'A' and seqData[b][i] == 'T':
-                    r[1][2]+=1
-                elif seqData[a][i] == 'A' and seqData[b][i] == 'G':
-                    r[1][3]+=1
-                elif seqData[a][i] == 'A' and seqData[b][i] == 'C':
-                    r[1][4]+=1
-                elif seqData[a][i] == 'T' and seqData[b][i] == '-':
-                    r[2][0]+=1
-                elif seqData[a][i] == 'T' and seqData[b][i] == 'A':
-                    r[2][1]+=1
-                elif seqData[a][i] == 'T' and seqData[b][i] == 'T':
-                    r[2][2]+=1
-                elif seqData[a][i] == 'T' and seqData[b][i] == 'G':
-                    r[2][3]+=1
-                elif seqData[a][i] == 'T' and seqData[b][i] == 'C':
-                    r[2][4]+=1
-                elif seqData[a][i] == 'G' and seqData[b][i] == '-':
-                    r[3][0]+=1
-                elif seqData[a][i] == 'G' and seqData[b][i] == 'A':
-                    r[3][1]+=1
-                elif seqData[a][i] == 'G' and seqData[b][i] == 'T':
-                    r[3][2]+=1
-                elif seqData[a][i] == 'G' and seqData[b][i] == 'G':
-                    r[3][3]+=1
-                elif seqData[a][i] == 'G' and seqData[b][i] == 'C':
-                    r[3][4]+=1
-                elif seqData[a][i] == 'C' and seqData[b][i] == '-':
-                    r[4][0]+=1
-                elif seqData[a][i] == 'C' and seqData[b][i] == 'A':
-                    r[4][1]+=1
-                elif seqData[a][i] == 'C' and seqData[b][i] == 'T':
-                    r[4][2]+=1
-                elif seqData[a][i] == 'C' and seqData[b][i] == 'G':
-                    r[4][3]+=1
-                elif seqData[a][i] == 'C' and seqData[b][i] == 'C':
-                    r[4][4]+=1
-                elif seqData[a][i] == '-' and seqData[b][i] == '-':
-                    r[0][0]+=1
+            try:
+                for i in range(len(seqData[0])):
+                    if seqData[a][i] == '-' and seqData[b][i] == 'A':
+                        r[0][1]+=1
+                    elif seqData[a][i] == '-' and seqData[b][i] == 'T':
+                        r[0][2]+=1
+                    elif seqData[a][i] == '-' and seqData[b][i] == 'G':
+                        r[0][3]+=1
+                    elif seqData[a][i] == '-' and seqData[b][i] == 'C':
+                        r[0][4]+=1
+                    elif seqData[a][i] == 'A' and seqData[b][i] == '-':
+                        r[1][0]+=1
+                    elif seqData[a][i] == 'A' and seqData[b][i] == 'A':
+                        r[1][1]+=1
+                    elif seqData[a][i] == 'A' and seqData[b][i] == 'T':
+                        r[1][2]+=1
+                    elif seqData[a][i] == 'A' and seqData[b][i] == 'G':
+                        r[1][3]+=1
+                    elif seqData[a][i] == 'A' and seqData[b][i] == 'C':
+                        r[1][4]+=1
+                    elif seqData[a][i] == 'T' and seqData[b][i] == '-':
+                        r[2][0]+=1
+                    elif seqData[a][i] == 'T' and seqData[b][i] == 'A':
+                        r[2][1]+=1
+                    elif seqData[a][i] == 'T' and seqData[b][i] == 'T':
+                        r[2][2]+=1
+                    elif seqData[a][i] == 'T' and seqData[b][i] == 'G':
+                        r[2][3]+=1
+                    elif seqData[a][i] == 'T' and seqData[b][i] == 'C':
+                        r[2][4]+=1
+                    elif seqData[a][i] == 'G' and seqData[b][i] == '-':
+                        r[3][0]+=1
+                    elif seqData[a][i] == 'G' and seqData[b][i] == 'A':
+                        r[3][1]+=1
+                    elif seqData[a][i] == 'G' and seqData[b][i] == 'T':
+                        r[3][2]+=1
+                    elif seqData[a][i] == 'G' and seqData[b][i] == 'G':
+                        r[3][3]+=1
+                    elif seqData[a][i] == 'G' and seqData[b][i] == 'C':
+                        r[3][4]+=1
+                    elif seqData[a][i] == 'C' and seqData[b][i] == '-':
+                        r[4][0]+=1
+                    elif seqData[a][i] == 'C' and seqData[b][i] == 'A':
+                        r[4][1]+=1
+                    elif seqData[a][i] == 'C' and seqData[b][i] == 'T':
+                        r[4][2]+=1
+                    elif seqData[a][i] == 'C' and seqData[b][i] == 'G':
+                        r[4][3]+=1
+                    elif seqData[a][i] == 'C' and seqData[b][i] == 'C':
+                        r[4][4]+=1
+                    elif seqData[a][i] == '-' and seqData[b][i] == '-':
+                        r[0][0]+=1
+            except:
+                raise Exception('File is not aligned')
 
             ###変更箇所(2)ここから
             if plusgap == "not_checked":

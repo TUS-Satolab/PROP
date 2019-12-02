@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
-import { ALIGN_URL } from '../globals';
+import { ALIGN_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -73,7 +73,7 @@ export class AlignComponent implements OnInit {
       // console.log(i);
       if (parsed_id !== 'None') {
         // this.cookieService.set(String ( i ), parsed_id);
-        this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'align');
+        this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'align' + ';' + VERSION);
       }
     });
     // this.httpClient.post(ALIGN_URL, formData).subscribe(

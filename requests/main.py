@@ -439,7 +439,18 @@ def complete():
         out_tree = "tree_"+task_id+".txt"
         q = Queue(connection=redis_connection)
         if align_method == "None":
-            shutil.copy(os.path.join(app.config['UPLOAD_FOLDER'], filename), os.path.join(app.config['UPLOAD_FOLDER'], out_align))
+            print("This is:", filename)
+            if filename == 'align_'+task_id+'.txt':
+            # if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+                print("WE PASS")
+                pass
+            else:
+                print("WE COPY")
+                shutil.copy(os.path.join(app.config['UPLOAD_FOLDER'], filename), os.path.join(app.config['UPLOAD_FOLDER'], out_align))
+            # try:
+            #     f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # except:
+            #     shutil.copy(os.path.join(app.config['UPLOAD_FOLDER'], filename), os.path.join(app.config['UPLOAD_FOLDER'], out_align))
         job = q.enqueue(complete_calc,
                         job_id=task_id,
                         job_timeout='30m',
