@@ -43,9 +43,10 @@ export class CompleteCalcComponent implements OnInit {
     });
     this._originalData = this.form.value;
   }
-  onTypeSelect(input){
+  onTypeSelect(input) {
     // var differences = [''];
     if (input == 'nuc') {
+      this.form.get('model').setValue('K2P');
       this.differences = ['P', 'K2P'];
     } else if (input == 'ami') {
       this.form.get('model').setValue('PC');
@@ -56,7 +57,8 @@ export class CompleteCalcComponent implements OnInit {
 
   reset() {
     this.form.setValue(this._originalData);
-    this.filename = "";
+    this.filename = '';
+    this.differences = ['P', 'K2P'];
   }
 
   onFileSelect(event) {
@@ -64,6 +66,7 @@ export class CompleteCalcComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
+      document.getElementById('browse').value = null;
     }
   }
 

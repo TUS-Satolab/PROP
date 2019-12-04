@@ -18,6 +18,8 @@ export class MatrixComponent implements OnInit {
   // SERVER_URL = 'http://52.198.155.126:5004/matrix';
   form: FormGroup;
   filename = "";
+  _originalData = [];
+  differences = ['P', 'K2P'];
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient, 
               private messageService: MessageService) { }
@@ -31,10 +33,29 @@ export class MatrixComponent implements OnInit {
       file: ['', Validators.required],
       task_id: [''],
     });
+    this._originalData = this.form.value;
   }
 
+  onTypeSelect(input) {
+    // var differences = [''];
+    if (input == 'nuc') {
+      this.form.get('model').setValue('K2P');
+      this.differences = ['P', 'K2P'];
+    } else if (input == 'ami') {
+      this.form.get('model').setValue('PC');
+      this.differences = ['P', 'PC'];
+    }
+    return this.differences;
+  }
+
+  // reset() {
+  //   this.form.reset();
+  // }
+
   reset() {
-    this.form.reset();
+    this.form.setValue(this._originalData);
+    this.filename = '';
+    this.differences = ['P', 'K2P'];
   }
 
   onFileSelect(event) {
@@ -42,6 +63,7 @@ export class MatrixComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
+      document.getElementById('browse').value = null;
     }
   }
 

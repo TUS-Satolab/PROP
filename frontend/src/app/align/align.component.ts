@@ -16,6 +16,7 @@ export class AlignComponent implements OnInit {
   // ALIGN_URL = 'http://52.198.155.126:5004/alignment';
   form: FormGroup;
   filename = "";
+  _originalData = [];
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient,
               private messageService: MessageService) { }
@@ -27,10 +28,16 @@ export class AlignComponent implements OnInit {
       align_method: ['clustalw', Validators.required],
       input_type: [{value: 'nuc', disabled: false}, Validators.required],
     });
+    this._originalData = this.form.value;
   }
 
+  // reset() {
+  //   this.form.reset();
+  // }
+
   reset() {
-    this.form.reset();
+    this.form.setValue(this._originalData);
+    this.filename = '';
   }
 
   onFileSelect(event) {
@@ -38,6 +45,7 @@ export class AlignComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
+      document.getElementById('browse').value = null;
     }
   }
 
@@ -80,6 +88,14 @@ export class AlignComponent implements OnInit {
     //   (res) => console.log(res),
     //   (err) => console.log(err)
     // );
+  }
+
+  noalign() {
+    if (this.form.get('align_method').value === 'None') {
+      // this.form.controls['align_clw_opt'].reset();
+      this.form.get('align_clw_opt').setValue('');
+      return true;
+    }
   }
 
 

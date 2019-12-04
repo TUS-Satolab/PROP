@@ -17,7 +17,7 @@ export class TreeComponent implements OnInit {
   // SERVER_URL = 'http://52.198.155.126:5004/tree';
   form: FormGroup;
   filename = "";
-
+  _originalData = [];
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient, 
               private messageService: MessageService) { }
@@ -28,6 +28,7 @@ export class TreeComponent implements OnInit {
       file: ['', Validators.required],
       task_id: [''],
     });
+    this._originalData = this.form.value;
   }
 
   onFileSelect(event) {
@@ -35,11 +36,17 @@ export class TreeComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
+      document.getElementById('browse').value = null;
     }
   }
 
+  // reset() {
+  //   this.form.reset();
+  // }
+
   reset() {
-    this.form.reset();
+    this.form.setValue(this._originalData);
+    this.filename = '';
   }
 
   onSubmit() {
