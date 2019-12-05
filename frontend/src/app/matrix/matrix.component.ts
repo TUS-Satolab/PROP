@@ -103,6 +103,8 @@ export class MatrixComponent implements OnInit {
     if (this.form.get('plusgap').value === true) {
       this.form.controls['gapdel'].reset();
       return true;
+    } else {
+      this.form.get('gapdel').setValue('pair');
     }
   }
 }
