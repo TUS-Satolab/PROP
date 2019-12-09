@@ -77,7 +77,7 @@ export class CompleteCalcComponent implements OnInit {
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
     formData.append('input_type', this.form.get('input_type').value);
-    if (this.form.get('gapdel').value === '') {
+    if (this.form.get('gapdel').value === '' || this.form.get('gapdel').value === null) {
       formData.append('gapdel', 'pair');
     } else {
       formData.append('gapdel', this.form.get('gapdel').value);
