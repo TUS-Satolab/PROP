@@ -111,7 +111,7 @@ export class CompleteCalcComponent implements OnInit {
   plusgapselected() {
     if (this.form.get('plusgap').value === true) {
       this.plusgapflag = 0;
-      // this.form.controls['gapdel'].reset();
+      this.form.controls['gapdel'].reset();
       // this.form.controls['gapdel'].disable();
       return true;
     } else {
