@@ -108,11 +108,11 @@
                 </div>
             </label>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                    <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair">
+                    <!-- <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair"> -->
+                    <input [attr.disabled]="plusgapselected()" [checked]="plusgapflag===1" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair">
                     <label class="form-check-label" for="gapdel">Pairwise Deletion</label>
                 </div>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <!-- <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="nuc"> -->
                 <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="comp">
                 <label class="form-check-label" for="gapdel">Complete Deletion</label>
             </div>

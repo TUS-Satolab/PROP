@@ -26,6 +26,7 @@ export class CompleteCalcComponent implements OnInit {
   form: FormGroup;
   filename = "";
   _originalData = [];
+  plusgapflag = 0;
 
   constructor(private _checkstatus: checkstatus, private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
@@ -76,7 +77,11 @@ export class CompleteCalcComponent implements OnInit {
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
     formData.append('input_type', this.form.get('input_type').value);
-    formData.append('gapdel', this.form.get('gapdel').value);
+    if (this.form.get('gapdel').value === '') {
+      formData.append('gapdel', 'pair');
+    } else {
+      formData.append('gapdel', this.form.get('gapdel').value);
+    }
     formData.append('model', this.form.get('model').value);
     // console.log(this.form.get('plusgap').value);
     if (this.form.get('plusgap').value === true) {
@@ -105,10 +110,14 @@ export class CompleteCalcComponent implements OnInit {
 
   plusgapselected() {
     if (this.form.get('plusgap').value === true) {
-      this.form.controls['gapdel'].reset();
+      this.plusgapflag = 0;
+      // this.form.controls['gapdel'].reset();
+      // this.form.controls['gapdel'].disable();
       return true;
     } else {
-      this.form.get('gapdel').setValue('pair');
+      this.plusgapflag = 1;
+      // value could not be set here so it is set on submit
+      // this.form.controls['gapdel'].setValue('pair');
     }
   }
   noalign() {
