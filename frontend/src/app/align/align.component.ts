@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {formatDate} from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -13,6 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./align.component.css']
 })
 export class AlignComponent implements OnInit {
+  @ViewChild('fileInput', {static: false}) fileInput: any;
   // ALIGN_URL = 'http://52.198.155.126:5004/alignment';
   form: FormGroup;
   filename = "";
@@ -29,6 +30,7 @@ export class AlignComponent implements OnInit {
       input_type: [{value: 'nuc', disabled: false}, Validators.required],
     });
     this._originalData = this.form.value;
+    this.messageService.setDocuFlag('off');
   }
 
   // reset() {
@@ -45,7 +47,8 @@ export class AlignComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
-      document.getElementById('browse').value = null;
+      // document.getElementById('browse').value = null;
+      this.fileInput.nativeElement.value = null;
     }
   }
 

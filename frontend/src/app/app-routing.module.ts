@@ -5,6 +5,7 @@ import { CompleteCalcComponent } from './complete-calc/complete-calc.component';
 import { MatrixComponent } from './matrix/matrix.component';
 import { TreeComponent } from './tree/tree.component';
 import { MessagesComponent } from './messages/messages.component';
+import { DocumentationComponent } from './documentation/documentation.component';
 
 
 
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'matrix', component: MatrixComponent },
   { path: 'tree', component: TreeComponent },
   { path: 'messages', component: MessagesComponent },
+  { path: 'documentation', component: DocumentationComponent },
 ];
 
 @NgModule({

@@ -1,5 +1,5 @@
 from flask import Flask, request, flash, redirect, url_for, send_from_directory, send_file, jsonify, render_template
-from calculation import alignment, distance_matrix, phylo_tree, complete_calc
+from calculation import alignment, distance_matrix, phylo_tree, complete_calc, phylo_tree_score_otus
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from redis import Redis
@@ -302,10 +302,11 @@ def matrix(task_id=None):
                         'msg': "INFO : Either upload a file or input a task ID"}
             return res
             
-        if request.form.get("plusgap"):
-            plusgap_checked = "checked"
-        else:
-            plusgap_checked = "not_checked"
+        # if request.form.get("plusgap"):
+        #     plusgap_checked = "checked"
+        # else:
+        #     plusgap_checked = "not_checked"
+        plusgap_checked = request.form["plusgap"]
         gapdel = request.form.get("gapdel", None)
         input_type = request.form['input_type']
         model = request.form['model']
@@ -343,46 +344,54 @@ def tree():
             file = None
         task_id = request.form['task_id'] or None
         tree = request.form['tree']
-        score = []
-        otus = []
-        if task_id is not None and file is None:
-            try:
-                filename = "matrix_" + task_id + ".txt"
-                (score, otus) = open_matrix(filename, otus, score)
-            except:
-                # flash("task ID was not found in the database. Make sure you pasted the complete ID.")
-                # return redirect(request.url)
-                res = {'task_id': "None",
-                        'msg': "INFO : Task ID was not found in the database. Make sure you pasted the complete ID."}
-                return res
-        elif task_id is None and file is not None:
-            (filename, task_id) = upload_file('file')
-            (score, otus) = open_matrix(filename, otus, score)
-        elif task_id is not None and file is not None:
-            try:
-                filename = "matrix_" + task_id + ".txt"
-                (score, otus) = open_matrix(filename, otus, score)
-                #flash("Task ID was used because Matrix File was found in the database")
-                res = { 'msg': "INFO : Task ID was used because Matrix File was found in the database"}
-            except:
-                (filename, task_id) = upload_file('file')
-                (score, otus) = open_matrix(filename, otus, score)
-                #flash("File was uploaded because task ID was not found")
-                res = { 'msg': "INFO : File was uploaded because task ID was not found"}
-        else:
-            flash("Either upload a file or input a task ID")
-            return redirect(request.url)
-            res = {'task_id': "None",
-                        'msg': "INFO : Either upload a file or input a task ID"}
-            return res
-
+        # score = []
+        # otus = []
+        # if task_id is not None and file is None:
+        #     try:
+        #         filename = "matrix_" + task_id + ".txt"
+        #         (score, otus) = open_matrix(filename, otus, score)
+        #     except:
+        #         # flash("task ID was not found in the database. Make sure you pasted the complete ID.")
+        #         # return redirect(request.url)
+        #         res = {'task_id': "None",
+        #                 'msg': "INFO : Task ID was not found in the database. Make sure you pasted the complete ID."}
+        #         return res
+        # elif task_id is None and file is not None:
+        #     (filename, task_id) = upload_file('file')
+        #     try:
+        #         (score, otus) = open_matrix(filename, otus, score)
+        #     except:
+        #         raise Exception("No valid matrix")
+        # elif task_id is not None and file is not None:
+        #     try:
+        #         filename = "matrix_" + task_id + ".txt"
+        #         (score, otus) = open_matrix(filename, otus, score)
+        #         #flash("Task ID was used because Matrix File was found in the database")
+        #         res = { 'msg': "INFO : Task ID was used because Matrix File was found in the database"}
+        #     except:
+        #         (filename, task_id) = upload_file('file')
+        #         (score, otus) = open_matrix(filename, otus, score)
+        #         #flash("File was uploaded because task ID was not found")
+        #         res = { 'msg': "INFO : File was uploaded because task ID was not found"}
+        # else:
+        #     flash("Either upload a file or input a task ID")
+        #     return redirect(request.url)
+        #     res = {'task_id': "None",
+        #                 'msg': "INFO : Either upload a file or input a task ID"}
+        #     return res
+        (filename, task_id) = upload_file('file')
         out_tree = "tree_"+task_id+".txt"
         q = Queue(connection=redis_connection)
-        job = q.enqueue(phylo_tree,
+        # job = q.enqueue(phylo_tree,
+        #                 job_id=task_id,
+        #                 job_timeout='30m',
+        #                 result_ttl='168h',
+        #                 args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
+        job = q.enqueue(phylo_tree_score_otus,
                         job_id=task_id,
                         job_timeout='30m',
                         result_ttl='168h',
-                        args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
+                        args=(filename, tree, UPLOAD_FOLDER, out_tree))
         # return render_template('get_completed_results_form.html', msg=task_id)
         if res['msg'] == '':
             res['msg'] = "Started"
@@ -426,10 +435,11 @@ def complete():
         if input_type == 'null':
             input_type = 'nuc'
         align_clw_opt = request.form['align_clw_opt']
-        if request.form.get("plusgap"):
-            plusgap_checked = "checked"
-        else:
-            plusgap_checked = "not_checked"
+        # if request.form.get("plusgap"):
+        #     plusgap_checked = "checked"
+        # else:
+        #     plusgap_checked = "not_checked"
+        plusgap_checked = request.form["plusgap"]
         gapdel = request.form.get("gapdel", None)
         model = request.form['model']
         tree = request.form['tree']

@@ -14,7 +14,7 @@
                     <span>{{filename}}</span> 
             </label>
             <label for="browse" class="btn btn-danger btn-lg col-sm-1">
-                    Browse <input id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
+                    Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
             </label>
         </div>
         <!-- <div class="form-group">
@@ -31,7 +31,7 @@
         </div> -->
 
         <div class="form-group row">
-            <label for="gapdel" class="col-sm-2 col-form-label">Tree
+            <label for="gapdel" class="col-sm-2 col-form-label">Phylogenetic tree
                 <div class="tooltip5">
                     <i class="fa fa-question-circle" style="color:red"></i>
                     <div class="description5">説明を入力してください。 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {formatDate} from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -16,6 +16,7 @@ import { checkstatus } from '../checkstatus.service';
   styleUrls: ['./complete-calc.component.css'],
 })
 export class CompleteCalcComponent implements OnInit {
+  @ViewChild('fileInput', {static: false}) fileInput: any;
   // arrList = require('../env.json');
   // const first = 'http://';
   // const last = ':5004/complete';
@@ -36,13 +37,15 @@ export class CompleteCalcComponent implements OnInit {
       file: ['', Validators.required],
       align_method: ['clustalw', Validators.required],
       input_type: [{value: 'nuc', disabled: false}, Validators.required],
-      gapdel: [''],
+      gapdel: ['plusgap'],
       model: ['K2P', Validators.required],
-      plusgap: [true],
+      plusgap: [''],
       tree: ['nj', Validators.required],
       align_clw_opt: [''],
     });
     this._originalData = this.form.value;
+    this.messageService.setDocuFlag('off');
+    console.log(this.messageService.docuFlag);
   }
   onTypeSelect(input) {
     // var differences = [''];
@@ -50,8 +53,8 @@ export class CompleteCalcComponent implements OnInit {
       this.form.get('model').setValue('K2P');
       this.differences = ['P', 'K2P'];
     } else if (input == 'ami') {
-      this.form.get('model').setValue('PC');
-      this.differences = ['P', 'PC'];
+      this.form.get('model').setValue('Poisson');
+      this.differences = ['P', 'Poisson'];
     }
     return this.differences;
   }
@@ -67,7 +70,8 @@ export class CompleteCalcComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
-      document.getElementById('browse').value = null;
+      // document.getElementById('browse').value = null;
+      this.fileInput.nativeElement.value = null;
     }
   }
 
@@ -77,15 +81,26 @@ export class CompleteCalcComponent implements OnInit {
     formData.append('file', this.form.get('file').value);
     formData.append('align_method', this.form.get('align_method').value);
     formData.append('input_type', this.form.get('input_type').value);
-    if (this.form.get('gapdel').value === '' || this.form.get('gapdel').value === null) {
-      formData.append('gapdel', 'pair');
+    if (this.form.get('model').value === 'Poisson') {
+      formData.append('model', 'PC');
     } else {
-      formData.append('gapdel', this.form.get('gapdel').value);
+      formData.append('model', this.form.get('model').value);
     }
-    formData.append('model', this.form.get('model').value);
+    // if (this.form.get('gapdel').value === '' || this.form.get('gapdel').value === null) {
+    //   formData.append('gapdel', 'pair');
+    // } else {
+    //   formData.append('gapdel', this.form.get('gapdel').value);
+    // }
     // console.log(this.form.get('plusgap').value);
-    if (this.form.get('plusgap').value === true) {
-      formData.append('plusgap', this.form.get('plusgap').value);
+    // if (this.form.get('plusgap').value === true) {
+    //   formData.append('plusgap', this.form.get('plusgap').value);
+    // }
+    if (this.form.get('gapdel').value === 'plusgap') {
+      formData.append('plusgap', 'checked');
+      formData.append('gapdel', 'null');
+    } else {
+      formData.append('plusgap', 'not_checked');
+      formData.append('gapdel', this.form.get('gapdel').value);
     }
     formData.append('tree', this.form.get('tree').value);
     formData.append('align_clw_opt', this.form.get('align_clw_opt').value);
@@ -100,6 +115,7 @@ export class CompleteCalcComponent implements OnInit {
       this.messageService.add_msg({id: parsed_id, msg: parsed_msg, time: dateTime});
       const allCookies: {} = this.cookieService.getAll();
       let i = Object.keys(allCookies).length + 1;
+      console.log(parsed_id);
       this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';'
                                           + i + ';' + 'complete' + ';' + String(VERSION));
       // if (parsed_id !== 'None') {

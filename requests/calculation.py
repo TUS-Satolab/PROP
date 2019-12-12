@@ -97,7 +97,7 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
             #         -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
             #         " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
         except:
-            raise Exception("File not aligned")
+            raise Exception("Alignment error")
     elif align == "mafft":
         try:
             client.containers.run(image="my_mafft", command="bash -c 'mafft " + "files/" + input_file + \
@@ -109,7 +109,7 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
             #                     volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
             # subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
         except: 
-            raise Exception("File not aligned")
+            raise Exception("Alignment error")
     else:
         raise Exception("Check datatype or align definitions")
     print("Created alignment file")
@@ -182,7 +182,33 @@ def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
         # raise Exception("系統樹作成Error")
         raise Exception("Phylogenetic Tree Generation Error")
 
-    #print(output_tree)
+def phylo_tree_score_otus(input_file, tree, path='./files', out_tree='out_tree.txt'):
+    #系統樹作成
+    score = []
+    otus = []
+    f = open(os.path.join('./files', input_file),"r")
+    try:
+        line_count = int(f.readline())
+        for n in range(line_count):
+            line = f.readline()
+            line_read = line.split(" ",1)
+            otus.append(line_read.pop(0))
+            pre_score = line_read.pop(0)
+            score.append(list(map(float, pre_score.split(" ")[:-1:])))
+    except:
+        raise Exception("No valid matrix") 
+    f.close()
+    print("Create Phylogenetic Tree...")
+    try:
+        if tree == "nj":
+            print("nj")
+            Phylo.write(makeNj(score,otus), os.path.join(path, out_tree), "newick")
+        elif tree == "upgma":
+            print("upgma")
+            Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
+    except: 
+        # raise Exception("系統樹作成Error")
+        raise Exception("Phylogenetic Tree Generation Error")
 
 def parse_otus(input_file):
 

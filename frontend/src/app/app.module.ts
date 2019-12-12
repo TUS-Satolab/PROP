@@ -18,6 +18,7 @@ import { MatrixComponent } from './matrix/matrix.component';
 import { TreeComponent } from './tree/tree.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { DocumentationComponent } from './documentation/documentation.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { HeaderComponent } from './header/header.component';
     TreeComponent,
     FooterComponent,
     HeaderComponent,
+    DocumentationComponent,
   ],
   imports: [
     BrowserModule,

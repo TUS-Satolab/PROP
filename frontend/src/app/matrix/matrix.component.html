@@ -14,7 +14,7 @@
                     <span>{{filename}}</span> 
             </label>
             <label for="browse" class="btn btn-danger btn-lg col-sm-1">
-                    Browse <input id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
+                    Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
             </label>
         </div>
         <!-- <div class="form-group">
@@ -32,7 +32,7 @@
         </div> -->
 
         <div class="form-group row">
-            <label for="input_type" class="col-sm-2 col-form-label">Type
+            <label for="input_type" class="col-sm-2 col-form-label">Sequence type
                 <div class="tooltip5">
                     <i class="fa fa-question-circle" style="color:red"></i>
                     <div class="description5">説明を入力してください。 </div>
@@ -66,15 +66,8 @@
             </label>
             <select class="border-3 border-danger form-control form-control-sm col-sm-2" placeholder="model" formControlName="model" id="model" required>
                 <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>
-                <!-- <option value="P">P</option>
-                <option value="PC">PC</option>
-                <option value="JS">JS</option>
-                <option value="K2P">K2P</option>
-                <option value="none" selected>none</option> -->
             </select>
-            <div class="form-check checkbox checkbox-danger form-check">
-                <!-- <input type="checkbox" [formControlName]="i"> -->
-                <!-- <input type="checkbox" class="form-check-input col-sm ml-2" placeholder="plusgap" formControlName="plusgap" id="plusgap"> -->
+            <!-- <div class="form-check checkbox checkbox-danger form-check">
                 <input ng-model="checked" ng-click="onCheck()" type="checkbox" class="form-check-input col-sm-2 ml-2 styled" placeholder="plusgap" formControlName="plusgap" id="plusgap" [checked]='true'>
                 <label class="pl-4 form-check-label" for="plusgap">+ Gap
                     <div class="tooltip5">
@@ -82,51 +75,32 @@
                         <div class="description5">説明を入力してください。 </div>
                     </div>
                 </label>
-            </div>
+            </div> -->
         </div>
-
-        <!-- <div class="form-group">
-            <label>model</label>
-            <select class="form-control" placeholder="model" formControlName="model">
-                <option value="P">P</option>
-                <option value="PC">PC</option>
-                <option value="JS">JS</option>
-                <option value="K2P">K2P</option>
-                <option value="none" selected>none</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Plusgap</label>
-            <input type="checkbox" class="form-control" placeholder="plusgap" formControlName="plusgap">
-        </div> -->
-
         <div class="form-group row">
-            <label for="gapdel" class="col-sm-2 col-form-label">Gap Deletion
+            <label for="gapdel" class="col-sm-2 col-form-label">Treatment of gaps
                 <div class="tooltip5">
                     <i class="fa fa-question-circle" style="color:red"></i>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
             </label>
-            <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                    <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair">
-                    <label class="form-check-label" for="gapdel">Pairwise Deletion</label>
+            <div class="col-sm-6">
+                <div class="radio radio-danger form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="plusgap">
+                    <label class="form-check-label" for="gapdel">+Gap</label>
                 </div>
-            <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <!-- <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="nuc"> -->
-                <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="comp">
-                <label class="form-check-label" for="gapdel">Complete Deletion</label>
+                <div class="radio radio-danger form-check form-check-inline">
+                        <!-- <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair"> -->
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair">
+                        <label class="form-check-label" for="gapdel">Pairwise Deletion</label>
+                    </div>
+                <div class="radio radio-danger form-check form-check-inline">
+                    <!-- <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="comp"> -->
+                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="comp">
+                    <label class="form-check-label" for="gapdel">Complete Deletion</label>
+                </div>
             </div>
         </div>
-
-        <!-- <div class="form-group">
-            <label>gapdel</label>
-            <select class="form-control" placeholder="gapdel" formControlName="gapdel">
-                <option value="comp">comp</option>
-                <option value="pair">pair</option>
-                <option value="none" selected>none</option>
-            </select>
-        </div> -->
-        
         <div class="form-group row">
             <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
             <button class="btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="reset()">Reset</button>

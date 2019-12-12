@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {formatDate} from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -14,6 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./tree.component.css']
 })
 export class TreeComponent implements OnInit {
+  @ViewChild('fileInput', {static: false}) fileInput: any;
   // SERVER_URL = 'http://52.198.155.126:5004/tree';
   form: FormGroup;
   filename = "";
@@ -29,6 +30,7 @@ export class TreeComponent implements OnInit {
       task_id: [''],
     });
     this._originalData = this.form.value;
+    this.messageService.setDocuFlag('off');
   }
 
   onFileSelect(event) {
@@ -36,7 +38,8 @@ export class TreeComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
-      document.getElementById('browse').value = null;
+      // document.getElementById('browse').value = null;
+      this.fileInput.nativeElement.value = null;
     }
   }
 

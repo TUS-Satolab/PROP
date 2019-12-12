@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -7,9 +8,14 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class MessageService {
   messagesMsg: any[] = [];
+  docuFlag = '';
   // messagesId: string[] = [];
   // messagesDate: string[] = [];
   constructor(private cookieService: CookieService) { }
+
+  setDocuFlag(value: string) {
+    this.docuFlag = value;
+  }
 
   add_msg(message) {
     this.messagesMsg.push(message);

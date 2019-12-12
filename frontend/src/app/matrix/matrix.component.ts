@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {formatDate} from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./matrix.component.css']
 })
 export class MatrixComponent implements OnInit {
+  @ViewChild('fileInput', {static: false}) fileInput: any;
   // SERVER_URL = 'http://52.198.155.126:5004/matrix';
   form: FormGroup;
   filename = "";
@@ -27,13 +28,14 @@ export class MatrixComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       input_type: [{value: 'nuc', disabled: false}, Validators.required],
-      gapdel: [''],
+      gapdel: ['plusgap'],
       model: ['K2P', Validators.required],
-      plusgap: [true],
+      plusgap: [''],
       file: ['', Validators.required],
       task_id: [''],
     });
     this._originalData = this.form.value;
+    this.messageService.setDocuFlag('off');
   }
 
   onTypeSelect(input) {
@@ -42,8 +44,8 @@ export class MatrixComponent implements OnInit {
       this.form.get('model').setValue('K2P');
       this.differences = ['P', 'K2P'];
     } else if (input == 'ami') {
-      this.form.get('model').setValue('PC');
-      this.differences = ['P', 'PC'];
+      this.form.get('model').setValue('Poisson');
+      this.differences = ['P', 'Poisson'];
     }
     return this.differences;
   }
@@ -63,7 +65,8 @@ export class MatrixComponent implements OnInit {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
       this.filename = file.name;
-      document.getElementById('browse').value = null;
+      // document.getElementById('browse').value = null;
+      this.fileInput.nativeElement.value = null;
     }
   }
 
@@ -73,12 +76,24 @@ export class MatrixComponent implements OnInit {
     formData.append('file', this.form.get('file').value);
     formData.append('task_id', this.form.get('task_id').value);
     formData.append('input_type', this.form.get('input_type').value);
-    formData.append('model', this.form.get('model').value);
-    formData.append('gapdel', this.form.get('gapdel').value);
-    console.log(this.form.get('plusgap').value);
-    if (this.form.get('plusgap').value === true) {
-      formData.append('plusgap', this.form.get('plusgap').value);
+    if (this.form.get('model').value === 'Poisson') {
+      formData.append('model', 'PC');
+    } else {
+      formData.append('model', this.form.get('model').value);
     }
+    // formData.append('model', this.form.get('model').value);
+    if (this.form.get('gapdel').value === 'plusgap') {
+      formData.append('plusgap', 'checked');
+      formData.append('gapdel', 'null');
+    } else {
+      formData.append('plusgap', 'not_checked');
+      formData.append('gapdel', this.form.get('gapdel').value);
+    }
+
+    // formData.append('gapdel', this.form.get('gapdel').value);
+    // if (this.form.get('plusgap').value === true) {
+    //   formData.append('plusgap', this.form.get('plusgap').value);
+    // }
     // formData.append('plusgap', this.form.get('plusgap').value);
     if ((this.form.get('file').value === '') && (this.form.get('task_id').value === '')) {
       return this.messageService.add_msg('Add either a file or a task ID');
