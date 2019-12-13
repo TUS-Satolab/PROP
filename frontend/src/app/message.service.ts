@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class MessageService {
   messagesMsg: any[] = [];
-  docuFlag = '';
+  docuFlag = 'off';
   // messagesId: string[] = [];
   // messagesDate: string[] = [];
   constructor(private cookieService: CookieService) { }

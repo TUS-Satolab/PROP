@@ -45,7 +45,6 @@ export class CompleteCalcComponent implements OnInit {
     });
     this._originalData = this.form.value;
     this.messageService.setDocuFlag('off');
-    console.log(this.messageService.docuFlag);
   }
   onTypeSelect(input) {
     // var differences = [''];

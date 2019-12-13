@@ -12,7 +12,6 @@ export class DocumentationComponent implements OnInit {
 
   ngOnInit() {
     this.messageService.setDocuFlag('on');
-    console.log(this.messageService.docuFlag);
   }
 
 }
