@@ -31,6 +31,23 @@ client = docker.from_env()
 def complete_calc(out_align, filename, input_type, align_method, 
     align_clw_opt, matrix_output, gapdel, model, 
     tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
+    with open(os.path.join('./files', filename), 'r') as infile:
+        data = infile.read(5000)
+        data_split = data.split(">")
+        data_first_block = data_split[1][data_split[1].index('\n')+1:]
+        data_first_block_stripped = data_first_block.replace('\n','')
+        data = infile.readlines()
+        count_n = 0
+        for i in data:
+                if i.startswith(">"):
+                    count_n += 1
+    # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
+    if input_type == 'nuc' and len(data_first_block_stripped) > 900 and count_n > 10000:
+        raise Exception("Linecount maximum exceeded")
+    # If protein, the length within a block is allowed to be below 300 and 10k total blocks
+    elif input_type == 'ami' and len(data_first_block_stripped) > 300 and count_n > 10000:
+        raise Exception("Linecount maximum exceeded")
+        
     alignment(out_align, filename, input_type, align_method, align_clw_opt)
     (score, otus) = distance_matrix(out_align, matrix_output, gapdel, input_type, model, plusgap_checked)            
     phylo_tree(score, otus, tree, UPLOAD_FOLDER, out_tree)
@@ -80,7 +97,23 @@ def main(args):
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
 def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None):
-    #path = os.path.dirname(os.path.abspath(__file__)) + "/files"
+    with open(os.path.join('./files', input_file), 'r') as infile:
+        data = infile.read(5000)
+        data_split = data.split(">")
+        data_first_block = data_split[1][data_split[1].index('\n')+1:]
+        data_first_block_stripped = data_first_block.replace('\n','')
+        data = infile.readlines()
+        count_n = 0
+        for i in data:
+                if i.startswith(">"):
+                    count_n += 1
+    # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
+    if input_type == 'nuc' and len(data_first_block_stripped) > 900 and count_n > 10000:
+        raise Exception("Linecount maximum exceeded")
+    # If protein, the length within a block is allowed to be below 300 and 10k total blocks
+    elif input_type == 'ami' and len(data_first_block_stripped) > 300 and count_n > 10000:
+        raise Exception("Linecount maximum exceeded")
+
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
     d = input_type_dict[input_type]
     # d is either DNA or PROTEIN
