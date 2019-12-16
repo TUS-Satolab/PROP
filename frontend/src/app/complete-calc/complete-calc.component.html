@@ -37,16 +37,13 @@
                 </div>
             </label>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <!-- <input [attr.disabled]="mafftselected()" class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="nuc"> -->
-                <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="nuc" (click)="onTypeSelect('nuc')" required [checked]='true'>
-                <label class="form-check-label" for="input_type">Nucleotide</label>
+                <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_nuc" value="nuc" (click)="onTypeSelect('nuc')" required [checked]='true'>
+                <label for="input_type_nuc" class="form-check-label">Nucleotide</label>
             </div>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <!-- <input [attr.disabled]="mafftselected()" class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="ami"> -->
-                <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type" value="ami" (click)="onTypeSelect('ami')" required>
-                <label class="form-check-label" for="input_type">Protein</label>
+                <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_ami" value="ami" (click)="onTypeSelect('ami')" required>
+                <label for="input_type_ami" class="form-check-label">Protein</label>
             </div>
-            
         </div>
         <div class="form-group row">
             <label for="align_method" class="col-sm-2 col-form-label">Alignment
@@ -107,18 +104,16 @@
             </label>
             <div class="col-sm-6">
                 <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="plusgap">
-                    <label class="form-check-label" for="gapdel">+Gap</label>
+                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_plusgap" value="plusgap">
+                    <label class="form-check-label" for="gapdel_plusgap">+Gap</label>
                 </div>
                 <div class="radio radio-danger form-check form-check-inline">
-                    <!-- <input [attr.disabled]="plusgapselected()" [checked]="plusgapflag===1" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair"> -->
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="pair">
-                    <label class="form-check-label" for="gapdel">Pairwise Deletion</label>
+                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_pair" value="pair">
+                    <label class="form-check-label" for="gapdel_pair">Pairwise Deletion</label>
                 </div>
                 <div class="radio radio-danger form-check form-check-inline">
-                    <!-- <input [attr.disabled]="plusgapselected()" class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="comp"> -->
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel" value="comp">
-                    <label class="form-check-label" for="gapdel">Complete Deletion</label>
+                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_comp" value="comp">
+                    <label class="form-check-label" for="gapdel_comp">Complete Deletion</label>
                 </div>
             </div>
         </div>
@@ -130,12 +125,12 @@
                 </div>
             </label>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree" value="nj" [checked]='true' required>
-                <label class="form-check-label" for="tree">NJ</label>
+                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_nj" value="nj" [checked]='true' required>
+                <label class="form-check-label" for="tree_nj">NJ</label>
             </div>
             <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree" value="upgma" required>
-                <label class="form-check-label" for="tree">UPGMA</label>
+                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_upgma" value="upgma" required>
+                <label class="form-check-label" for="tree_upgma">UPGMA</label>
             </div>
             
         </div>
