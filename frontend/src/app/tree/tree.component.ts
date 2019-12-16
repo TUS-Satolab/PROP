@@ -20,6 +20,8 @@ export class TreeComponent implements OnInit {
   filename = "";
   _originalData = [];
   size_flag = 0;
+  submit_flag = 0;
+
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient, 
               private messageService: MessageService) { }
@@ -73,6 +75,7 @@ export class TreeComponent implements OnInit {
     formData.append('tree', this.form.get('tree').value);
     formData.append('file', this.form.get('file').value);
     formData.append('task_id', this.form.get('task_id').value);
+    this.submit_flag = 1;
     if ((this.form.get('file').value === '') && (this.form.get('task_id').value === '')) {
       return this.messageService.add_msg('Add either a file or a task ID');
     } else {
@@ -88,6 +91,7 @@ export class TreeComponent implements OnInit {
         if (parsed_id !== 'None') {
           // this.cookieService.set(String ( i ), parsed_id);
           this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'tree' + ';' + VERSION);
+          this.submit_flag = 0;
         }
         });
       }

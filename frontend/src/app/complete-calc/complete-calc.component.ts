@@ -30,6 +30,7 @@ export class CompleteCalcComponent implements OnInit {
   _originalData = [];
   plusgapflag = 0;
   size_flag = 0;
+  submit_flag = 0;
 
   constructor(private _checkstatus: checkstatus, private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
@@ -108,6 +109,7 @@ export class CompleteCalcComponent implements OnInit {
     }
     formData.append('tree', this.form.get('tree').value);
     formData.append('align_clw_opt', this.form.get('align_clw_opt').value);
+    this.submit_flag = 1;
     return this.httpClient.post(SERVER_URL, formData, {
       observe: 'response'
     }).subscribe(data => {
@@ -121,6 +123,7 @@ export class CompleteCalcComponent implements OnInit {
       console.log(parsed_id);
       this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';'
                                           + i + ';' + 'complete' + ';' + String(VERSION));
+      this.submit_flag = 0;
     });
   };
 

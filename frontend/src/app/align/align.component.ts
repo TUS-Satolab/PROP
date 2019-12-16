@@ -19,6 +19,8 @@ export class AlignComponent implements OnInit {
   filename = "";
   _originalData = [];
   size_flag = 0;
+  submit_flag = 0;
+
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient,
               private messageService: MessageService) { }
@@ -86,6 +88,7 @@ export class AlignComponent implements OnInit {
     // return this.httpClient.post(ALIGN_URL, formData).subscribe(data => {
     //   console.log(data);
     // });
+    this.submit_flag = 1;
     return this.httpClient.post(ALIGN_URL, formData, {
       observe: 'response'
     }).subscribe(data => {
@@ -100,6 +103,7 @@ export class AlignComponent implements OnInit {
       if (parsed_id !== 'None') {
         // this.cookieService.set(String ( i ), parsed_id);
         this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'align' + ';' + VERSION);
+        this.submit_flag = 0;
       }
     });
     // this.httpClient.post(ALIGN_URL, formData).subscribe(
