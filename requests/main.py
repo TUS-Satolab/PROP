@@ -99,7 +99,8 @@ def align(task_id=None, filename=None):
         #         return redirect(url_for('index'))
         # elif request.form['submit_button'] == 'calculate':
             (filename, task_id) = upload_file('file')
-            if not filename.endswith('.fasta'):
+            if not filename.endswith(('.fasta', '.fa', '.txt')):
+            # if not filename.endswith('.fasta'):
                 # flash('File format not correct. Choose fasta file')
                 # return redirect(request.url)
                 res = {'task_id': "None",
@@ -167,7 +168,6 @@ def task_query():
             res['result_id'] = result_id
             return(res)
         elif job.get_status() == 'started':
-            # res['msg'] = "Running"
             res['result_id'] = result_id
             job.meta['times'] = i + 1
             job.save_meta()
@@ -176,23 +176,18 @@ def task_query():
             else:
                 res['msg'] = "Running.."
             return(res)
-        elif job.get_status() == 'failed':
-            # q = Queue(connection=redis_connection)
-            # ids = q.failed_job_registry.get_job_ids() 
-            # print(ids)
-            # job = Job.fetch(ids[0], connection=redis_connection)
-
-            # job.__dict__["exc_info"].split("raise")[-1]
-            # print(job.__dict__["exc_info"].split("raise")[-1])
-            
+        elif job.get_status() == 'failed':            
             res['msg'] = "Failed"
-            data = job.__dict__["exc_info"].split("raise")[-1]
-            output = data.splitlines()
-            output_exception = output[1].split(': ')
-            try:
-                res['result_id'] = output_exception[1]
-            except:
-                res['result_id'] = output
+            if 'rq.timeouts.JobTimeoutException' in job.__dict__["exc_info"]:
+                res['result_id'] = 'Time limit of 60 minutes reached'
+            else:
+                data = job.__dict__["exc_info"].split("raise")[-1]
+                output = data.splitlines()
+                output_exception = output[1].split(': ')
+                try:
+                    res['result_id'] = output_exception[1]
+                except:
+                    res['result_id'] = output
             return(res)
 
 @app.route('/get_result_completed', methods=['GET', 'POST'])
@@ -315,7 +310,7 @@ def matrix(task_id=None):
         q = Queue(connection=redis_connection)
         job = q.enqueue(distance_matrix,
                         job_id=task_id,
-                        job_timeout='30m',
+                        job_timeout='60m',
                         result_ttl='168h',
                         args=(filename, matrix_output, gapdel, 
                             input_type, model, plusgap_checked))
@@ -389,7 +384,7 @@ def tree():
         #                 args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
         job = q.enqueue(phylo_tree_score_otus,
                         job_id=task_id,
-                        job_timeout='30m',
+                        job_timeout='60m',
                         result_ttl='168h',
                         args=(filename, tree, UPLOAD_FOLDER, out_tree))
         # return render_template('get_completed_results_form.html', msg=task_id)
@@ -463,7 +458,7 @@ def complete():
             #     shutil.copy(os.path.join(app.config['UPLOAD_FOLDER'], filename), os.path.join(app.config['UPLOAD_FOLDER'], out_align))
         job = q.enqueue(complete_calc,
                         job_id=task_id,
-                        job_timeout='30m',
+                        job_timeout='60m',
                         result_ttl='168h',
                         args=(out_align, filename, input_type, align_method, 
                             align_clw_opt, matrix_output, gapdel, model, 

@@ -7,6 +7,7 @@ import { MessageService } from '../message.service';
 import { SERVER_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
 import { checkstatus } from '../checkstatus.service';
+import { image } from 'd3';
 
 
 
@@ -28,6 +29,7 @@ export class CompleteCalcComponent implements OnInit {
   filename = "";
   _originalData = [];
   plusgapflag = 0;
+  size_flag = 0;
 
   constructor(private _checkstatus: checkstatus, private cookieService: CookieService, public fb: FormBuilder,
               private httpClient: HttpClient, private messageService: MessageService) { }
@@ -62,15 +64,27 @@ export class CompleteCalcComponent implements OnInit {
     this.form.setValue(this._originalData);
     this.filename = '';
     this.differences = ['P', 'K2P'];
+    this.size_flag = 0;
   }
 
   onFileSelect(event) {
     if (event.target.files.length === 1) {
+      this.filename = '';
+      this.form.get('file').setValue('');
       const file = event.target.files[0];
-      this.form.get('file').setValue(file);
-      this.filename = file.name;
-      // document.getElementById('browse').value = null;
-      this.fileInput.nativeElement.value = null;
+      // var upload = document.getElementById('browse');
+      var upload = this.fileInput.nativeElement;
+      if (upload.files[0].size > 20000000) {
+        this.size_flag = 1;
+        this.fileInput.nativeElement.value = null;
+      } else {
+        this.size_flag = 0;
+        this.form.get('file').setValue(file);
+        this.filename = file.name;
+        this.fileInput.nativeElement.value = null;
+      }
+      // this.form.get('file').setValue(file);
+      // this.filename = file.name;
     }
   }
 
@@ -85,15 +99,6 @@ export class CompleteCalcComponent implements OnInit {
     } else {
       formData.append('model', this.form.get('model').value);
     }
-    // if (this.form.get('gapdel').value === '' || this.form.get('gapdel').value === null) {
-    //   formData.append('gapdel', 'pair');
-    // } else {
-    //   formData.append('gapdel', this.form.get('gapdel').value);
-    // }
-    // console.log(this.form.get('plusgap').value);
-    // if (this.form.get('plusgap').value === true) {
-    //   formData.append('plusgap', this.form.get('plusgap').value);
-    // }
     if (this.form.get('gapdel').value === 'plusgap') {
       formData.append('plusgap', 'checked');
       formData.append('gapdel', 'null');
@@ -106,7 +111,6 @@ export class CompleteCalcComponent implements OnInit {
     return this.httpClient.post(SERVER_URL, formData, {
       observe: 'response'
     }).subscribe(data => {
-      // console.log(data);
       var unparsed_id = data.body["task_id"];
       var parsed_id: string = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
       var unparsed_msg = data.body["msg"];
@@ -117,9 +121,6 @@ export class CompleteCalcComponent implements OnInit {
       console.log(parsed_id);
       this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';'
                                           + i + ';' + 'complete' + ';' + String(VERSION));
-      // if (parsed_id !== 'None') {
-      //   this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'complete');
-      // }
     });
   };
 

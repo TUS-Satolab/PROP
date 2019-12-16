@@ -19,6 +19,7 @@ export class TreeComponent implements OnInit {
   form: FormGroup;
   filename = "";
   _originalData = [];
+  size_flag = 0;
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient, 
               private messageService: MessageService) { }
@@ -35,11 +36,24 @@ export class TreeComponent implements OnInit {
 
   onFileSelect(event) {
     if (event.target.files.length === 1) {
+      // const file = event.target.files[0];
+      // this.form.get('file').setValue(file);
+      // this.filename = file.name;
+      // this.fileInput.nativeElement.value = null;
+      this.filename = '';
+      this.form.get('file').setValue('');
       const file = event.target.files[0];
-      this.form.get('file').setValue(file);
-      this.filename = file.name;
-      // document.getElementById('browse').value = null;
-      this.fileInput.nativeElement.value = null;
+      // var upload = document.getElementById('browse');
+      var upload = this.fileInput.nativeElement;
+      if (upload.files[0].size > 20000000) {
+        this.size_flag = 1;
+        this.fileInput.nativeElement.value = null;
+      } else {
+        this.size_flag = 0;
+        this.form.get('file').setValue(file);
+        this.filename = file.name;
+        this.fileInput.nativeElement.value = null;
+      }
     }
   }
 
@@ -50,6 +64,7 @@ export class TreeComponent implements OnInit {
   reset() {
     this.form.setValue(this._originalData);
     this.filename = '';
+    this.size_flag = 0;
   }
 
   onSubmit() {

@@ -19,7 +19,6 @@
             <label for="browse" class="btn btn-danger btn-lg col-sm-1">
                     Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
             </label>
-        
         <!-- <button type="button" (click)="fileInput.click()">
             <span>Upload</span>
             <input #fileInput type="file" (change)="onFileSelect($event)" required style="display:none;" />
@@ -28,6 +27,12 @@
             <label for="file" class="col-sm-2 col-form-label">Input File</label>
             <input type="file" name="file" (change)="onFileSelect($event)" required>
         </div> -->
+        </div>
+        <div *ngIf="size_flag === 1" class="form-group row">
+            <label class="col-sm-2 col-form-label"></label>
+            <div *ngIf="size_flag === 1" class="col-sm-4 alert alert-danger">
+                File size is too big. (> 20MB)
+            </div>
         </div>
         <div class="form-group row">
             <label for="input_type" class="col-sm-2 col-form-label">Sequence type
