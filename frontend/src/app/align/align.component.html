@@ -71,8 +71,11 @@
             <input [attr.disabled]="noalign()" class="border-2 border-danger form-control form-control-sm col-sm-4" placeholder="Options" formControlName="align_clw_opt" id="options">
         </div>
         <div class="form-group row">
-            <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
+            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
             <button class="btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="reset()">Reset</button>
         </div>
+        <ng-template #elseSubmitting>
+            <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="form.valid">Submitting</button>
+        </ng-template>
     </form>
 </div>

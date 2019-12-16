@@ -22,6 +22,7 @@ export class MatrixComponent implements OnInit {
   _originalData = [];
   differences = ['P', 'K2P'];
   size_flag = 0;
+  submit_flag = 0;
 
   constructor(private cookieService: CookieService, public fb: FormBuilder, private httpClient: HttpClient, 
               private messageService: MessageService) { }
@@ -110,6 +111,7 @@ export class MatrixComponent implements OnInit {
     //   formData.append('plusgap', this.form.get('plusgap').value);
     // }
     // formData.append('plusgap', this.form.get('plusgap').value);
+    this.submit_flag = 1;
     if ((this.form.get('file').value === '') && (this.form.get('task_id').value === '')) {
       return this.messageService.add_msg('Add either a file or a task ID');
     } else {
@@ -125,6 +127,7 @@ export class MatrixComponent implements OnInit {
         if (parsed_id !== 'None') {
           // this.cookieService.set(String ( i ), parsed_id);
           this.cookieService.set(String ( i ), parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'matrix' + ';' + VERSION);
+          this.submit_flag = 0;
         }
         });
       }
