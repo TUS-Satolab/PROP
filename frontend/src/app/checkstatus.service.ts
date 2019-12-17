@@ -17,7 +17,8 @@ export class checkstatus {
                         '系統樹作成Error', 'Check datatype or align definitions', 'Cancelled',
                         'log(0) in Distance Matrix Calculation. Check Type and Genetic Difference',
                         'Alignment error', 'No valid matrix', 'Time limit of 60 minutes reached',
-                        'Linecount maximum exceeded'];
+                        'Linecount maximum exceeded', 'Phylogenetic Tree Generation Error', 'Alignment error',
+                        'Calculating Genetic Difference Error',];
       const sec_arr = ['Finished', 'Cancelled'];
       const allCookies: {} = this.cookieService.getAll();
       // tslint:disable-next-line: forin
