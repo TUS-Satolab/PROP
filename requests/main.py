@@ -219,7 +219,7 @@ def get_result_completed(result_id=None, result_kind=None):
                 tree_file = "tree_"+result_id+".txt"
                 if os.path.exists(UPLOAD_FOLDER+"/"+tree_file):
                     f = open(os.path.join(app.config['UPLOAD_FOLDER'], tree_file), "r")
-                    output = f.read().replace('\n', '').replace('\'','')
+                    output = f.read().replace('\n', '')
                     f.close()
                     return output
                 else:
