@@ -17,9 +17,12 @@
                         <div class="col-sm-1">{{cookieID.msg}}</div>
                         <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg" class="col-sm-1">
                         <div *ngIf="started(cookieID.msg); else elseCancel">
-                                <div class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
+                                <div *ngIf="downloadFlag === 0; else elseDownloading" class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
                                 <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock" class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn-danger btn-sm">View</button></div>
                         </div>
+                        <ng-template #elseDownloading>
+                                <div class="col-sm-1"><button [disabled]="!notfinished(cookieID.msg)" class="btn-danger btn-sm">Downloading</button></div>
+                            </ng-template>
                         <ng-template #elseCancel>
                                 <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
                         </ng-template>
