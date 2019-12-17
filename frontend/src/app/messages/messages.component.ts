@@ -154,7 +154,6 @@ showTree(input) {
   };
   formData.append('result_id', input);
   formData.append('result_kind', 'tree');
-  this.downloadFlag = 1;
   this.httpClient.post(QUERY_URL, formData, {observe: 'response'}).subscribe(query => {
       if (query.body['msg'] === 'Finished') {
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
@@ -182,7 +181,6 @@ showTree(input) {
           this.heightSVG = this.tree.display.height;
           this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
           this.linearFlag = true;
-          this.downloadFlag = 0;
           return this.out_tree
         });
       } else {
