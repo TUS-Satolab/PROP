@@ -179,7 +179,7 @@ def task_query():
         elif job.get_status() == 'failed':            
             res['msg'] = "Failed"
             if 'rq.timeouts.JobTimeoutException' in job.__dict__["exc_info"]:
-                res['result_id'] = 'Time limit of 60 minutes reached'
+                res['result_id'] = 'Time limit of 24 hours reached'
             else:
                 data = job.__dict__["exc_info"].split("raise")[-1]
                 output = data.splitlines()
