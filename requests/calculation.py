@@ -42,10 +42,10 @@ def complete_calc(out_align, filename, input_type, align_method,
                 if i.startswith(">"):
                     count_n += 1
     # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
-    if align_method == 'mafft' and len(data_first_block_stripped) > 2000 and count_n > 10000:
+    if align_method == 'mafft' and len(data_first_block_stripped) > 3000 and count_n > 5000:
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align_method == 'clustalw' and len(data_first_block_stripped) > 2000 and count_n > 2000:
+    elif align_method == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 2000:
         raise Exception("Linecount maximum exceeded")
         
     alignment(out_align, filename, input_type, align_method, align_clw_opt)
@@ -108,10 +108,10 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
                 if i.startswith(">"):
                     count_n += 1
     # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
-    if align == 'mafft' and len(data_first_block_stripped) > 2000 and count_n > 10000:
+    if align == 'mafft' and len(data_first_block_stripped) > 3000 and count_n > 5000:
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align == 'clustalw' and len(data_first_block_stripped) > 2000 and count_n > 2000:
+    elif align == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 2000:
         raise Exception("Linecount maximum exceeded")
 
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
