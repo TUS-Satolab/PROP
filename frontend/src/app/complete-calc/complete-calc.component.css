@@ -1,3 +1,5 @@
+@import url('../../styles.css');
+
 .filename {
   border: 3px;
   border-style: solid;
@@ -7,8 +9,9 @@
 }
 
 label, h1, h2, h3 {
-  color: #4A4A4A,
+  color: var(--dark);
 }
+
 label[for^=browse] {
   color: #ffffff;
   font-size:15px;
