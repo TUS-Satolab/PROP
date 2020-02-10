@@ -27,6 +27,30 @@ label[for^=browse] {
   border-width:2px !important;
 }
 
+/* -- button -- */
+/* button default */
+.btn-canal-primary,
+.btn-canal-primary.disabled, .btn-canal-primary:disabled {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* button hover */
+.btn-canal-primary:hover {
+  color: #fff;
+  background-color: var(--color-primary-75);
+  border-color: var(--color-primary-75);
+}
+
+/* button active */
+.btn-canal-primary:not(:disabled):not(.disabled):active, .btn-canal-primary:not(:disabled):not(.disabled).active,
+.show > .btn-canal-primary.dropdown-toggle {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
 .alert {
   text-align: center;
   margin-bottom: 1px;
