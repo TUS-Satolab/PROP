@@ -7,7 +7,7 @@
 }
 
 label, h1, h2, h3 {
-  color: rgb(246, 8, 68);
+  color: #4A4A4A,
 }
 label[for^=browse] {
   color: #ffffff;
