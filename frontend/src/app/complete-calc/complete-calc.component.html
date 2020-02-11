@@ -6,19 +6,22 @@
     </p> -->
     <h3  class="hr col-sm-6"></h3>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Input File
+        <div class="d-flex flex-column col-sm-6 form-group">
+            <label>Input File</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <i class="fa fa-question-circle" style="color:red"></i>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <label class="filename col-sm-3">
-                    <span>{{filename}}</span>
-            </label>
-            <label for="browse" class="btn btn-danger btn-lg col-sm-1">
-                    Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
-            </label>
+                <div class="d-flex justify-content-end col-sm-9">
+                    <label class="filename col-sm-8">
+                      <span>{{filename}}</span>
+                    </label>
+                    <label for="browse" class="btn btn-canal-primary btn-lg">
+                      Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
+                    </label>
+                </div>
+            </div>
         <!-- <button type="button" (click)="fileInput.click()">
             <span>Upload</span>
             <input #fileInput type="file" (change)="onFileSelect($event)" required style="display:none;" />
