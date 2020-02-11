@@ -1,3 +1,5 @@
+@import url('../../styles.css');
+
 .filename {
   border: 3px;
   border-style: solid;
@@ -7,8 +9,9 @@
 }
 
 label, h1, h2, h3 {
-  color: rgb(246, 8, 68);
+  color: var(--dark);
 }
+
 label[for^=browse] {
   color: #ffffff;
   font-size:15px;
@@ -22,6 +25,30 @@ label[for^=browse] {
 
 .border-2 {
   border-width:2px !important;
+}
+
+/* -- button -- */
+/* button default */
+.btn-canal-primary,
+.btn-canal-primary.disabled, .btn-canal-primary:disabled {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* button hover */
+.btn-canal-primary:hover {
+  color: #fff;
+  background-color: var(--color-primary-75);
+  border-color: var(--color-primary-75);
+}
+
+/* button active */
+.btn-canal-primary:not(:disabled):not(.disabled):active, .btn-canal-primary:not(:disabled):not(.disabled).active,
+.show > .btn-canal-primary.dropdown-toggle {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .alert {
