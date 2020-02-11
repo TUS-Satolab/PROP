@@ -86,25 +86,28 @@
             <input [attr.disabled]="noalign()" class="border-2 border-danger form-control form-control-sm col-sm-4" formControlName="align_clw_opt" id="options">
         </div>
         <h3  class="hr"></h3>
-        <div class="form-group row">
-            <label for="model" class="col-sm-2 col-form-label">Genetic Difference
+        <div class="d-flex flex-column col-sm-6 form-group">
+            <label for="model">Genetic Difference</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <i class="fa fa-question-circle" style="color:red"></i>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <select class="border-3 border-danger form-control form-control-sm col-sm-2" placeholder="model" formControlName="model" id="model" required>
-            <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>
-            </select>
-            <!-- <div class="form-check checkbox checkbox-danger">
-                <input ng-model="checked" ng-click="onCheck()" type="checkbox" class="form-check-input col-sm-2 ml-2 styled" placeholder="plusgap" formControlName="plusgap" id="plusgap" [checked]='true'>
-                <label class="pl-4 form-check-label" for="plusgap">+ Gap
-                    <div class="tooltip5">
-                        <i class=" fa fa-question-circle" style="color:red"></i>
-                        <div class="description5">説明を入力してください。 </div>
-                    </div>
-                </label>
-            </div> -->
+                <div class="d-flex justify-content-end col-sm-9">
+                    <select class="border-3 border-danger form-control form-control-sm" placeholder="model" formControlName="model" id="model" required>
+                    <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>
+                    </select>
+                    <!-- <div class="form-check checkbox checkbox-danger">
+                        <input ng-model="checked" ng-click="onCheck()" type="checkbox" class="form-check-input col-sm-2 ml-2 styled" placeholder="plusgap" formControlName="plusgap" id="plusgap" [checked]='true'>
+                        <label class="pl-4 form-check-label" for="plusgap">+ Gap
+                            <div class="tooltip5">
+                                <i class=" fa fa-question-circle" style="color:red"></i>
+                                <div class="description5">説明を入力してください。 </div>
+                            </div>
+                        </label>
+                    </div> -->
+                </div>
+            </div>
         </div>
         <div class="d-flex flex-column col-sm-6 form-group">
             <label for="gapdel">Treatment of gaps</label>
