@@ -152,9 +152,9 @@
             </div>
         </div>
 
-        <div class="form-group row">
-            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="reset()">Reset</button>
+        <div class="form-group">
+            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg col-sm-6" type="submit" [disabled]="!form.valid">Create</button>
+            <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg col-sm-6" type="button" (click)="reset()">Reset</button>
         </div>
         <ng-template #elseSubmitting>
             <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="form.valid">Submitting</button>
