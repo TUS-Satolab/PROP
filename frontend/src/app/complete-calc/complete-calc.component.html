@@ -106,25 +106,26 @@
                 </label>
             </div> -->
         </div>
-        <div class="form-group row">
-            <label for="gapdel" class="col-sm-2 col-form-label">Treatment of gaps
+        <div class="d-flex flex-column col-sm-6 form-group">
+            <label for="gapdel">Treatment of gaps</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <i class="fa fa-question-circle" style="color:red"></i>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <div class="col-sm-6">
-                <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_plusgap" value="plusgap">
-                    <label class="form-check-label" for="gapdel_plusgap">+Gap</label>
-                </div>
-                <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_pair" value="pair">
-                    <label class="form-check-label" for="gapdel_pair">Pairwise Deletion</label>
-                </div>
-                <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_comp" value="comp">
-                    <label class="form-check-label" for="gapdel_comp">Complete Deletion</label>
+                <div class="d-flex justify-content-end col-sm-11">
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_plusgap" value="plusgap">
+                        <label class="form-check-label" for="gapdel_plusgap">+Gap</label>
+                    </div>
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_pair" value="pair">
+                        <label class="form-check-label" for="gapdel_pair">Pairwise Deletion</label>
+                    </div>
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_comp" value="comp">
+                        <label class="form-check-label" for="gapdel_comp">Complete Deletion</label>
+                    </div>
                 </div>
             </div>
         </div>
