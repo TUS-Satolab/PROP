@@ -24,6 +24,13 @@ h1 {
   border-radius: 9px;
 }
 
+.divider {
+  border-color: var(--grey-3);
+  border-style: solid;
+  border-width: 1px 0 0 0;
+  width: 100%;
+}
+
 label[for^=browse] {
   color: #ffffff;
   font-size:15px;
