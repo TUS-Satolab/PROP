@@ -8,8 +8,12 @@
   text-align: left;
 }
 
-label, h1, h2, h3 {
+label, h2, h3 {
   color: var(--dark);
+}
+
+h1 {
+  color: var(--grey-3);
 }
 
 label[for^=browse] {
