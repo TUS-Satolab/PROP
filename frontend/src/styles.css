@@ -8,4 +8,7 @@
   --grey-3: #4A4A4A;
   --grey-2: #9B9B9B;
   --grey-1: #CCCCCC;
+
+  --light: #FFFFFF;
+  --light-opacity-05: rgb(255,255,255,0.5);
 }
