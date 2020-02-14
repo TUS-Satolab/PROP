@@ -14,10 +14,14 @@ label, h2, h3 {
 
 h1 {
   color: var(--grey-3);
+  padding-bottom: 15px;
 }
 
 .caption {
+  background-color: var(--light-opacity-05);
+  padding: 15px;
   color: var(--grey-2);
+  border-radius: 9px;
 }
 
 label[for^=browse] {
