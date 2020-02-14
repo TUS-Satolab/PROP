@@ -16,6 +16,10 @@ h1 {
   color: var(--grey-3);
 }
 
+.caption {
+  color: var(--grey-2);
+}
+
 label[for^=browse] {
   color: #ffffff;
   font-size:15px;
