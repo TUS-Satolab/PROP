@@ -56,36 +56,36 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row">
-            <label for="align_method" class="col-sm-2 col-form-label">Alignment
-                <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
-                    <div class="description5">説明を入力してください。 </div>
+        <div class="d-flex flex-column col-sm-6">
+            <div class="form-group">
+                <label for="align_method">Alignment</label>
+                <div class="d-flex flex-row justify-content-between">
+                    <div class="tooltip5">
+                        <i class="fa fa-question-circle" style="color:red"></i>
+                        <div class="description5">説明を入力してください。 </div>
+                    </div>
+                    <div class="d-flex justify-content-end col-sm-9">
+                        <select class="border-3 border-danger form-control form-control-sm" formControlName="align_method" id="align_method" required>
+                            <option value="clustalw" [selected]='true' selected>Clustal W2</option>
+                            <option value="mafft">MAFFT</option>
+                            <option value="None">No alignment necessary</option>
+                        </select>
+                    </div>
                 </div>
-            </label>
-            <select class="border-3 border-danger form-control form-control-sm col-sm-4" formControlName="align_method" id="align_method" required>
-                <option value="clustalw" [selected]='true' selected>Clustal W2</option>
-                <option value="mafft">MAFFT</option>
-                <option value="None">No alignment necessary</option>
-            </select>
-        </div>
-        <!-- <div [hidden]="!mafftselected()" class="form-group row">
-            <label for="options" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-4 alert alert-success">
-                Type is automatically determined.
             </div>
-        </div> -->
-        <div class="form-group row">
-            <label for="options" class="col-sm-2 col-form-label">Options
-                <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
-                    <!-- <div class="description5">説明を入力してください。 </div> -->
-                    <div class="description5">説明を入力してください。</div>
+            <!-- <div [hidden]="!mafftselected()" class="form-group row">
+                <label for="options" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-4 alert alert-success">
+                    Type is automatically determined.
                 </div>
-            </label>
-            <input [attr.disabled]="noalign()" class="border-2 border-danger form-control form-control-sm col-sm-4" formControlName="align_clw_opt" id="options">
+            </div> -->
+            <div class="d-flex flex-row justify-content-end form-group">
+                <div class="d-flex flex-column justify-content-end col-sm-9">
+                    <label for="options">Options</label>
+                    <input [attr.disabled]="noalign()" class="border-2 border-danger form-control form-control-sm" formControlName="align_clw_opt" id="options">
+                </div>
+            </div>
         </div>
-        <h3  class="hr"></h3>
         <div class="d-flex flex-column col-sm-6 form-group">
             <label for="model">Genetic Difference</label>
             <div class="d-flex flex-row justify-content-between">
