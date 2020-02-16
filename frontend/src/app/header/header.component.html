@@ -1,30 +1,37 @@
-<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
-        <a class="navbar-brand" href="#">Canal Project</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
-          aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/complete">Complete Calculation</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/align">Alignment Calculation</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/matrix">Matrix Calculation</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/tree">Tree Calculation</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/documentation">Documentation</a>
-            </li>
-          </ul>
+<nav class="navbar navbar-expand-md bg-white navbar-light fixed-top">
+    <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between">
+            <a class="btn" href="#"><img src="../../assets/canal_logo.svg" class="navbar-brand-logo"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
-      </nav>
-      
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/complete">Complete Calculation</a>
+                </li>
+                <span class="slash">/</span>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/align">Alignment Calculation</a>
+                </li>
+                <span class="slash">/</span>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/matrix">Matrix Calculation</a>
+                </li>
+                <span class="slash">/</span>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/tree">Tree Calculation</a>
+                </li>
+                <span class="slash">/</span>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/documentation">Documentation</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 
 
 <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -46,7 +53,7 @@
         <li class="nav-item">
             <a class="nav-link" routerLink="/tree">Tree Calculation</a>
         </li>
-    
+
         </ul>
     </div>
 </nav> -->
