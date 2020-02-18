@@ -16,10 +16,10 @@
                     <div class="description5">説明を入力してください。 </div>
                 </div>
                 <div class="d-flex justify-content-end col-sm-9">
-                    <label class="filename col-sm-8">
+                    <label class="filename col-sm-8 file-form">
                       <span>{{filename}}</span>
                     </label>
-                    <label for="browse" class="btn btn-canal-primary btn-lg">
+                    <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
                       Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
                     </label>
                 </div>
