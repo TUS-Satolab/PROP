@@ -51,6 +51,8 @@ label[for^=browse] {
     border-radius: 3rem 0 0 3rem;
     border-color: var(--grey-1);
     border-width: 2px;
+    display: flex;
+    align-items: center;
 }
 
 
