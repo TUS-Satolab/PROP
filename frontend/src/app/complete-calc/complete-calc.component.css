@@ -72,9 +72,9 @@ label[for^=browse] {
 .btn-canal-secondary,
 .btn-canal-secondary.disabled,
 .btn-canal-secondary:disabled {
-    color: var(--grey-2);
+    color: var(--grey-1);
     background-color: var(--light);
-    border-color: var(--light);
+    border-color: var(--grey-0);
 }
 
 .browse-btn {
@@ -108,9 +108,9 @@ label[for^=browse] {
 }
 
 .btn-canal-secondary:hover {
-    color: var(--grey-2);
-    background-color: var(--grey-1);
-    border-color: var(--grey-1);
+    color: var(--grey-1);
+    background-color: var(--grey-0);
+    border-color: var(--grey-0);
 }
 
 
