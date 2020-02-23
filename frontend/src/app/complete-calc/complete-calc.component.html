@@ -69,11 +69,13 @@
                         <div class="description5">説明を入力してください。 </div>
                     </div>
                     <div class="d-flex justify-content-end col-sm-9">
-                        <select class="border-3 border-danger form-control form-control-sm" formControlName="align_method" id="align_method" required>
-                            <option value="clustalw" [selected]='true' selected>Clustal W2</option>
-                            <option value="mafft">MAFFT</option>
-                            <option value="None">No alignment necessary</option>
-                        </select>
+                        <label class="custom-select-component">
+                            <select class="custom-select form-control form-control-sm" formControlName="align_method" id="align_method" required>
+                                <option value="clustalw" [selected]='true' selected>Clustal W2</option>
+                                <option value="mafft">MAFFT</option>
+                                <option value="None">No alignment necessary</option>
+                            </select>
+                        </label>
                     </div>
                 </div>
             </div>
