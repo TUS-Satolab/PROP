@@ -64,9 +64,17 @@ label[for^=browse] {
 .btn-canal-primary,
 .btn-canal-primary.disabled,
 .btn-canal-primary:disabled {
-    color: #fff;
+    color: var(--light);
     background-color: var(--color-primary);
     border-color: var(--color-primary);
+}
+
+.btn-canal-secondary,
+.btn-canal-secondary.disabled,
+.btn-canal-secondary:disabled {
+    color: var(--grey-1);
+    background-color: var(--light);
+    border-color: var(--grey-0);
 }
 
 .browse-btn {
@@ -80,13 +88,29 @@ label[for^=browse] {
     padding-left: 1rem;
 }
 
+.main-btn {
+    border-radius: 5rem;
+}
+
+.create-btn::after {
+    content: url(../../assets/icon_create.svg);
+    float: right;
+    vertical-align: middle;
+}
+
 
 /* button hover */
 
 .btn-canal-primary:hover {
-    color: #fff;
+    color: var(--light);
     background-color: var(--color-primary-75);
     border-color: var(--color-primary-75);
+}
+
+.btn-canal-secondary:hover {
+    color: var(--grey-1);
+    background-color: var(--grey-0);
+    border-color: var(--grey-0);
 }
 
 
