@@ -161,11 +161,12 @@
         </div>
 
         <div class="form-group">
-            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg" type="button" (click)="reset()">Reset</button>
+            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg create-btn main-btn" type="submit" [disabled]="!form.valid">Create</button>
+            <button class="btn btn-canal-secondary btn-block btn-lg main-btn" type="button" (click)="reset()">Reset</button>
+            <!-- <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg reset-btn main-btn" type="button" (click)="reset()">Reset</button> -->
         </div>
         <ng-template #elseSubmitting>
-            <button class="btn btn-danger btn-block btn-lg" type="submit" [disabled]="form.valid">Submitting</button>
+            <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">Submitting</button>
         </ng-template>
     </form>
 </div>
