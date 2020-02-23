@@ -1,21 +1,21 @@
-    @import url('../../styles.css');
-    .nav-item {
-        padding: 2px;
-        text-align: center;
-    }
+@import url('../../styles.css');
+.nav-item {
+    padding: 2px;
+    text-align: center;
+}
 
-    .navbar-brand-logo {
-        height: 61px;
-    }
+.navbar-brand-logo {
+    height: 61px;
+}
 
+.slash {
+    display: none;
+}
+
+@media screen and (min-width:768px) {
     .slash {
-        display: none;
+        display: block;
+        padding: .5rem;
+        color: var(--dark);
     }
-
-    @media screen and (min-width:768px) {
-        .slash {
-            display: block;
-            padding: .5rem;
-            color: var(--dark);
-        }
-    }
+}
