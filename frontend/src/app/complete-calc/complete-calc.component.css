@@ -105,6 +105,10 @@ label[for^=browse] {
     appearance: none;
 }
 
+#model option {
+    appearance: none;
+}
+
 
 /* -- select box ends -- */
 
