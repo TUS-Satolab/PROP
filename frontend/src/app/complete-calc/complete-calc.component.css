@@ -62,6 +62,53 @@ label[for^=browse] {
 }
 
 
+/* -- select box starts -- */
+
+.custom-select-component {
+    box-shadow: 3px 6px 9px 0 rgba(0, 0, 0, .2);
+    padding: 0.3rem 0 0.3rem 0.6rem;
+    background: var(--light);
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    border-radius: 5rem;
+}
+
+.custom-select {
+    border: none;
+    outline: none;
+    display: inline-block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    color: var(--grey-3);
+    border-radius: 0;
+    z-index: 2;
+    background: transparent;
+}
+
+.custom-select-component:after {
+    content: url(../../assets/icon_select.svg);
+    background: var(--color-primary);
+    padding: 0.6rem;
+    border-radius: 0 5rem 5rem 0;
+    text-align: center;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+#align_method option {
+    appearance: none;
+}
+
+
+/* -- select box ends -- */
+
+
 /* -- button -- */
 
 
