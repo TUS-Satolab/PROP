@@ -4,6 +4,9 @@
 
     <!-- changed table view / starts -->
     <h2>Tasks</h2>
+    <div class="btn-clear-container">
+        <button class="clear btn btn-sm btn-clear pull-right tasks-btn" (click)="messageService.clear()">Clear history</button>
+    </div>
     <div *ngIf="prevIdArray">
         <table class="table table-bordered">
             <thead>
