@@ -1,6 +1,62 @@
 <div *ngIf="messageService.docuFlag !== 'on'" class="container col-xs-12 col-sm-10 col-md-8 col-lg-6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div style="height: 50px;"></div>
+
+    <!-- changed table view / starts -->
+    <h2>Tasks</h2>
+    <div *ngIf="prevIdArray">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let cookieID of prevIdArray'>
+                    <td>
+                        <div>{{cookieID.number}}</div>
+                    </td>
+                    <td>
+                        <div>{{cookieID.time}}</div>
+                    </td>
+                    <td>
+                        <div>{{cookieID.msg}}</div>
+                    </td>
+                    <td>
+                        <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
+                            <div *ngIf="started(cookieID.msg); else elseCancel">
+                                <div *ngIf="downloadFlag === 0; else elseDownloading" class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
+                                <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn-danger btn-sm">View</button></div>
+                            </div>
+                            <ng-template #elseDownloading>
+                                <div><button [disabled]="!notfinished(cookieID.msg)" class="btn-danger btn-sm">Downloading</button></div>
+                            </ng-template>
+                            <ng-template #elseCancel>
+                                <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
+                            </ng-template>
+                            <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
+                            <ng-template #showCancelBtn>
+                                <button (click)="cancelJob(cookieID.id)" class="btn-danger btn-sm">Cancel Task</button>
+                            </ng-template>
+                            <ng-template #elseBlock>
+                                <div>{{ cookieID.type }}</div>
+                            </ng-template>
+                        </div>
+                        <ng-template #errormsg>
+                            <div>{{cookieID.id}}</div>
+                        </ng-template>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- changed table view / ends -->
+
+    <!-- original code -->
     <h5 class="text-center">Tasks</h5>
     <br>
     <div *ngIf="prevIdArray">
@@ -40,6 +96,8 @@
             </ng-template>
         </div>
     </div>
+    <!-- original code -->
+
     <!-- <div *ngIf="messageService.messagesMsg.length">
                         <div *ngFor='let messageMsg of messageService.messagesMsg'>
                                 <div *ngIf="messageMsg.msg=='Started'">
