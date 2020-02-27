@@ -9,11 +9,26 @@ label {
 
 .messages-bg {
     background-image: url(../../assets/bg_darkgray.png);
+    background-size: cover;
+    background-position: center center;
     padding-top: 10rem;
 }
 
 .form-group {
     margin: 0;
+}
+
+thead {
+    background-color: var(--light-opacity-02);
+}
+
+th {
+    color: var(--light);
+}
+
+td {
+    color: var(--light);
+    background-color: var(--dark-opacity-03);
 }
 
 

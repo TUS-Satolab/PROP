@@ -9,7 +9,9 @@
     --grey-1: #CCCCCC;
     --grey-0: #F3F3F3;
     --light: #FFFFFF;
+    --dark-opacity-03: rgb(0, 0, 0, 0.3);
     --light-opacity-05: rgb(255, 255, 255, 0.5);
+    --light-opacity-02: rgb(255, 255, 255, 0.2);
 }
 
 body {
