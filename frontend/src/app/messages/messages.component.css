@@ -8,6 +8,11 @@ label {
     color: var(--grey-3);
 }
 
+.messages-bg {
+    background-image: url(../../assets/bg_darkgray.png);
+    padding-top: 10rem;
+}
+
 
 /* -- button -- */
 
