@@ -11,3 +11,7 @@
     --light: #FFFFFF;
     --light-opacity-05: rgb(255, 255, 255, 0.5);
 }
+
+body {
+    background-image: url(./assets/bg_white.png);
+}
