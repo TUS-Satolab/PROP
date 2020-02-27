@@ -4,6 +4,10 @@ h2 {
     padding-bottom: 15px;
 }
 
+label {
+    color: var(--grey-3);
+}
+
 
 /* -- button -- */
 
@@ -113,7 +117,6 @@ h2 {
     /* margin-top: 0.5em; */
 }
 
-label,
 h1,
 h3,
 h4,
@@ -130,7 +133,6 @@ h5 {
 
 div#container {
     height: 500px;
-    width: 500px;
     border: 2px solid #000;
     overflow: auto;
 }
