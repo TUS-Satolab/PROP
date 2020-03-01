@@ -504,15 +504,16 @@ label[for^=options] {
 }
 
 .radio-danger input[type="radio"]+label::after {
-    background-color: #d9534f;
+    background-color: var(--color-primary);
 }
 
 .radio-danger input[type="radio"]:checked+label::before {
-    border-color: #d9534f;
+    border-color: var(--dark);
+    border-width: 2px;
 }
 
 .radio-danger input[type="radio"]:checked+label::after {
-    background-color: #d9534f;
+    background-color: var(--color-primary);
 }
 
 .radio-info input[type="radio"]+label::after {
