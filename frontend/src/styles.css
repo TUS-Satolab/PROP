@@ -16,4 +16,6 @@
 
 body {
     background-image: url(./assets/bg_white.png);
+    background-size: cover;
+    font-family: 'Lato', 'arial';
 }

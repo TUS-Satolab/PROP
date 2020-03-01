@@ -7,7 +7,11 @@
     text-align: left;
 }
 
-label,
+.main-label {
+    color: var(--dark);
+    font-weight: 600;
+}
+
 h2,
 h3 {
     color: var(--dark);
@@ -23,6 +27,7 @@ h1 {
     padding: 15px;
     color: var(--grey-2);
     border-radius: 9px;
+    margin-bottom: 3rem;
 }
 
 .divider {
@@ -154,10 +159,19 @@ label[for^=options] {
     border-radius: 5rem;
 }
 
+.create-btn {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
 .create-btn::after {
     content: url(../../assets/icon_create.svg);
     float: right;
     vertical-align: middle;
+}
+
+.reset-btn {
+    font-weight: 600;
 }
 
 
