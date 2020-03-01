@@ -9,7 +9,7 @@
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="d-flex flex-column form-group">
-            <label>Input File</label>
+            <label class="main-label">Input File</label>
             <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <div class="tooltip-icon tooltip-img"></div>
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="d-flex flex-column form-group">
-            <label for="input_type">Sequence type</label>
+            <label for="input_type" class="main-label">Sequence type</label>
             <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <div class="tooltip-icon tooltip-img"></div>
@@ -62,7 +62,7 @@
         </div>
         <div class="d-flex flex-column">
             <div class="form-group">
-                <label for="align_method">Alignment</label>
+                <label for="align_method" class="main-label">Alignment</label>
                 <div class="d-flex flex-row justify-content-between">
                     <div class="tooltip5">
                         <div class="tooltip-icon tooltip-img"></div>
@@ -87,14 +87,14 @@
             </div> -->
             <div class="d-flex flex-row justify-content-end form-group">
                 <div class="d-flex flex-column justify-content-end col-sm-9 col-11">
-                    <label for="options">Options</label>
+                    <label for="options" class="main-label">Options</label>
                     <input [attr.disabled]="noalign()" class="form-control form-control-sm" formControlName="align_clw_opt" id="options">
                 </div>
             </div>
             <hr class="divider">
         </div>
         <div class="d-flex flex-column form-group">
-            <label for="model">Genetic Difference</label>
+            <label for="model" class="main-label">Genetic Difference</label>
             <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <div class="tooltip-icon tooltip-img"></div>
@@ -120,7 +120,7 @@
             <hr class="divider">
         </div>
         <div class="d-flex flex-column form-group">
-            <label for="gapdel">Treatment of gaps</label>
+            <label for="gapdel" class="main-label">Treatment of gaps</label>
             <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <div class="tooltip-icon tooltip-img"></div>
@@ -144,7 +144,7 @@
             <hr class="divider">
         </div>
         <div class="d-flex flex-column form-group">
-            <label for="gapdel">Phylogenetic tree</label>
+            <label for="gapdel" class="main-label">Phylogenetic tree</label>
             <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
                     <div class="tooltip-icon tooltip-img"></div>
@@ -166,7 +166,7 @@
 
         <div class="form-group">
             <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg create-btn main-btn" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="btn btn-canal-secondary btn-block btn-lg main-btn" type="button" (click)="reset()">Reset</button>
+            <button class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn" type="button" (click)="reset()">Reset</button>
         </div>
         <ng-template #elseSubmitting>
             <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">Submitting</button>

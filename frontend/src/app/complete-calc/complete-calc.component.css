@@ -7,7 +7,11 @@
     text-align: left;
 }
 
-label,
+.main-label {
+    color: var(--dark);
+    font-weight: 600;
+}
+
 h2,
 h3 {
     color: var(--dark);
@@ -157,12 +161,17 @@ label[for^=options] {
 
 .create-btn {
     margin-bottom: 1rem;
+    font-weight: 600;
 }
 
 .create-btn::after {
     content: url(../../assets/icon_create.svg);
     float: right;
     vertical-align: middle;
+}
+
+.reset-btn {
+    font-weight: 600;
 }
 
 
