@@ -63,7 +63,8 @@
         <!-- changed table view / ends -->
 
         <!-- "Tasks" original code / starts -->
-        <h5 class="text-center">Tasks</h5>
+
+        <!-- <h5 class="text-center">Tasks</h5>
         <br>
         <div *ngIf="prevIdArray">
             <div class="row">
@@ -87,9 +88,11 @@
                     </ng-template>
                     <ng-template #elseCancel>
                         <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
-                    </ng-template>
-                    <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
-                    <ng-template #showCancelBtn>
+                    </ng-template> -->
+
+        <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
+
+        <!-- <ng-template #showCancelBtn>
                         <button (click)="cancelJob(cookieID.id)" class="btn-danger btn-sm">Cancel Task</button>
                     </ng-template>
                     <ng-template #elseBlock>
@@ -101,7 +104,7 @@
                     <div class="col-sm-2">{{cookieID.id}}</div>
                 </ng-template>
             </div>
-        </div>
+        </div> -->
 
         <!-- <div *ngIf="messageService.messagesMsg.length">
                         <div *ngFor='let messageMsg of messageService.messagesMsg'>
@@ -114,13 +117,17 @@
                                 </div>
                         </div>
                 </div> -->
-        <br>
+
+        <!-- <br>
         <h4 class="hr col-sm-6"></h4>
-        <br>
+        <br> -->
+
         <!-- <div class="button-group row"> -->
-        <div class="col-sm-3">
+
+        <!-- <div class="col-sm-3">
             <button class="clear border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="messageService.clear()">Clear history</button>
-        </div>
+        </div> -->
+
         <!-- "Tasks" original code / ends -->
 
         <br>
