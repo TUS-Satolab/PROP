@@ -154,6 +154,10 @@ label[for^=options] {
     border-radius: 5rem;
 }
 
+.create-btn {
+    margin-bottom: 1rem;
+}
+
 .create-btn::after {
     content: url(../../assets/icon_create.svg);
     float: right;
