@@ -10,7 +10,7 @@ label {
 .messages-bg {
     background-image: url(../../assets/bg_darkgray.png);
     background-size: cover;
-    background-position: center center;
+    background-position: top;
     padding-top: 10rem;
 }
 
