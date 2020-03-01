@@ -617,6 +617,17 @@ input[type="radio"] .styled:checked+label::after {
     display: inline-block;
 }
 
+.tooltip-icon {
+    width: 3em;
+    height: 3em;
+    display: inline-block;
+    background: no-repeat;
+}
+
+.tooltip-img {
+    background-image: url(../../assets/icon_help.svg);
+}
+
 .tooltip5 img {
     width: 20px;
 }
@@ -646,5 +657,5 @@ input[type="radio"] .styled:checked+label::after {
 .tooltip5:hover .description5 {
     display: inline-block;
     top: -75px;
-    left: -50px;
+    left: -40px;
 }
