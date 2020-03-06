@@ -101,7 +101,7 @@ label[for^=options] {
 .custom-select-component:after {
     content: url(../../assets/icon_select.svg);
     background: var(--color-primary);
-    padding: 0.6rem;
+    padding: 0.7rem 0.6rem 0 0.6rem;
     border-radius: 0 5rem 5rem 0;
     text-align: center;
     top: 0;
@@ -147,11 +147,14 @@ label[for^=options] {
 .browse-btn {
     border-radius: 0 3rem 3rem 0;
     display: flex;
+    height: 3rem;
+    line-height: 1.7rem;
 }
 
 .browse-btn::after {
     content: url(../../assets/icon_add.svg);
     float: right;
+    padding-top: 0.1rem;
     padding-left: 1rem;
 }
 
@@ -162,12 +165,14 @@ label[for^=options] {
 .create-btn {
     margin-bottom: 1rem;
     font-weight: 600;
+    text-align: center;
 }
 
 .create-btn::after {
     content: url(../../assets/icon_create.svg);
-    float: right;
-    vertical-align: middle;
+    position: absolute;
+    padding-top: 0.2rem;
+    right: 2rem;
 }
 
 .reset-btn {
