@@ -165,12 +165,14 @@ label[for^=options] {
 .create-btn {
     margin-bottom: 1rem;
     font-weight: 600;
+    text-align: center;
 }
 
 .create-btn::after {
     content: url(../../assets/icon_create.svg);
-    float: right;
-    vertical-align: middle;
+    position: absolute;
+    padding-top: 0.2rem;
+    right: 2rem;
 }
 
 .reset-btn {
