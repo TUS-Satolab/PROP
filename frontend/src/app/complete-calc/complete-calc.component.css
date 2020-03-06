@@ -101,7 +101,7 @@ label[for^=options] {
 .custom-select-component:after {
     content: url(../../assets/icon_select.svg);
     background: var(--color-primary);
-    padding: 0.6rem;
+    padding: 0.7rem 0.6rem 0 0.6rem;
     border-radius: 0 5rem 5rem 0;
     text-align: center;
     top: 0;
