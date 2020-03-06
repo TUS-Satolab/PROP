@@ -30,9 +30,9 @@
                             <div>{{cookieID.msg}}</div>
                         </td>
                         <td>
-                            <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg" class="result">
+                            <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
                                 <div *ngIf="started(cookieID.msg); else elseCancel">
-                                    <div class="row">
+                                    <div class="row completed-result">
                                         <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="tasks-btn btn-view btn-sm">View</button></div>
                                         <div *ngIf="downloadFlag === 0; else elseDownloading"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="tasks-btn btn-download btn-sm">Download</button></div>
                                     </div>
