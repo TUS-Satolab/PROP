@@ -270,15 +270,18 @@ def calcDiff_ami(model,plusgap,seqData,otu):
             G = 0
             S = 0
             D = 0
-            for i in range(len(seqData[0])):
-                if seqData[a][i] == '-' and seqData[b][i] == '-':
-                    X += 1
-                elif seqData[a][i] == '-' or seqData[b][i] == '-':
-                    G += 1
-                elif seqData[a][i] == seqData[b][i]:
-                    S += 1
-                else:
-                    D += 1
+            try:
+                for i in range(len(seqData[0])):
+                    if seqData[a][i] == '-' and seqData[b][i] == '-':
+                        X += 1
+                    elif seqData[a][i] == '-' or seqData[b][i] == '-':
+                        G += 1
+                    elif seqData[a][i] == seqData[b][i]:
+                        S += 1
+                    else:
+                        D += 1
+            except IndexError:
+                raise Exception('File is not aligned')
 
             ###変更箇所(1)ここから
             if plusgap == "not_checked":

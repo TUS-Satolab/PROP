@@ -1,29 +1,35 @@
-<div class="container" style="margin-top: 70px;">
+<div class="container col-xs-12 col-sm-10 col-md-8 col-lg-6" style="margin-top: 15rem;">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <h2 class="col-sm-6 text-center">Complete Calculation</h2>
+    <h1 class="text-center">Complete Calculation</h1>
     <!-- <p>
         {{today | date: "yyyy/mm/dd/ HH:mm"}}
     </p> -->
-    <h3  class="hr col-sm-6"></h3> 
+    <div class="caption text-center">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Input File
+        <div class="d-flex flex-column form-group">
+            <label class="main-label">Input File</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="tooltip-icon tooltip-img"></div>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <label class="filename col-sm-3">
-                    <span>{{filename}}</span> 
-            </label>
-            <label for="browse" class="btn btn-danger btn-lg col-sm-1">
-                    Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
-            </label>
-        <!-- <button type="button" (click)="fileInput.click()">
+                <div class="d-flex justify-content-end col-sm-9">
+                    <label class="filename col-sm-8 file-form">
+                      <span>{{filename}}</span>
+                    </label>
+                    <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
+                      Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
+                    </label>
+                </div>
+            </div>
+            <hr class="divider">
+            <!-- <button type="button" (click)="fileInput.click()">
             <span>Upload</span>
             <input #fileInput type="file" (change)="onFileSelect($event)" required style="display:none;" />
         </button> -->
-        <!-- <div class="border-2 border-danger form-group row">
+            <!-- <div class="border-2 border-danger form-group row">
             <label for="file" class="col-sm-2 col-form-label">Input File</label>
             <input type="file" name="file" (change)="onFileSelect($event)" required>
         </div> -->
@@ -34,117 +40,136 @@
                 File size is too big. (> 20MB)
             </div>
         </div>
-        <div class="form-group row">
-            <label for="input_type" class="col-sm-2 col-form-label">Sequence type
+        <div class="d-flex flex-column form-group">
+            <label for="input_type" class="main-label">Sequence type</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="tooltip-icon tooltip-img"></div>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_nuc" value="nuc" (click)="onTypeSelect('nuc')" required [checked]='true'>
-                <label for="input_type_nuc" class="form-check-label">Nucleotide</label>
-            </div>
-            <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_ami" value="ami" (click)="onTypeSelect('ami')" required>
-                <label for="input_type_ami" class="form-check-label">Protein</label>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="align_method" class="col-sm-2 col-form-label">Alignment
-                <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
-                    <div class="description5">説明を入力してください。 </div>
+                <div class="d-flex justify-content-end col-sm-9">
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_nuc" value="nuc" (click)="onTypeSelect('nuc')" required [checked]='true'>
+                        <label for="input_type_nuc" class="form-check-label">Nucleotide</label>
+                    </div>
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_ami" value="ami" (click)="onTypeSelect('ami')" required>
+                        <label for="input_type_ami" class="form-check-label">Protein</label>
+                    </div>
                 </div>
-            </label>
-            <select class="border-3 border-danger form-control form-control-sm col-sm-4" formControlName="align_method" id="align_method" required>
-                <option value="clustalw" [selected]='true' selected>Clustal W2</option>
-                <option value="mafft">MAFFT</option>
-                <option value="None">No alignment necessary</option>
-            </select>
-        </div>
-        <!-- <div [hidden]="!mafftselected()" class="form-group row">
-            <label for="options" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-4 alert alert-success">
-                Type is automatically determined.
             </div>
-        </div> -->
-        <div class="form-group row">
-            <label for="options" class="col-sm-2 col-form-label">Options
-                <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
-                    <!-- <div class="description5">説明を入力してください。 </div> -->
-                    <div class="description5">説明を入力してください。</div>
-                </div>
-            </label>
-            <input [attr.disabled]="noalign()" class="border-2 border-danger form-control form-control-sm col-sm-4" formControlName="align_clw_opt" id="options">
+            <hr class="divider">
         </div>
-        <h3  class="hr"></h3> 
-        <div class="form-group row">
-            <label for="model" class="col-sm-2 col-form-label">Genetic Difference
-                <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
-                    <div class="description5">説明を入力してください。 </div>
-                </div>
-            </label>
-            <select class="border-3 border-danger form-control form-control-sm col-sm-2" placeholder="model" formControlName="model" id="model" required>
-            <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>
-            </select>
-            <!-- <div class="form-check checkbox checkbox-danger">
-                <input ng-model="checked" ng-click="onCheck()" type="checkbox" class="form-check-input col-sm-2 ml-2 styled" placeholder="plusgap" formControlName="plusgap" id="plusgap" [checked]='true'>
-                <label class="pl-4 form-check-label" for="plusgap">+ Gap
+        <div class="d-flex flex-column">
+            <div class="form-group">
+                <label for="align_method" class="main-label">Alignment</label>
+                <div class="d-flex flex-row justify-content-between">
                     <div class="tooltip5">
-                        <i class=" fa fa-question-circle" style="color:red"></i>
+                        <div class="tooltip-icon tooltip-img"></div>
                         <div class="description5">説明を入力してください。 </div>
                     </div>
-                </label>
+                    <div class="d-flex justify-content-end col-sm-9">
+                        <label class="custom-select-component">
+                            <select class="custom-select form-control form-control-sm" formControlName="align_method" id="align_method" required>
+                                <option value="clustalw" [selected]='true' selected>Clustal W2</option>
+                                <option value="mafft">MAFFT</option>
+                                <option value="None">No alignment necessary</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- <div [hidden]="!mafftselected()" class="form-group row">
+                <label for="options" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-4 alert alert-success">
+                    Type is automatically determined.
+                </div>
             </div> -->
+            <div class="d-flex flex-row justify-content-end form-group">
+                <div class="d-flex flex-column justify-content-end col-sm-9 col-11">
+                    <label for="options" class="main-label">Options</label>
+                    <input [attr.disabled]="noalign()" class="form-control form-control-sm" formControlName="align_clw_opt" id="options">
+                </div>
+            </div>
+            <hr class="divider">
         </div>
-        <div class="form-group row">
-            <label for="gapdel" class="col-sm-2 col-form-label">Treatment of gaps
+        <div class="d-flex flex-column form-group">
+            <label for="model" class="main-label">Genetic Difference</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="tooltip-icon tooltip-img"></div>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <div class="col-sm-6">
-                <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_plusgap" value="plusgap">
-                    <label class="form-check-label" for="gapdel_plusgap">+Gap</label>
-                </div>
-                <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_pair" value="pair">
-                    <label class="form-check-label" for="gapdel_pair">Pairwise Deletion</label>
-                </div>
-                <div class="radio radio-danger form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_comp" value="comp">
-                    <label class="form-check-label" for="gapdel_comp">Complete Deletion</label>
+                <div class="d-flex justify-content-end col-sm-9">
+                    <label class="custom-select-component">
+                        <select class="custom-select form-control form-control-sm" placeholder="model" formControlName="model" id="model" required>
+                            <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>
+                        </select>
+                    </label>
+                    <!-- <div class="form-check checkbox checkbox-danger">
+                        <input ng-model="checked" ng-click="onCheck()" type="checkbox" class="form-check-input col-sm-2 ml-2 styled" placeholder="plusgap" formControlName="plusgap" id="plusgap" [checked]='true'>
+                        <label class="pl-4 form-check-label" for="plusgap">+ Gap
+                            <div class="tooltip5">
+                                <i class=" fa fa-question-circle" style="color:red"></i>
+                                <div class="description5">説明を入力してください。 </div>
+                            </div>
+                        </label>
+                    </div> -->
                 </div>
             </div>
+            <hr class="divider">
         </div>
-        <div class="form-group row">
-            <label for="gapdel" class="col-sm-2 col-form-label">Phylogenetic tree
+        <div class="d-flex flex-column form-group">
+            <label for="gapdel" class="main-label">Treatment of gaps</label>
+            <div class="d-flex flex-row justify-content-between">
                 <div class="tooltip5">
-                    <i class="fa fa-question-circle" style="color:red"></i>
+                    <div class="tooltip-icon tooltip-img"></div>
                     <div class="description5">説明を入力してください。 </div>
                 </div>
-            </label>
-            <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_nj" value="nj" [checked]='true' required>
-                <label class="form-check-label" for="tree_nj">NJ</label>
+                <div class="d-flex justify-content-end col-sm-11">
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_plusgap" value="plusgap">
+                        <label class="form-check-label" for="gapdel_plusgap">+Gap</label>
+                    </div>
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_pair" value="pair">
+                        <label class="form-check-label" for="gapdel_pair">Pairwise Deletion</label>
+                    </div>
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_comp" value="comp">
+                        <label class="form-check-label" for="gapdel_comp">Complete Deletion</label>
+                    </div>
+                </div>
             </div>
-            <div class="radio radio-danger form-check form-check-inline col-sm-2">
-                <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_upgma" value="upgma" required>
-                <label class="form-check-label" for="tree_upgma">UPGMA</label>
-            </div>
-            
+            <hr class="divider">
         </div>
-        <div class="form-group row">
-            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="border-2 border-danger btn btn-outline-danger btn-block btn-lg col-sm-1" type="button" (click)="reset()">Reset</button>
+        <div class="d-flex flex-column form-group">
+            <label for="gapdel" class="main-label">Phylogenetic tree</label>
+            <div class="d-flex flex-row justify-content-between">
+                <div class="tooltip5">
+                    <div class="tooltip-icon tooltip-img"></div>
+                    <div class="description5">説明を入力してください。 </div>
+                </div>
+                <div class="d-flex justify-content-end col-sm-9">
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_nj" value="nj" [checked]='true' required>
+                        <label class="form-check-label" for="tree_nj">NJ</label>
+                    </div>
+                    <div class="radio radio-danger form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_upgma" value="upgma" required>
+                        <label class="form-check-label" for="tree_upgma">UPGMA</label>
+                    </div>
+                </div>
+            </div>
+            <hr class="divider">
+        </div>
+
+        <div class="form-group">
+            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg create-btn main-btn" type="submit" [disabled]="!form.valid">Create</button>
+            <button class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn" type="button" (click)="reset()">Reset</button>
         </div>
         <ng-template #elseSubmitting>
-            <button class="btn btn-danger btn-block btn-lg col-sm-5" type="submit" [disabled]="form.valid">Submitting</button>
+            <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">Submitting</button>
         </ng-template>
     </form>
 </div>

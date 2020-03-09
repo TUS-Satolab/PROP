@@ -31,6 +31,7 @@
     "popper.js": "^1.15.0",
     "rxjs": "~6.4.0",
     "save-svg-as-png": "^1.4.14",
+    "seedrandom": "^3.0.5",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

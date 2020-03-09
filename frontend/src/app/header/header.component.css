@@ -1,4 +1,25 @@
-.nav-item{
-    padding:2px;
-    margin-left: 7px;
+@import url('../../styles.css');
+.nav-item {
+    padding: 2px;
+    text-align: center;
+}
+
+.navbar-brand-logo {
+    height: 61px;
+}
+
+.slash {
+    display: none;
+}
+
+.container>div {
+    width: 100%;
+}
+
+@media screen and (min-width:768px) {
+    .slash {
+        display: block;
+        padding: .5rem;
+        color: var(--dark);
+    }
 }
