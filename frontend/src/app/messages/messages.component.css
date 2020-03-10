@@ -167,3 +167,12 @@ svg#tree_display {
     /* width: 100%; */
     padding: 20px;
 }
+
+#minimap {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+
+    border: 1px solid black;
+    background-color: white;
+}

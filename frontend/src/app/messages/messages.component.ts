@@ -229,6 +229,50 @@ showTree(input) {
           this.heightSVG = this.tree.display.height;
           this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
           this.linearFlag = true;
+          d3.svg(this.tree).then( (xml)=> {
+
+            // tslint:disable-next-line: radix
+            let width = parseInt( d3.select('body').style('width') );
+            // tslint:disable-next-line: radix
+            let height = parseInt( d3.select('body').style('height') );
+
+            document.querySelector('#tree_display').appendChild(xml.documentElement.cloneNode(true));
+            document.querySelector('#minimap').appendChild(xml.documentElement.cloneNode(true));
+
+            const map = d3.select('#tree_display').select('svg');
+            const minimap = d3.select('#minimap').select('svg')
+               .attr('width', 200);
+
+            const minimapRect = minimap.append('rect')
+               .attr('id', 'minimapRect');
+
+            const transform = d3.zoomIdentity.translate(0, 0).scale(1);
+            const zoom = d3.zoom()
+               .scaleExtent([1, 3])
+               .on('zoom', zoomed);
+
+            map.call(zoom)
+               .call(zoom.transform, transform);
+
+            function zoomed() {
+               // tslint:disable-next-line: no-shadowed-variable
+               const transform = d3.event.transform;
+               const modifiedTransform = d3.zoomIdentity.scale( 1 / transform.k ).translate( -transform.x, -transform.y );
+
+               const mapMainContainer = map.select('#main_container')
+                  .attr('transform', transform);
+
+              //  minimapRect
+              //      .attr('width', mapMainContainer.node().getBBox().width )
+              //      .attr('height', mapMainContainer.node().getBBox().height )
+              //      .attr('stroke', 'red')
+              //      .attr('stroke-width', 10 / modifiedTransform.k )
+              //      .attr('stroke-dasharray', 10 / modifiedTransform.k )
+              //      .attr('fill', 'none')
+              //      .attr('transform', modifiedTransform);
+            }
+         });
+
           // return this.out_tree
         });
       } else {
