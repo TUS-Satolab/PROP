@@ -244,8 +244,8 @@ radial_decrease() {
 radial() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
-  d3.select('#container').attr('width', 1000);
-  d3.select('#container').attr('height', 1000);
+  d3.select('#container').attr('width', 100);
+  d3.select('#container').attr('height', 100);
   // this variable is really necessary to update the DIV plane...
   updateDIV = document.getElementById('container').scrollHeight;
   this.tree = new phylotree(this.data);
