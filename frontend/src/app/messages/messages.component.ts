@@ -262,7 +262,7 @@ radial() {
       'maximum-per-level-spacing': 100,
       'is-radial': true,
       'max-radius': 768,
-      'left-offset': 0,
+      'left-offset': -500,
     },
   );
   this.tree.display.width = this.tree.display.size[1];
