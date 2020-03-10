@@ -231,22 +231,20 @@ horizontal_decrease() {
 }
 
 radial_increase() {
-  this.widthSVG = this.widthSVG + 50;
-  this.heightSVG = this.heightSVG + 50;
+  this.widthSVG = this.widthSVG + 10;
+  this.heightSVG = this.heightSVG + 10;
   this.tree.display.update();
 }
 
 radial_decrease() {
-  this.widthSVG = this.widthSVG - 50;
-  this.heightSVG = this.heightSVG - 50;
+  this.widthSVG = this.widthSVG - 10;
+  this.heightSVG = this.heightSVG - 10;
   this.tree.display.update();
 }
 
 radial() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
-  d3.select('#tree_display').attr('width', 1000);
-  d3.select('#tree_display').attr('height', 1000);
   d3.select('#container').attr('width', 1000);
   d3.select('#container').attr('height', 1000);
   // this variable is really necessary to update the DIV plane...
@@ -275,16 +273,12 @@ radial() {
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
-  this.widthSVG = this.widthSVG * 0.25;
-  this.heightSVG = this.heightSVG * 0.25;
   this.tree.display.update();
 }
 
 linear() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
-  d3.select('#tree_display').attr('width', 1000);
-  d3.select('#tree_display').attr('height', 1000);
   d3.select('#container').attr('width', 1000);
   d3.select('#container').attr('height', 1000);
   // this variable is really necessary to update the DIV plane...
@@ -312,7 +306,6 @@ linear() {
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
-  this.svg.nativeElement.setAttribute('transform', `translate(${-this.widthSVG},${-this.heightSVG})`);
   this.linearFlag = true;
   this.tree.display.update();
 }
