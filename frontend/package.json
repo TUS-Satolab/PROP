@@ -25,6 +25,7 @@
     "dotenv": "^8.2.0",
     "file-saver": "^2.0.2",
     "jquery": "^3.4.1",
+    "moment": "^2.24.0",
     "ngx-cookie-service": "^2.2.0",
     "ngx-smart-popover": "^1.1.0",
     "phylotree": "^1.0.0-alpha.19",

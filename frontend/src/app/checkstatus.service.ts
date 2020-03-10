@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QUERY_URL, VERSION } from './globals';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+const moment = require('moment');
 
 
 @Injectable({
@@ -52,7 +53,14 @@ export class checkstatus {
     for (var key in allCookies) {
         var value = allCookies[key];
         var valueSplit = value.split(';');
-        prevIds.push({id: valueSplit[0], msg: valueSplit[1], time: valueSplit[2], number: valueSplit[3], type: valueSplit[4], version: valueSplit[5]});
+
+        const date = valueSplit[2];
+        let parsedDate = moment(date, 'YYYY/MM/DD HH:mm')
+        parsedDate = parsedDate.format('MMM D, YYYY, hh:mm a');
+        // tslint:disable-next-line: max-line-length
+        prevIds.push({id: valueSplit[0], msg: valueSplit[1], time: String(parsedDate), number: valueSplit[3], type: valueSplit[4], version: valueSplit[5]});
+        // tslint:disable-next-line: max-line-length
+        // prevIds.push({id: valueSplit[0], msg: valueSplit[1], time: valueSplit[2], number: valueSplit[3], type: valueSplit[4], version: valueSplit[5]});
       }
     this.prevIdArray = prevIds;
     return this.prevIdArray;

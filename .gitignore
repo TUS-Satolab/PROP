@@ -124,3 +124,4 @@ dc.env
 .dockerignore
 frontend/src/app/env.json
 .dockerignore
+node_modules

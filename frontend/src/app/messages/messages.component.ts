@@ -265,15 +265,17 @@ radial() {
       'left-offset': 0,
     },
   );
-  this.tree.display.update();
   this.tree.display.width = this.tree.display.size[1];
   this.tree.display.height = this.tree.display.size[0];
+  this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
-  this.tree.display.update();
   this.linearFlag = false;
-};
+  this.tree.display.update();
+}
+
+
 linear() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
@@ -306,5 +308,5 @@ linear() {
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = true;
   this.tree.display.update();
-};
+}
 }
