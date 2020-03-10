@@ -14,7 +14,6 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class AlignComponent implements OnInit {
   @ViewChild('fileInput', {static: false}) fileInput: any;
-  // ALIGN_URL = 'http://52.198.155.126:5004/alignment';
   form: FormGroup;
   filename = "";
   _originalData = [];

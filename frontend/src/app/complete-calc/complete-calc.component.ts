@@ -18,13 +18,6 @@ import { image } from 'd3';
 })
 export class CompleteCalcComponent implements OnInit {
   @ViewChild('fileInput', {static: false}) fileInput: any;
-  // arrList = require('../env.json');
-  // const first = 'http://';
-  // const last = ':5004/complete';
-  // const IP = String ( this.arrList.env[0].ip_address ) ;
-  // IP = process.env.IP_ADDRESS;
-  // SERVER_URL = String ( this.first + this.IP + this.last );
-  // SERVER_URL = 'http://localhost:5004/complete';
   form: FormGroup;
   filename = "";
   _originalData = [];

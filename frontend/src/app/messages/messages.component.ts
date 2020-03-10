@@ -12,6 +12,7 @@ import { phylotree } from 'phylotree';
 import 'phylotree/build/phylotree.css';
 import * as svg_download from 'save-svg-as-png';
 import { Router } from '@angular/router';
+import { zoom } from 'd3';
 
 @Component({
   selector: 'app-messages',
@@ -241,6 +242,40 @@ radial_decrease() {
   this.tree.display.update();
 }
 
+// radial() {
+//   let updateDIV: number;
+//   d3.select('#tree_display').selectAll('*').remove();
+//   d3.select('#container').attr('width', 500);
+//   d3.select('#container').attr('height', 500);
+//   // this variable is really necessary to update the DIV plane...
+//   updateDIV = document.getElementById('container').scrollHeight;
+//   this.tree = new phylotree(this.data);
+//   this.out_tree = this.tree.render(
+//     '#tree_display',
+//     {
+//       id: 'tree_render',
+//       height: 1000,
+//       width: 1000,
+//       'left-right-spacing': 'fixed-step',
+//       'top-bottom-spacing': 'fixed-step',
+//       'minimum-per-node-spacing': 2,
+//       'maximum-per-node-spacing': 100,
+//       'maximum-per-level-spacing': 100,
+//       'is-radial': true,
+//       'max-radius': 768,
+//       'left-offset': - this.widthSVG * 0.1,
+//     },
+//   );
+//   this.tree.display.width = this.tree.display.size[1];
+//   this.tree.display.height = this.tree.display.size[0];
+//   this.tree.display.update();
+//   this.widthSVG = this.tree.display.width;
+//   this.heightSVG = this.tree.display.height;
+//   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
+//   this.linearFlag = false;
+//   this.tree.display.update();
+// }
+
 radial() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
@@ -270,7 +305,15 @@ radial() {
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
-  this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
+  const bbox = this.svg.nativeElement.node().getBBox();
+  const vx = bbox.x;
+  const vy = bbox.y;
+  const vw = bbox.width;
+  const vh = bbox.height;
+  const defaultView = '' + vx + ' ' + vy + ' ' + vw + ' ' + vh;
+  this.svg.nativeElement.setAttribute('viewBox', defaultView);
+  this.svg.nativeElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  this.svg.nativeElement.call(zoom);
   this.linearFlag = false;
   this.tree.display.update();
 }

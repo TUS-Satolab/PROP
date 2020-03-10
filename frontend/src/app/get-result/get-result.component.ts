@@ -17,8 +17,6 @@ import * as svg_download from 'save-svg-as-png';
   styleUrls: ['./get-result.component.css']
 })
 export class GetResultComponent implements OnInit {
-  // GET_RESULT_URL = 'http://localhost:5004/get_result_completed';
-  // QUERY_URL = 'http://localhost:5004/task_query';
 
   form: FormGroup;
   phylotreeData: JSON;

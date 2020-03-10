@@ -15,7 +15,6 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class TreeComponent implements OnInit {
   @ViewChild('fileInput', {static: false}) fileInput: any;
-  // SERVER_URL = 'http://52.198.155.126:5004/tree';
   form: FormGroup;
   filename = "";
   _originalData = [];
