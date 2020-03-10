@@ -305,18 +305,10 @@ radial() {
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
-  const bbox = this.svg.nativeElement.node().getBBox();
-  const vx = bbox.x * 1.1;
-  const vy = bbox.y * 0.9;
-  const vw = bbox.width;
-  const vh = bbox.height;
-  const defaultView = '' + vx + ' ' + vy + ' ' + vw + ' ' + vh;
-  this.svg.nativeElement.setAttribute('viewBox', defaultView);
-  this.svg.nativeElement.setAttribute('preserveAspectRatio');
+  this.svg.nativeElement.setAttribute('viewBox', `0 0 500 500`);
   this.linearFlag = false;
   this.tree.display.update();
 }
-
 
 linear() {
   let updateDIV: number;
