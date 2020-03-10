@@ -303,9 +303,9 @@ radial() {
   this.tree.display.width = this.tree.display.size[1];
   this.tree.display.height = this.tree.display.size[0];
   this.tree.display.update();
-  this.widthSVG = this.tree.display.width;
-  this.heightSVG = this.tree.display.height;
-  this.svg.nativeElement.setAttribute('viewBox', `0 0 500 500`);
+  this.widthSVG = this.tree.display.width * 2;
+  this.heightSVG = this.tree.display.height * 2;
+  this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
   this.tree.display.update();
 }
