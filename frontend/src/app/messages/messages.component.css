@@ -38,6 +38,14 @@ td {
 
 /* button default */
 
+.btn-light,
+.btn-light.disabled,
+.btn-light:disabled {
+    color: var(--light);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
 .btn-view,
 .btn-view.disabled,
 .btn-view:disabled {
