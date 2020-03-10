@@ -38,12 +38,12 @@ td {
 
 /* button default */
 
-.btn-light,
-.btn-light.disabled,
-.btn-light:disabled {
-    color: var(--light);
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+.btn-canal-secondary,
+.btn-canal-secondary.disabled,
+.btn-canal-secondary:disabled {
+    color: var(--grey-1);
+    background-color: var(--light);
+    border-color: var(--grey-0);
 }
 
 .btn-view,

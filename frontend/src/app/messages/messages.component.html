@@ -137,30 +137,30 @@
             <div class="form-group row">
                 <div class="btn-group">
                     <div *ngIf="linearFlag === true; else showRadialBtns">
-                        <button type="button" class="btn btn-light btn-sm" data-direction='vertical' data-amount='1' title="Expand vertical spacing" (click)=vertical_increase()>
+                        <button type="button" class="btn btn-canal-secondary btn-sm" data-direction='vertical' data-amount='1' title="Expand vertical spacing" (click)=vertical_increase()>
                                                 <i class="fa fa-arrows-v" ></i>
                                                 </button>
-                        <button type="button" class="btn btn-light btn-sm" data-direction='vertical' data-amount='-1' title="Compress vertical spacing" (click)=vertical_decrease()>
+                        <button type="button" class="btn btn-canal-secondary btn-sm" data-direction='vertical' data-amount='-1' title="Compress vertical spacing" (click)=vertical_decrease()>
                                                 <i class="fa  fa-compress fa-rotate-135" ></i>
                                                 </button>
-                        <button type="button" class="btn btn-light btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
+                        <button type="button" class="btn btn-canal-secondary btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
                                                 <i class="fa fa-arrows-h" ></i>
                                                 </button>
-                        <button type="button" class="btn btn-light btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
+                        <button type="button" class="btn btn-canal-secondary btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
                                                 <i class="fa  fa-compress fa-rotate-45" ></i>
                                                 </button>
                     </div>
                     <ng-template #showRadialBtns>
-                        <button type="button" class="btn btn-light btn-sm" data-direction='vertical' data-amount='1' title="Expand radius" (click)=radial_increase()>
+                        <button type="button" class="btn btn-canal-secondary btn-sm" data-direction='vertical' data-amount='1' title="Expand radius" (click)=radial_increase()>
                                                         <i class="fa fa-arrows-v" ></i>
                                                         </button>
-                        <button type="button" class="btn btn-light btn-sm" data-direction='vertical' data-amount='-1' title="Shrink radius" (click)=radial_decrease()>
+                        <button type="button" class="btn btn-canal-secondary btn-sm" data-direction='vertical' data-amount='-1' title="Shrink radius" (click)=radial_decrease()>
                                                         <i class="fa  fa-compress fa-rotate-135" ></i>
                                                         </button>
-                        <button type="button" disabled class="btn btn-light btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
+                        <button type="button" disabled class="btn btn-canal-secondary btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
                             <i class="fa fa-arrows-h" ></i>
                             </button>
-                        <button type="button" disabled class="btn btn-light btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
+                        <button type="button" disabled class="btn btn-canal-secondary btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
                             <i class="fa  fa-compress fa-rotate-45" ></i>
                             </button>
                     </ng-template>
