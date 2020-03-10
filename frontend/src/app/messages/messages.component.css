@@ -38,12 +38,13 @@ td {
 
 /* button default */
 
-.btn-canal-secondary,
-.btn-canal-secondary.disabled,
-.btn-canal-secondary:disabled {
-    color: var(--grey-1);
+.btn-tree,
+.btn-tree.disabled,
+.btn-tree:disabled {
+    color: black;
     background-color: var(--light);
-    border-color: var(--grey-0);
+    border-color: var(--light);
+    margin-left: 0.5rem;
 }
 
 .btn-view,
