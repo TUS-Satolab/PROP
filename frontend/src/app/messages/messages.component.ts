@@ -143,54 +143,6 @@ cancelJob(input) {
   });
 }
 
-// showTree(input) {
-//   d3.select('#tree_display').selectAll('*').remove();
-//   const formData: any = new FormData();
-//   const httpOptions: { headers: any; responseType: any; } = {
-//     headers: new HttpHeaders({
-//       responseType: 'application/json'
-//     }),
-//     responseType: 'application/json'
-//   };
-//   formData.append('result_id', input);
-//   formData.append('result_kind', 'tree');
-//   this.httpClient.post(QUERY_URL, formData, {observe: 'response'}).subscribe(query => {
-//       if (query.body['msg'] === 'Finished') {
-//         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'text'}).subscribe(data => {
-//           this.data = data;
-//           this.tree = new phylotree(this.data);
-//           this.out_tree = this.tree.render(
-//             '#tree_display',
-//             {
-//               id: 'tree_render',
-//               height: 100,
-//               width: 100,
-//               'left-right-spacing': 'fixed-step',
-//               'top-bottom-spacing': 'fixed-step',
-//               'minimum-per-node-spacing': 15,
-//               'maximum-per-node-spacing': 100,
-//               'maximum-per-level-spacing': 100,
-//               'is-radial': false,
-//               'max-radius': 768,
-//               'left-offset': 0,
-//             },
-//           );
-//           this.tree.display.width = this.tree.display.size[1];
-//           this.tree.display.height = this.tree.display.size[0];
-//           this.widthSVG = this.tree.display.width;
-//           this.heightSVG = this.tree.display.height;
-//           this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
-//           this.linearFlag = true;
-//           return this.out_tree
-//         });
-//       } else {
-//         // pass
-//       }
-//       this.showButton = true;
-//   });
-
-//     }
-
 showTree(input) {
   d3.select('#tree_display').selectAll('*').remove();
   const formData: any = new FormData();
@@ -229,51 +181,7 @@ showTree(input) {
           this.heightSVG = this.tree.display.height;
           this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
           this.linearFlag = true;
-          d3.svg(this.tree).then( (xml)=> {
-
-            // tslint:disable-next-line: radix
-            let width = parseInt( d3.select('body').style('width') );
-            // tslint:disable-next-line: radix
-            let height = parseInt( d3.select('body').style('height') );
-
-            document.querySelector('#tree_display').appendChild(xml.documentElement.cloneNode(true));
-            document.querySelector('#minimap').appendChild(xml.documentElement.cloneNode(true));
-
-            const map = d3.select('#tree_display').select('svg');
-            const minimap = d3.select('#minimap').select('svg')
-               .attr('width', 200);
-
-            const minimapRect = minimap.append('rect')
-               .attr('id', 'minimapRect');
-
-            const transform = d3.zoomIdentity.translate(0, 0).scale(1);
-            const zoom = d3.zoom()
-               .scaleExtent([1, 3])
-               .on('zoom', zoomed);
-
-            map.call(zoom)
-               .call(zoom.transform, transform);
-
-            function zoomed() {
-               // tslint:disable-next-line: no-shadowed-variable
-               const transform = d3.event.transform;
-               const modifiedTransform = d3.zoomIdentity.scale( 1 / transform.k ).translate( -transform.x, -transform.y );
-
-               const mapMainContainer = map.select('#main_container')
-                  .attr('transform', transform);
-
-               minimapRect
-                   .attr('width', 150 )
-                   .attr('height', 150 )
-                   .attr('stroke', 'red')
-                   .attr('stroke-width', 10 / modifiedTransform.k )
-                   .attr('stroke-dasharray', 10 / modifiedTransform.k )
-                   .attr('fill', 'none')
-                  //  .attr('transform', modifiedTransform);
-            }
-         });
-
-          // return this.out_tree
+          return this.out_tree
         });
       } else {
         // pass
@@ -334,40 +242,6 @@ radial_decrease() {
   this.tree.display.update();
 }
 
-// radial() {
-//   let updateDIV: number;
-//   d3.select('#tree_display').selectAll('*').remove();
-//   d3.select('#container').attr('width', 500);
-//   d3.select('#container').attr('height', 500);
-//   // this variable is really necessary to update the DIV plane...
-//   updateDIV = document.getElementById('container').scrollHeight;
-//   this.tree = new phylotree(this.data);
-//   this.out_tree = this.tree.render(
-//     '#tree_display',
-//     {
-//       id: 'tree_render',
-//       height: 1000,
-//       width: 1000,
-//       'left-right-spacing': 'fixed-step',
-//       'top-bottom-spacing': 'fixed-step',
-//       'minimum-per-node-spacing': 2,
-//       'maximum-per-node-spacing': 100,
-//       'maximum-per-level-spacing': 100,
-//       'is-radial': true,
-//       'max-radius': 768,
-//       'left-offset': - this.widthSVG * 0.1,
-//     },
-//   );
-//   this.tree.display.width = this.tree.display.size[1];
-//   this.tree.display.height = this.tree.display.size[0];
-//   this.tree.display.update();
-//   this.widthSVG = this.tree.display.width;
-//   this.heightSVG = this.tree.display.height;
-//   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
-//   this.linearFlag = false;
-//   this.tree.display.update();
-// }
-
 radial() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
@@ -389,7 +263,7 @@ radial() {
       'maximum-per-level-spacing': 100,
       'is-radial': true,
       'max-radius': 768,
-      'left-offset': 0,
+      'left-offset': - this.widthSVG * 0.1,
     },
   );
   this.tree.display.width = this.tree.display.size[1];
@@ -401,40 +275,6 @@ radial() {
   this.linearFlag = false;
   this.tree.display.update();
 }
-
-// linear() {
-//   let updateDIV: number;
-//   d3.select('#tree_display').selectAll('*').remove();
-//   d3.select('#container').attr('width', 1000);
-//   d3.select('#container').attr('height', 1000);
-//   // this variable is really necessary to update the DIV plane...
-//   updateDIV = document.getElementById('container').scrollHeight;
-//   this.tree = new phylotree(this.data);
-//   this.out_tree = this.tree.render(
-//     '#tree_display',
-//     {
-//       id: 'tree_render',
-//       height: 100,
-//       width: 100,
-//       'left-right-spacing': 'fixed-step',
-//       'top-bottom-spacing': 'fixed-step',
-//       'minimum-per-node-spacing': 15,
-//       'maximum-per-node-spacing': 1000,
-//       'maximum-per-level-spacing': 1000,
-//       'is-radial': false,
-//       'max-radius': 768,
-//       'left-offset': 0,
-//     },
-//   );
-//   this.tree.display.width = this.tree.display.size[1];
-//   this.tree.display.height = this.tree.display.size[0];
-//   this.tree.display.update();
-//   this.widthSVG = this.tree.display.width;
-//   this.heightSVG = this.tree.display.height;
-//   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
-//   this.linearFlag = true;
-//   this.tree.display.update();
-// }
 
 linear() {
   let updateDIV: number;
