@@ -169,7 +169,7 @@ svg#tree_display {
 }
 
 #minimap {
-    position: absolute;
+    position: relative;
     right: 5px;
     top: 5px;
 
