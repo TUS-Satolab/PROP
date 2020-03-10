@@ -231,14 +231,14 @@ horizontal_decrease() {
 }
 
 radial_increase() {
-  this.widthSVG = this.widthSVG + 10;
-  this.heightSVG = this.heightSVG + 10;
+  this.widthSVG = this.widthSVG + 50;
+  this.heightSVG = this.heightSVG + 50;
   this.tree.display.update();
 }
 
 radial_decrease() {
-  this.widthSVG = this.widthSVG - 10;
-  this.heightSVG = this.heightSVG - 10;
+  this.widthSVG = this.widthSVG - 50;
+  this.heightSVG = this.heightSVG - 50;
   this.tree.display.update();
 }
 
@@ -273,8 +273,8 @@ radial() {
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
-  this.widthSVG = this.widthSVG * 0.1;
-  this.heightSVG = this.heightSVG * 0.1;
+  this.widthSVG = this.widthSVG * 0.25;
+  this.heightSVG = this.heightSVG * 0.25;
   this.tree.display.update();
 }
 
