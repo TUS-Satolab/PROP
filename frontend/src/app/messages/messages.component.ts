@@ -269,7 +269,7 @@ radial() {
   // this.tree.display.width = this.tree.display.size[1];
   // this.tree.display.height = this.tree.display.size[0];
   this.tree.display.width = 1000;
-  this.tree.display.height = 100;
+  this.tree.display.height = 1000;
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
