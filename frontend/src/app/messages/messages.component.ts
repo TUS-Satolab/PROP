@@ -263,13 +263,13 @@ showTree(input) {
                   .attr('transform', transform);
 
                minimapRect
-                   .attr('width', mapMainContainer.node().getBBox().width )
-                   .attr('height', mapMainContainer.node().getBBox().height )
+                   .attr('width', 150 )
+                   .attr('height', 150 )
                    .attr('stroke', 'red')
                    .attr('stroke-width', 10 / modifiedTransform.k )
                    .attr('stroke-dasharray', 10 / modifiedTransform.k )
                    .attr('fill', 'none')
-                   .attr('transform', modifiedTransform);
+                  //  .attr('transform', modifiedTransform);
             }
          });
 
