@@ -244,9 +244,9 @@ radial_decrease() {
 
 radial() {
   let updateDIV: number;
-  this.svg.nativeElement.setAttribute('height.px', 1000 );
-  this.svg.nativeElement.setAttribute('width.px', 1000 );
   d3.select('#tree_display').selectAll('*').remove();
+  d3.select('#tree_display').attr('width', 1000);
+  d3.select('#tree_display').attr('height', 1000);
   d3.select('#container').attr('width', 1000);
   d3.select('#container').attr('height', 1000);
   // this variable is really necessary to update the DIV plane...
@@ -282,9 +282,9 @@ radial() {
 
 linear() {
   let updateDIV: number;
-  this.svg.nativeElement.setAttribute('height.px', 1000 );
-  this.svg.nativeElement.setAttribute('width.px', 1000 );
   d3.select('#tree_display').selectAll('*').remove();
+  d3.select('#tree_display').attr('width', 1000);
+  d3.select('#tree_display').attr('height', 1000);
   d3.select('#container').attr('width', 1000);
   d3.select('#container').attr('height', 1000);
   // this variable is really necessary to update the DIV plane...
