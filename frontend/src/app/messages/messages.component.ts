@@ -273,6 +273,8 @@ radial() {
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
+  this.widthSVG = this.widthSVG * 0.25;
+  this.heightSVG = this.heightSVG * 0.25;
   this.tree.display.update();
 }
 
