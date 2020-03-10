@@ -266,15 +266,15 @@ radial() {
       'left-offset': 0,
     },
   );
-  // this.tree.display.width = this.tree.display.size[1];
-  // this.tree.display.height = this.tree.display.size[0];
-  this.tree.display.width = 1000;
-  this.tree.display.height = 1000;
+  this.tree.display.width = this.tree.display.size[1];
+  this.tree.display.height = this.tree.display.size[0];
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
+  this.widthSVG = this.widthSVG * 0.1;
+  this.heightSVG = this.heightSVG * 0.1;
   this.tree.display.update();
 }
 
