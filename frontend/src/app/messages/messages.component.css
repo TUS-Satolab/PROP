@@ -163,7 +163,7 @@ div#container {
 
 svg#tree_display {
     background-color: var(--grey-0);
-    position: absolute;
+    position: relative;
     /* width: 100%; */
     padding: 20px;
 }
