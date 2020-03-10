@@ -312,8 +312,7 @@ radial() {
   const vh = bbox.height;
   const defaultView = '' + vx + ' ' + vy + ' ' + vw + ' ' + vh;
   this.svg.nativeElement.setAttribute('viewBox', defaultView);
-  this.svg.nativeElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  this.svg.nativeElement.call(zoom);
+  this.svg.nativeElement.setAttribute('preserveAspectRatio');
   this.linearFlag = false;
   this.tree.display.update();
 }
