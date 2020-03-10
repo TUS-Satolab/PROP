@@ -166,4 +166,7 @@ svg#tree_display {
     position: relative;
     /* width: 100%; */
     padding: 20px;
+    margin-left:auto; 
+    margin-right:auto; 
+    display:block;
 }
