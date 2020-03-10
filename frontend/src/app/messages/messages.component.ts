@@ -262,7 +262,7 @@ radial() {
       'maximum-per-level-spacing': 100,
       'is-radial': true,
       'max-radius': 768,
-      'left-offset': -500,
+      'left-offset': this.widthSVG * 0.1,
     },
   );
   this.tree.display.width = this.tree.display.size[1];
