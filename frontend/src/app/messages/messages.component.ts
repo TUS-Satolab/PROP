@@ -271,9 +271,8 @@ radial() {
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
-  this.svg.nativeElement.setAttribute('viewBox', `-${this.widthSVG} -${this.heightSVG} ${this.widthSVG} ${this.heightSVG}`);
+  this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
-  this.tree.setAttribute('viewBox', `0 0 500 500`);
   this.tree.display.update();
 }
 
@@ -307,6 +306,7 @@ linear() {
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
+  this.svg.nativeElement.setAttribute('transform', `translate(${-this.widthSVG},${-this.heightSVG})`);
   this.linearFlag = true;
   this.tree.display.update();
 }
