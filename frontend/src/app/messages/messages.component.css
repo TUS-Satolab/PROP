@@ -44,7 +44,6 @@ td {
     color: black;
     background-color: var(--light);
     border-color: var(--light);
-    margin-left: 0.5rem;
 }
 
 .btn-view,
