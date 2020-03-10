@@ -306,8 +306,8 @@ radial() {
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
   const bbox = this.svg.nativeElement.node().getBBox();
-  const vx = bbox.x;
-  const vy = bbox.y;
+  const vx = bbox.x * 1.1;
+  const vy = bbox.y * 0.9;
   const vw = bbox.width;
   const vh = bbox.height;
   const defaultView = '' + vx + ' ' + vy + ' ' + vw + ' ' + vh;
