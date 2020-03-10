@@ -253,8 +253,8 @@ radial() {
     '#tree_display',
     {
       id: 'tree_render',
-      height: 1000,
-      width: 1000,
+      height: this.tree.display.height,
+      width: this.tree.display.width,
       'left-right-spacing': 'fixed-step',
       'top-bottom-spacing': 'fixed-step',
       'minimum-per-node-spacing': 2,
