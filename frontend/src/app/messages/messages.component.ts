@@ -297,7 +297,7 @@ radial() {
       'maximum-per-level-spacing': 100,
       'is-radial': true,
       'max-radius': 768,
-      'left-offset': - this.widthSVG * 0.1,
+      'left-offset': 0,
     },
   );
   this.tree.display.width = this.tree.display.size[1];
@@ -305,7 +305,7 @@ radial() {
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
-  this.svg.nativeElement.setAttribute('viewBox', `0 100 ${this.widthSVG} ${this.heightSVG}`);
+  this.svg.nativeElement.setAttribute('viewBox', `0 -${this.heightSVG * 0.1} ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
   this.tree.display.update();
 }
