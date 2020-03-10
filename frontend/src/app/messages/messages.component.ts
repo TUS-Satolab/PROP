@@ -253,8 +253,8 @@ radial() {
     '#tree_display',
     {
       id: 'tree_render',
-      // height: 1000,
-      // width: 1000,
+      height: 1000,
+      width: 1000,
       'left-right-spacing': 'fixed-step',
       'top-bottom-spacing': 'fixed-step',
       'minimum-per-node-spacing': 2,
@@ -270,7 +270,7 @@ radial() {
   this.tree.display.update();
   this.widthSVG = this.tree.display.width;
   this.heightSVG = this.tree.display.height;
-  this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
+  this.svg.nativeElement.setAttribute('viewBox', `-${this.widthSVG / 2} -${this.heightSVG / 2} ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
   this.tree.display.update();
 }
