@@ -262,6 +262,7 @@ showTree(input) {
                const mapMainContainer = map.select('#main_container')
                   .attr('transform', transform);
 
+
               //  minimapRect
               //      .attr('width', mapMainContainer.node().getBBox().width )
               //      .attr('height', mapMainContainer.node().getBBox().height )
