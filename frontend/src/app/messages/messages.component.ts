@@ -231,14 +231,14 @@ horizontal_decrease() {
 }
 
 radial_increase() {
-  this.widthSVG = this.widthSVG + 10;
-  this.heightSVG = this.heightSVG + 10;
+  this.widthSVG = this.widthSVG * 1.1;
+  this.heightSVG = this.heightSVG * 1.1;
   this.tree.display.update();
 }
 
 radial_decrease() {
-  this.widthSVG = this.widthSVG - 10;
-  this.heightSVG = this.heightSVG - 10;
+  this.widthSVG = this.widthSVG * 0.9;
+  this.heightSVG = this.heightSVG * 0.9;
   this.tree.display.update();
 }
 
