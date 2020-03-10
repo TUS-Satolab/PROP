@@ -244,8 +244,8 @@ radial_decrease() {
 radial() {
   let updateDIV: number;
   d3.select('#tree_display').selectAll('*').remove();
-  d3.select('#container').attr('width', 100);
-  d3.select('#container').attr('height', 100);
+  d3.select('#container').attr('width', 1000);
+  d3.select('#container').attr('height', 1000);
   // this variable is really necessary to update the DIV plane...
   updateDIV = document.getElementById('container').scrollHeight;
   this.tree = new phylotree(this.data);
@@ -253,8 +253,8 @@ radial() {
     '#tree_display',
     {
       id: 'tree_render',
-      height: 100,
-      width: 100,
+      height: 1000,
+      width: 1000,
       'left-right-spacing': 'fixed-step',
       'top-bottom-spacing': 'fixed-step',
       'minimum-per-node-spacing': 2,
@@ -268,8 +268,8 @@ radial() {
   this.tree.display.width = this.tree.display.size[1];
   this.tree.display.height = this.tree.display.size[0];
   this.tree.display.update();
-  this.widthSVG = this.tree.display.width;
-  this.heightSVG = this.tree.display.height;
+  this.widthSVG = this.tree.display.width * 0.1;
+  this.heightSVG = this.tree.display.height * 0.1;
   this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
   this.linearFlag = false;
   this.tree.display.update();
