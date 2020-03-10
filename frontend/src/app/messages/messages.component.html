@@ -157,6 +157,12 @@
                         <button type="button" class="btn btn-light btn-sm" data-direction='vertical' data-amount='-1' title="Shrink radius" (click)=radial_decrease()>
                                                         <i class="fa  fa-compress fa-rotate-135" ></i>
                                                         </button>
+                        <button type="button" [disabled] class="btn btn-light btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
+                            <i class="fa fa-arrows-h" ></i>
+                            </button>
+                        <button type="button" [disabled] class="btn btn-light btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
+                            <i class="fa  fa-compress fa-rotate-45" ></i>
+                            </button>
                     </ng-template>
                     <button type="button" class="btn btn-light btn-sm" (click)=linear()>
                                         Linear
