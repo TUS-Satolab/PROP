@@ -262,15 +262,14 @@ showTree(input) {
                const mapMainContainer = map.select('#main_container')
                   .attr('transform', transform);
 
-
-              //  minimapRect
-              //      .attr('width', mapMainContainer.node().getBBox().width )
-              //      .attr('height', mapMainContainer.node().getBBox().height )
-              //      .attr('stroke', 'red')
-              //      .attr('stroke-width', 10 / modifiedTransform.k )
-              //      .attr('stroke-dasharray', 10 / modifiedTransform.k )
-              //      .attr('fill', 'none')
-              //      .attr('transform', modifiedTransform);
+               minimapRect
+                   .attr('width', mapMainContainer.node().getBBox().width )
+                   .attr('height', mapMainContainer.node().getBBox().height )
+                   .attr('stroke', 'red')
+                   .attr('stroke-width', 10 / modifiedTransform.k )
+                   .attr('stroke-dasharray', 10 / modifiedTransform.k )
+                   .attr('fill', 'none')
+                   .attr('transform', modifiedTransform);
             }
          });
 
