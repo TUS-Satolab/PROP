@@ -109,7 +109,7 @@ def align(task_id=None, filename=None):
             align_method = request.form['align_method']
             input_type = request.form['input_type']
             align_clw_opt = request.form['align_clw_opt']
-            out_align = "align_"+ task_id +".txt"
+            out_align = "alignment_"+ task_id +".txt"
 
             q = Queue(connection=redis_connection)
             job = q.enqueue(alignment,
@@ -261,13 +261,13 @@ def matrix(task_id=None):
             file = None
         try:
             task_id = request.form['task_id']
-            filename = "align_" + task_id + ".txt"
+            filename = "alignment_" + task_id + ".txt"
             f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
             f.close()
         except:
             task_id = None
         if task_id is not None and file is None:
-            filename = "align_" + task_id + ".txt"
+            filename = "alignment_" + task_id + ".txt"
             try:
                 f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
                 f.close()
@@ -281,7 +281,7 @@ def matrix(task_id=None):
             (filename, task_id) = upload_file('file')
         elif task_id is not None and file is not None:
             try:
-                filename = "align_" + task_id + ".txt"
+                filename = "alignment_" + task_id + ".txt"
                 f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename), "r")
                 f.close()
                 #print("Task ID was used because Matrix File was found in the database")
@@ -439,13 +439,13 @@ def complete():
         model = request.form['model']
         tree = request.form['tree']
 
-        out_align = "align_"+ task_id +".txt"
+        out_align = "alignment_"+ task_id +".txt"
         matrix_output = "matrix_"+task_id+".txt"
         out_tree = "tree_"+task_id+".txt"
         q = Queue(connection=redis_connection)
         if align_method == "None":
             print("This is:", filename)
-            if filename == 'align_'+task_id+'.txt':
+            if filename == 'alignment_'+task_id+'.txt':
             # if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
                 print("WE PASS")
                 pass

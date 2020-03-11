@@ -58,7 +58,7 @@ def main(args):
     #タイムスタンプ取得(ファイル名に使うのみ)
     start = time.time()
     timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
-    out_align = timestamp + "align.txt"
+    out_align = timestamp + "alignment.txt"
     matrix_output = timestamp + "matrix.txt"
     out_tree = timestamp + "tree.txt"
     ############ docopt arguments ###############

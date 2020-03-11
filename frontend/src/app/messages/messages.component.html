@@ -48,7 +48,7 @@
                                     <button (click)="cancelJob(cookieID.id)" class="btn-clear tasks-btn btn-sm">Cancel Task</button>
                                 </ng-template>
                                 <ng-template #elseBlock>
-                                    <div>{{ cookieID.type }}</div>
+                                    <div [style.opacity]="0">{{ cookieID.type }}</div>
                                 </ng-template>
                             </div>
                             <ng-template #errormsg>

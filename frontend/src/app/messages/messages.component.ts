@@ -12,6 +12,8 @@ import { phylotree } from 'phylotree';
 import 'phylotree/build/phylotree.css';
 import * as svg_download from 'save-svg-as-png';
 import { Router } from '@angular/router';
+var JSZip = require('jszip');
+var JSZipUtils = require('jszip-utils');
 
 @Component({
   selector: 'app-messages',
@@ -54,8 +56,31 @@ export class MessagesComponent implements OnInit {
    }, 3000);
   }
 
+
+  // downloadFiles(input) {
+  //   const formData: any = new FormData();
+  //   formData.set('result_id', input);
+  //   formData.set('result_kind', 'complete');
+  //   this.downloadFlag = 1;
+  //   this.httpClient.post(QUERY_URL, formData, {observe: 'response'}).subscribe(query => {
+  //     if (query.body['msg'] === 'Finished') {
+  //       this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
+  //         const blob = new Blob([data], {
+  //           type: 'application/zip'
+  //         });
+  //         saveAs(blob, 'results.zip');
+  //         this.downloadFlag = 0;
+  //       });
+  //     } else {
+  //       // pass
+  //     }
+  //   });
+  // }
+
   downloadFiles(input) {
     const formData: any = new FormData();
+    var new_zip = new JSZip();
+    var zip = new JSZip();
     formData.set('result_id', input);
     formData.set('result_kind', 'complete');
     this.downloadFlag = 1;
@@ -65,7 +90,27 @@ export class MessagesComponent implements OnInit {
           const blob = new Blob([data], {
             type: 'application/zip'
           });
-          saveAs(blob, 'results.zip');
+          new_zip.loadAsync(blob)
+          this.showTree(input);
+          svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+          // console.log(uri)
+          const output = this.dataURItoBlob(uri);
+          new_zip.file('phylotree.png', output);
+          });
+          // console.log(new_zip)
+          // new_zip.generateAsync({type:"blob"})
+          // .then(function (blob) {
+          //     saveAs(blob, "result.zip");
+          // });
+          console.log(new_zip)
+          // zip.file("Hello.txt", "Hello World\n");
+          // var img = zip.folder("images");
+          // zip.generateAsync({type:"blob"})
+          // .then(function(content) {
+          //     // see FileSaver.js
+          //     saveAs(content, "example.zip");
+          // });
+
           this.downloadFlag = 0;
         });
       } else {

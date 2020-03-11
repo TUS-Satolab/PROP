@@ -57,6 +57,11 @@ export class checkstatus {
         const date = valueSplit[2];
         let parsedDate = moment(date, 'YYYY/MM/DD HH:mm')
         parsedDate = parsedDate.format('MMM D, YYYY, hh:mm a');
+        if (valueSplit[4] === 'align') {
+          valueSplit[4] = 'alignm';
+        } else if (valueSplit[4] === 'matrix') {
+          valueSplit[4] = 'matrix';
+        }
         // tslint:disable-next-line: max-line-length
         prevIds.push({id: valueSplit[0], msg: valueSplit[1], time: String(parsedDate), number: valueSplit[3], type: valueSplit[4], version: valueSplit[5]});
         // tslint:disable-next-line: max-line-length
