@@ -27,7 +27,7 @@ export class MessagesComponent implements OnInit {
   showButton = false;
   widthSVG = 1000;
   heightSVG = 1000;
-
+  delay = ms => new Promise(res => setTimeout(res, ms));
   // Phylotree parameters
   form: FormGroup;
   phylotreeData: JSON;
@@ -39,10 +39,9 @@ export class MessagesComponent implements OnInit {
 
   // tslint:disable-next-line: max-line-length
   constructor(private _checkstatus: checkstatus, private httpClient: HttpClient, private cookieService: CookieService, public messageService: MessageService, private router: Router) { }
-
   ngOnInit() {
     const firstCookie: string = this.cookieService.get('1');
-    let valueSplit = firstCookie.split(';');
+    const valueSplit = firstCookie.split(';');
     if (valueSplit.length < 6) {
       this.cookieService.deleteAll();
     } else if (Number(valueSplit[5]) !== VERSION) {
@@ -57,60 +56,43 @@ export class MessagesComponent implements OnInit {
   }
 
 
-  // downloadFiles(input) {
-  //   const formData: any = new FormData();
-  //   formData.set('result_id', input);
-  //   formData.set('result_kind', 'complete');
-  //   this.downloadFlag = 1;
-  //   this.httpClient.post(QUERY_URL, formData, {observe: 'response'}).subscribe(query => {
-  //     if (query.body['msg'] === 'Finished') {
-  //       this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
-  //         const blob = new Blob([data], {
-  //           type: 'application/zip'
-  //         });
-  //         saveAs(blob, 'results.zip');
-  //         this.downloadFlag = 0;
-  //       });
-  //     } else {
-  //       // pass
-  //     }
-  //   });
-  // }
-
   downloadFiles(input) {
     const formData: any = new FormData();
-    var new_zip = new JSZip();
-    var zip = new JSZip();
     formData.set('result_id', input);
     formData.set('result_kind', 'complete');
     this.downloadFlag = 1;
     this.httpClient.post(QUERY_URL, formData, {observe: 'response'}).subscribe(query => {
       if (query.body['msg'] === 'Finished') {
-        this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(data => {
+        this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(async data => {
           const blob = new Blob([data], {
             type: 'application/zip'
           });
-          new_zip.loadAsync(blob)
-          this.showTree(input);
-          svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
-          // console.log(uri)
-          const output = this.dataURItoBlob(uri);
-          new_zip.file('phylotree.png', output);
+          const jszip = new JSZip();
+          jszip.loadAsync(blob).then(async (zip) => {
+            try {
+              await this.showTree(input);
+              await this.delay(500);
+              await svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+                const output = this.dataURItoBlob(uri);
+                zip.file('phylotree_linear.png', output);
+              });
+              await this.delay(500);
+              await this.radial();
+              await this.delay(500);
+              await svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+                const output = this.dataURItoBlob(uri);
+                zip.file('phylotree_radial.png', output);
+              });
+            } catch (e) {
+              zip.remove('phylotree_linear.png');
+            }
+            zip.generateAsync({type: 'blob'})
+            .then(function(content) {
+                saveAs(content, 'results.zip');
+            });
           });
-          // console.log(new_zip)
-          // new_zip.generateAsync({type:"blob"})
-          // .then(function (blob) {
-          //     saveAs(blob, "result.zip");
-          // });
-          console.log(new_zip)
-          // zip.file("Hello.txt", "Hello World\n");
-          // var img = zip.folder("images");
-          // zip.generateAsync({type:"blob"})
-          // .then(function(content) {
-          //     // see FileSaver.js
-          //     saveAs(content, "example.zip");
-          // });
-
+          await this.delay(5000);
+          this.deleteTree();
           this.downloadFlag = 0;
         });
       } else {
@@ -122,17 +104,6 @@ export class MessagesComponent implements OnInit {
   deleteAllCookies() {
     this.cookieService.deleteAll();
   }
-
-// Phylotree part
-downloadTree() {
-  // console.log(document.getElementById('tree_display'));
-  svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
-    // console.log(uri)
-    const output = this.dataURItoBlob(uri)
-    saveAs(output, 'phylotree.png')
-   // pass
-  });
-}
 
 dataURItoBlob(dataURI) {
   // convert base64 to raw binary data held in a string
@@ -224,7 +195,7 @@ showTree(input) {
           this.tree.display.height = this.tree.display.size[0];
           this.widthSVG = this.tree.display.width;
           this.heightSVG = this.tree.display.height;
-          this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG}`);
+          this.svg.nativeElement.setAttribute('viewBox', `0 0 ${this.widthSVG} ${this.heightSVG + 50}`);
           this.linearFlag = true;
           return this.out_tree
         });
@@ -233,7 +204,6 @@ showTree(input) {
       }
       this.showButton = true;
   });
-
     }
 
 deleteTree() {

@@ -33,17 +33,16 @@
                             <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
                                 <div *ngIf="started(cookieID.msg); else elseCancel">
                                     <div class="row completed-result">
-                                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="tasks-btn btn-view btn-sm">View</button></div>
-                                        <div *ngIf="downloadFlag === 0; else elseDownloading"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="tasks-btn btn-download btn-sm">Download</button></div>
+                                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="tasks-btn btn-view btn-sm">View</button></div>
+                                        <div *ngIf="downloadFlag === 0; else elseDownloading"><button [disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="tasks-btn btn-download btn-sm">Download</button></div>
                                     </div>
                                 </div>
                                 <ng-template #elseDownloading>
-                                    <div><button [disabled]="!notfinished(cookieID.msg)" class="btn-danger btn-sm">Downloading</button></div>
+                                    <div><button [disabled]="!notfinished(cookieID.msg)" class="tasks-btn btn-download btn-sm">Downloading</button></div>
                                 </ng-template>
                                 <ng-template #elseCancel>
                                     <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
                                 </ng-template>
-                                <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
                                 <ng-template #showCancelBtn>
                                     <button (click)="cancelJob(cookieID.id)" class="btn-clear tasks-btn btn-sm">Cancel Task</button>
                                 </ng-template>
@@ -60,75 +59,6 @@
             </table>
         </div>
 
-        <!-- changed table view / ends -->
-
-        <!-- "Tasks" original code / starts -->
-
-        <!-- <h5 class="text-center">Tasks</h5>
-        <br>
-        <div *ngIf="prevIdArray">
-            <div class="row">
-                <div class="col-sm-1">Number</div>
-                <div class="col-sm-2">Time</div>
-                <div class="col-sm-1">Status</div>
-                <div class="col-sm-1">Result</div>
-            </div>
-            <h3 class="hr_thin col-sm-6"></h3>
-            <div *ngFor='let cookieID of prevIdArray' class="row">
-                <div class="col-sm-1">{{cookieID.number}}</div>
-                <div class="col-sm-2">{{cookieID.time}}</div>
-                <div class="col-sm-1">{{cookieID.msg}}</div>
-                <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg" class="col-sm-1">
-                    <div *ngIf="started(cookieID.msg); else elseCancel">
-                        <div *ngIf="downloadFlag === 0; else elseDownloading" class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn-danger btn-sm">Download</button></div>
-                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock" class="col-sm-1"><button [attr.disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn-danger btn-sm">View</button></div>
-                    </div>
-                    <ng-template #elseDownloading>
-                        <div class="col-sm-1"><button [disabled]="!notfinished(cookieID.msg)" class="btn-danger btn-sm">Downloading</button></div>
-                    </ng-template>
-                    <ng-template #elseCancel>
-                        <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
-                    </ng-template> -->
-
-        <!-- <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(cookieID.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button> -->
-
-        <!-- <ng-template #showCancelBtn>
-                        <button (click)="cancelJob(cookieID.id)" class="btn-danger btn-sm">Cancel Task</button>
-                    </ng-template>
-                    <ng-template #elseBlock>
-                        <div class="col-sm-1">{{ cookieID.type }}</div>
-                    </ng-template>
-
-                </div>
-                <ng-template #errormsg>
-                    <div class="col-sm-2">{{cookieID.id}}</div>
-                </ng-template>
-            </div>
-        </div> -->
-
-        <!-- <div *ngIf="messageService.messagesMsg.length">
-                        <div *ngFor='let messageMsg of messageService.messagesMsg'>
-                                <div *ngIf="messageMsg.msg=='Started'">
-                                        {{messageMsg.number}}
-                                        {{messageMsg.time}}
-                                        {{messageMsg.msg}}
-                                        <button (click)="downloadFiles(messageMsg.id)" class="btn-outline-danger btn-sm">Download</button>
-                                        <button popover="Copied!" [popoverOnHover]="false" [popoverAnimation]="true" [popoverDismissTimeout]="1000" (click)="messageService.copyText(messageMsg.id)" class="btn-outline-danger btn-sm">copy to Clipboard</button>
-                                </div>
-                        </div>
-                </div> -->
-
-        <!-- <br>
-        <h4 class="hr col-sm-6"></h4>
-        <br> -->
-
-        <!-- <div class="button-group row"> -->
-
-        <!-- <div class="col-sm-3">
-            <button class="clear border-1 border-danger btn btn-outline-danger btn-block btn-md " (click)="messageService.clear()">Clear history</button>
-        </div> -->
-
-        <!-- "Tasks" original code / ends -->
 
         <h2>Phylogenetic Tree</h2>
         <div *ngIf="showButton === true">
@@ -169,9 +99,6 @@
                                         </button>
                     <button type="button" class="btn btn-light btn-sm" (click)=radial()>
                                         Radial
-                                        </button>
-                    <button type="button" class="btn btn-light btn-sm" (click)=downloadTree()>
-                                        Download
                                         </button>
                     <button class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
                                                 Delete Tree

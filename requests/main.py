@@ -46,6 +46,8 @@ def zipFilesInDir(dirName, zipFileName, filter, result_id):
        # Iterate over all the files in directory
        for filename in os.listdir(dirName):
            if filter(filename):
+               if filename.endswith('dnd'):
+                   continue
                filename_new = filename.replace("_"+result_id, '')
                print(filename)
                # Add file to zip
