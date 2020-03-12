@@ -72,7 +72,7 @@ export class MessagesComponent implements OnInit {
             try {
               await this.showTree(input);
               await this.delay(500);
-              await svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+              svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
                 const output = this.dataURItoBlob(uri);
                 zip.file('phylotree_linear.png', output);
               });
