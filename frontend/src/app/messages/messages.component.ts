@@ -72,7 +72,8 @@ export class MessagesComponent implements OnInit {
             try {
               await this.showTree(input);
               await this.delay(500);
-              svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+              await svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+                console.log("First uri\n",uri)
                 const output = this.dataURItoBlob(uri);
                 zip.file('phylotree_linear.png', output);
               });
@@ -80,6 +81,7 @@ export class MessagesComponent implements OnInit {
               await this.radial();
               await this.delay(500);
               await svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+                console.log("second uri\n",uri)
                 const output = this.dataURItoBlob(uri);
                 zip.file('phylotree_radial.png', output);
               });
@@ -118,7 +120,8 @@ export class MessagesComponent implements OnInit {
 dataURItoBlob(dataURI) {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  var byteString = atob(dataURI.split(',')[1]);
+  var byteCharacters = atob(imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''));
+  var byteString = atob(dataURI.replace(/^data:image\/(png|jpeg|jpg);base64,/, '').split(',')[1]);
   // separate out the mime component
   var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
   // write the bytes of the string to an ArrayBuffer
