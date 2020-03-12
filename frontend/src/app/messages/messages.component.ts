@@ -105,6 +105,16 @@ export class MessagesComponent implements OnInit {
     this.cookieService.deleteAll();
   }
 
+  downloadTree() {
+    // console.log(document.getElementById('tree_display'));
+    svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
+      // console.log(uri)
+      const output = this.dataURItoBlob(uri)
+      saveAs(output, 'phylotree.png')
+     // pass
+    });
+  }
+
 dataURItoBlob(dataURI) {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
