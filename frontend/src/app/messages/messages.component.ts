@@ -120,8 +120,7 @@ export class MessagesComponent implements OnInit {
 dataURItoBlob(dataURI) {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  var byteCharacters = atob(imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''));
-  var byteString = atob(dataURI.replace(/^data:image\/(png|jpeg|jpg);base64,/, '').split(',')[1]);
+  var byteString = atob(dataURI.split(',')[1]);
   // separate out the mime component
   var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
   // write the bytes of the string to an ArrayBuffer
