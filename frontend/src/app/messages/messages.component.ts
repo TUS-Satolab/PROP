@@ -71,17 +71,15 @@ export class MessagesComponent implements OnInit {
           jszip.loadAsync(blob).then(async (zip) => {
             try {
               await this.showTree(input);
-              await this.delay(500);
+              await this.delay(2000);
               svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
-                console.log("First uri\n",uri)
                 const output = this.dataURItoBlob(uri);
                 zip.file('phylotree_linear.png', output);
               });
               await this.delay(500);
               await this.radial();
-              await this.delay(500);
+              await this.delay(1000);
               await svg_download.svgAsPngUri(document.getElementById('tree_display'), {}, (uri: any) => {
-                console.log("second uri\n",uri)
                 const output = this.dataURItoBlob(uri);
                 zip.file('phylotree_radial.png', output);
               });
