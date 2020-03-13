@@ -128,12 +128,18 @@ label[for^=options] {
 
 /* button default */
 
-.btn-canal-primary,
-.btn-canal-primary.disabled,
-.btn-canal-primary:disabled {
+.btn-canal-primary {
     color: var(--light);
     background-color: var(--color-primary);
     border-color: var(--color-primary);
+}
+
+.btn-canal-secondary,
+.btn-canal-secondary.disabled,
+.btn-canal-secondary:disabled {
+    color: var(--grey-1);
+    background-color: var(--light);
+    border-color: var(--grey-0);
 }
 
 .btn-canal-secondary,
@@ -186,6 +192,12 @@ label[for^=options] {
     color: var(--light);
     background-color: var(--color-primary-75);
     border-color: var(--color-primary-75);
+}
+
+.btn-canal-primary:disabled {
+    color: var(--grey-1);
+    background-color: #999;
+    border-color: #999;
 }
 
 .btn-canal-secondary:hover {
