@@ -217,6 +217,13 @@ label[for^=options] {
     border-color: var(--color-primary);
 }
 
+
+/* button focus */
+
+.btn:focus {
+    box-shadow: none;
+}
+
 .alert {
     text-align: center;
     margin-bottom: 1px;
