@@ -19,12 +19,36 @@ label {
     margin: 0;
 }
 
+
+/* -- table -- */
+
+table {
+    table-layout: fixed;
+    min-width: 650px;
+}
+
 thead {
     background-color: var(--light-opacity-02);
 }
 
 th {
     color: var(--light);
+}
+
+.th-number {
+    width: 15%;
+}
+
+.th-time {
+    width: 40%;
+}
+
+.th-status {
+    width: 15%;
+}
+
+.th-result {
+    width: 30%;
 }
 
 td {
