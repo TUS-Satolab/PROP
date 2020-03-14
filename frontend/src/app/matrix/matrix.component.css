@@ -650,51 +650,52 @@ input[type="radio"] .styled:checked+label::after {
 
 /* Help box styling */
 
-.tooltip5 {
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-}
-
 .tooltip-icon {
     width: 3em;
     height: 3em;
     display: inline-block;
     background: no-repeat;
+    position: relative;
 }
 
 .tooltip-img {
     background-image: url(../../assets/icon_help.svg);
 }
 
-.tooltip5 img {
-    width: 20px;
+.tooltip-icon:hover>.tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
-.description5 {
-    display: none;
+.tooltip {
+    visibility: hidden;
+    text-align: left;
     position: absolute;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 1.6em;
-    color: #fff;
-    border-radius: 5px;
-    background: #000;
-    width: 100px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 500ms;
+    width: 120px;
+    bottom: 120%;
+    left: 90%;
+    margin-left: -50px;
 }
 
-.description5:before {
-    content: "";
+.tooltip-description {
+    background-color: black;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.tooltip>.tooltip-description::after {
+    content: " ";
     position: absolute;
     top: 100%;
-    left: 50%;
-    border: 15px solid transparent;
-    border-top: 15px solid #000;
-    margin-left: -15px;
-}
-
-.tooltip5:hover .description5 {
-    display: inline-block;
-    top: -75px;
-    left: -40px;
+    left: 25%;
+    margin-left: -16px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
 }
