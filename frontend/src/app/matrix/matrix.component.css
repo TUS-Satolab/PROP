@@ -98,6 +98,10 @@ label[for^=options] {
     background: transparent;
 }
 
+.custom-select:focus {
+    box-shadow: none;
+}
+
 .custom-select-component:after {
     content: url(../../assets/icon_select.svg);
     background: var(--color-primary);
