@@ -16,8 +16,8 @@
                         <div class="tooltip-description">説明を入力してください。</div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end col-sm-9">
-                    <label class="filename col-sm-8 file-form">
+                <div class="d-flex justify-content-end col-11 col-sm-9">
+                    <label class="filename file-form">
                       <span>{{filename}}</span>
                     </label>
                     <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
@@ -71,7 +71,7 @@
                             <div class="tooltip-description">説明を入力してください。</div>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-end col-sm-9">
+                    <div class="d-flex justify-content-end col-11 col-sm-9">
                         <label class="custom-select-component">
                             <select class="custom-select form-control form-control-sm" formControlName="align_method" id="align_method" required>
                                 <option value="clustalw" [selected]='true' selected>Clustal W2</option>
@@ -104,7 +104,7 @@
                         <div class="tooltip-description">説明を入力してください。</div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end col-sm-9">
+                <div class="d-flex justify-content-end col-11 col-sm-9">
                     <label class="custom-select-component">
                         <select class="custom-select form-control form-control-sm" placeholder="model" formControlName="model" id="model" required>
                             <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>

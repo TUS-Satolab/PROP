@@ -5,6 +5,9 @@
     font-size: 15px;
     border-radius: 3px;
     text-align: left;
+    overflow: hidden;
+    width: 100%;
+    padding-left: 1rem;
 }
 
 .main-label {
@@ -69,6 +72,7 @@ label[for^=options] {
     border-radius: 5rem;
     box-shadow: 3px 6px 9px 0px rgb(0, 0, 0, 0.2) inset;
     height: 3rem;
+    padding-left: 1rem;
 }
 
 
