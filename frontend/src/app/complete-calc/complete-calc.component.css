@@ -98,6 +98,10 @@ label[for^=options] {
     background: transparent;
 }
 
+.custom-select:focus {
+    box-shadow: none;
+}
+
 .custom-select-component:after {
     content: url(../../assets/icon_select.svg);
     background: var(--color-primary);
@@ -187,7 +191,7 @@ label[for^=options] {
 }
 
 .btn-canal-primary:disabled {
-    color: var(--grey-1);
+    color: var(--light);
     background-color: #999;
     border-color: #999;
 }
@@ -207,6 +211,13 @@ label[for^=options] {
     color: #fff;
     background-color: var(--color-primary);
     border-color: var(--color-primary);
+}
+
+
+/* button focus */
+
+.btn:focus {
+    box-shadow: none;
 }
 
 .alert {
@@ -478,9 +489,7 @@ label[for^=options] {
 }
 
 .radio input[type="radio"]:focus+label::before {
-    outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px;
+    outline: none;
 }
 
 .radio input[type="radio"]:checked+label::after {
