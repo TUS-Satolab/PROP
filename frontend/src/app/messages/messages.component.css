@@ -78,6 +78,10 @@ td {
     border-color: var(--color-primary);
 }
 
+.btn:focus {
+    box-shadow: none;
+}
+
 .btn-download,
 .btn-download.disabled,
 .btn-download:disabled {
