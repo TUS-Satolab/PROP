@@ -663,7 +663,7 @@ input[type="radio"] .styled:checked+label::after {
 /* Help box styling */
 
 .tooltip-icon {
-    width: 3em;
+    width: 2rem;
     height: 3em;
     display: inline-block;
     background: no-repeat;
@@ -689,7 +689,7 @@ input[type="radio"] .styled:checked+label::after {
     width: 120px;
     bottom: 120%;
     left: 90%;
-    margin-left: -50px;
+    margin-left: -35px;
 }
 
 .tooltip-description {
