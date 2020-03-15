@@ -7,7 +7,14 @@
     text-align: left;
     overflow: hidden;
     width: 100%;
-    padding-left: 1rem;
+    padding: 0 1rem;
+}
+
+.filename>span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .main-label {
