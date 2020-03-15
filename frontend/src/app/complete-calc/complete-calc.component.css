@@ -5,6 +5,9 @@
     font-size: 15px;
     border-radius: 3px;
     text-align: left;
+    overflow: hidden;
+    width: 100%;
+    padding-left: 1rem;
 }
 
 .main-label {
