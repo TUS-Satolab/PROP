@@ -11,12 +11,13 @@
         <div class="d-flex flex-column form-group">
             <label class="main-label">Input File</label>
             <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip5">
-                    <div class="tooltip-icon tooltip-img"></div>
-                    <div class="description5">説明を入力してください。 </div>
+                <div class="tooltip-icon tooltip-img">
+                    <div class="tooltip">
+                        <div class="tooltip-description">説明を入力してください。</div>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-end col-sm-9">
-                    <label class="filename col-sm-8 file-form">
+                <div class="d-flex justify-content-end col-11 col-sm-9">
+                    <label class="filename file-form">
                       <span>{{filename}}</span>
                     </label>
                     <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
@@ -43,9 +44,10 @@
         <div class="d-flex flex-column form-group">
             <label for="input_type" class="main-label">Sequence type</label>
             <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip5">
-                    <div class="tooltip-icon tooltip-img"></div>
-                    <div class="description5">説明を入力してください。 </div>
+                <div class="tooltip-icon tooltip-img">
+                    <div class="tooltip">
+                        <div class="tooltip-description">説明を入力してください。</div>
+                    </div>
                 </div>
                 <div class="d-flex justify-content-end col-sm-9">
                     <div class="radio radio-danger form-check form-check-inline">
@@ -64,11 +66,12 @@
             <div class="form-group">
                 <label for="align_method" class="main-label">Alignment</label>
                 <div class="d-flex flex-row justify-content-between">
-                    <div class="tooltip5">
-                        <div class="tooltip-icon tooltip-img"></div>
-                        <div class="description5">説明を入力してください。 </div>
+                    <div class="tooltip-icon tooltip-img">
+                        <div class="tooltip">
+                            <div class="tooltip-description">説明を入力してください。</div>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-end col-sm-9">
+                    <div class="d-flex justify-content-end col-11 col-sm-9">
                         <label class="custom-select-component">
                             <select class="custom-select form-control form-control-sm" formControlName="align_method" id="align_method" required>
                                 <option value="clustalw" [selected]='true' selected>Clustal W2</option>
@@ -96,11 +99,12 @@
         <div class="d-flex flex-column form-group">
             <label for="model" class="main-label">Genetic Difference</label>
             <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip5">
-                    <div class="tooltip-icon tooltip-img"></div>
-                    <div class="description5">説明を入力してください。 </div>
+                <div class="tooltip-icon tooltip-img">
+                    <div class="tooltip">
+                        <div class="tooltip-description">説明を入力してください。</div>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-end col-sm-9">
+                <div class="d-flex justify-content-end col-11 col-sm-9">
                     <label class="custom-select-component">
                         <select class="custom-select form-control form-control-sm" placeholder="model" formControlName="model" id="model" required>
                             <option *ngFor="let difference of differences" [value]="difference" [selected]='true'>{{difference}}</option>
@@ -122,11 +126,12 @@
         <div class="d-flex flex-column form-group">
             <label for="gapdel" class="main-label">Treatment of gaps</label>
             <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip5">
-                    <div class="tooltip-icon tooltip-img"></div>
-                    <div class="description5">説明を入力してください。 </div>
+                <div class="tooltip-icon tooltip-img">
+                    <div class="tooltip">
+                        <div class="tooltip-description">説明を入力してください。</div>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-end col-sm-11">
+                <div class="d-flex justify-content-end col-10 col-sm-11">
                     <div class="radio radio-danger form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="gapdel" formControlName="gapdel" id="gapdel_plusgap" value="plusgap">
                         <label class="form-check-label" for="gapdel_plusgap">+Gap</label>
@@ -146,9 +151,10 @@
         <div class="d-flex flex-column form-group">
             <label for="gapdel" class="main-label">Phylogenetic tree</label>
             <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip5">
-                    <div class="tooltip-icon tooltip-img"></div>
-                    <div class="description5">説明を入力してください。 </div>
+                <div class="tooltip-icon tooltip-img">
+                    <div class="tooltip">
+                        <div class="tooltip-description">説明を入力してください。</div>
+                    </div>
                 </div>
                 <div class="d-flex justify-content-end col-sm-9">
                     <div class="radio radio-danger form-check form-check-inline">

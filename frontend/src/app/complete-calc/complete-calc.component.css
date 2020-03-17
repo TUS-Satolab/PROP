@@ -5,6 +5,16 @@
     font-size: 15px;
     border-radius: 3px;
     text-align: left;
+    overflow: hidden;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.filename>span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .main-label {
@@ -69,6 +79,7 @@ label[for^=options] {
     border-radius: 5rem;
     box-shadow: 3px 6px 9px 0px rgb(0, 0, 0, 0.2) inset;
     height: 3rem;
+    padding-left: 1rem;
 }
 
 
@@ -96,6 +107,10 @@ label[for^=options] {
     border-radius: 0;
     z-index: 2;
     background: transparent;
+}
+
+.custom-select:focus {
+    box-shadow: none;
 }
 
 .custom-select-component:after {
@@ -128,9 +143,7 @@ label[for^=options] {
 
 /* button default */
 
-.btn-canal-primary,
-.btn-canal-primary.disabled,
-.btn-canal-primary:disabled {
+.btn-canal-primary {
     color: var(--light);
     background-color: var(--color-primary);
     border-color: var(--color-primary);
@@ -188,6 +201,12 @@ label[for^=options] {
     border-color: var(--color-primary-75);
 }
 
+.btn-canal-primary:disabled {
+    color: var(--light);
+    background-color: #999;
+    border-color: #999;
+}
+
 .btn-canal-secondary:hover {
     color: var(--grey-1);
     background-color: var(--grey-0);
@@ -203,6 +222,13 @@ label[for^=options] {
     color: #fff;
     background-color: var(--color-primary);
     border-color: var(--color-primary);
+}
+
+
+/* button focus */
+
+.btn:focus {
+    box-shadow: none;
 }
 
 .alert {
@@ -474,9 +500,7 @@ label[for^=options] {
 }
 
 .radio input[type="radio"]:focus+label::before {
-    outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px;
+    outline: none;
 }
 
 .radio input[type="radio"]:checked+label::after {
@@ -638,51 +662,52 @@ input[type="radio"] .styled:checked+label::after {
 
 /* Help box styling */
 
-.tooltip5 {
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-}
-
 .tooltip-icon {
-    width: 3em;
+    width: 2rem;
     height: 3em;
     display: inline-block;
     background: no-repeat;
+    position: relative;
 }
 
 .tooltip-img {
     background-image: url(../../assets/icon_help.svg);
 }
 
-.tooltip5 img {
-    width: 20px;
+.tooltip-icon:hover>.tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
-.description5 {
-    display: none;
+.tooltip {
+    visibility: hidden;
+    text-align: left;
     position: absolute;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 1.6em;
-    color: #fff;
-    border-radius: 5px;
-    background: #000;
-    width: 100px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 500ms;
+    width: 120px;
+    bottom: 120%;
+    left: 90%;
+    margin-left: -35px;
 }
 
-.description5:before {
-    content: "";
+.tooltip-description {
+    background-color: black;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.tooltip>.tooltip-description::after {
+    content: " ";
     position: absolute;
     top: 100%;
-    left: 50%;
-    border: 15px solid transparent;
-    border-top: 15px solid #000;
-    margin-left: -15px;
-}
-
-.tooltip5:hover .description5 {
-    display: inline-block;
-    top: -75px;
-    left: -40px;
+    left: 25%;
+    margin-left: -16px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
 }

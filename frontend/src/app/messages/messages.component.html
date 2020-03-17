@@ -12,10 +12,10 @@
             <table class="table table-bordered">
                 <thead class="table-head">
                     <tr>
-                        <th>Number</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Result</th>
+                        <th class="th-number">Number</th>
+                        <th class="th-time">Time</th>
+                        <th class="th-status">Status</th>
+                        <th class="th-result">Result</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,18 +33,18 @@
                             <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
                                 <div *ngIf="started(cookieID.msg); else elseCancel">
                                     <div class="row completed-result">
-                                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="tasks-btn btn-view btn-sm">View</button></div>
-                                        <div *ngIf="downloadFlag === 0; else elseDownloading"><button [disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="tasks-btn btn-download btn-sm">Download</button></div>
+                                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn tasks-btn btn-view btn-sm">View</button></div>
+                                        <div *ngIf="downloadFlag === 0; else elseDownloading"><button [disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn tasks-btn btn-download btn-sm">Download</button></div>
                                     </div>
                                 </div>
                                 <ng-template #elseDownloading>
-                                    <div><button [disabled]="!notfinished(cookieID.msg)" class="tasks-btn btn-download btn-sm">Downloading</button></div>
+                                    <div><button [disabled]="!notfinished(cookieID.msg)" class="btn tasks-btn btn-downloading btn-sm">Downloading</button></div>
                                 </ng-template>
                                 <ng-template #elseCancel>
                                     <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
                                 </ng-template>
                                 <ng-template #showCancelBtn>
-                                    <button (click)="cancelJob(cookieID.id)" class="btn-clear tasks-btn btn-sm">Cancel Task</button>
+                                    <button (click)="cancelJob(cookieID.id)" class="btn btn-clear tasks-btn btn-sm">Cancel Task</button>
                                 </ng-template>
                                 <ng-template #elseBlock>
                                     <div [style.opacity]="0">{{ cookieID.type }}</div>

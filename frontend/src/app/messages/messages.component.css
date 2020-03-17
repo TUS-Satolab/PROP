@@ -19,12 +19,36 @@ label {
     margin: 0;
 }
 
+
+/* -- table -- */
+
+table {
+    table-layout: fixed;
+    min-width: 650px;
+}
+
 thead {
     background-color: var(--light-opacity-02);
 }
 
 th {
     color: var(--light);
+}
+
+.th-number {
+    width: 15%;
+}
+
+.th-time {
+    width: 40%;
+}
+
+.th-status {
+    width: 15%;
+}
+
+.th-result {
+    width: 30%;
 }
 
 td {
@@ -46,17 +70,18 @@ td {
     border-color: var(--light);
 }
 
-.btn-view,
-.btn-view.disabled,
-.btn-view:disabled {
+.btn-view {
     color: var(--light);
     background-color: var(--color-primary);
     border-color: var(--color-primary);
 }
 
+.btn:focus {
+    box-shadow: none;
+}
+
 .btn-download,
-.btn-download.disabled,
-.btn-download:disabled {
+.btn-downloading {
     color: var(--color-primary);
     background-color: var(--light);
     border-color: var(--light);
@@ -80,7 +105,8 @@ td {
     border-color: var(--color-primary-75);
 }
 
-.btn-download:hover {
+.btn-download:hover,
+.btn-downloading:hover {
     color: var(--color-primary);
     background-color: var(--grey-0);
     border-color: var(--grey-0);
@@ -90,6 +116,32 @@ td {
     color: var(--light);
     background-color: var(--grey-1);
     border-color: var(--grey-1);
+}
+
+
+/* button disabled */
+
+.btn-view.disabled,
+.btn-view:disabled {
+    color: var(--grey-0);
+    background-color: var(--grey-2);
+    border-color: var(--grey-2);
+}
+
+.btn-download.disabled,
+.btn-download:disabled {
+    color: var(--grey-0);
+    background-color: var(--grey-2);
+    border-color: var(--grey-2);
+    margin-left: 0.5rem;
+}
+
+.btn-downloading.disabled,
+.btn-downloading:disabled {
+    color: var(--color-primary-75);
+    background-color: var(--grey-0);
+    border-color: var(--grey-0);
+    margin-left: 0.5rem;
 }
 
 
