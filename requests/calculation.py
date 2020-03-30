@@ -259,7 +259,77 @@ def parse_otus(input_file):
     filedata.close()
     return (otus, seqs)
 
+
 def calcDiff_ami(model,plusgap,seqData,otu):
+    score = [[0 for a in range(otu)] for b in range(otu)]
+
+    if plusgap == "checked":
+        lgs = len(seqData[0])
+
+        if model == "PC":
+            for a in range(otu):
+                for b in range(a):
+                    S = 0
+                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
+                    for i in range(lgs):
+                        seq_p = seqData[a][i] + seqData[b][i]
+                        if seq_p in ["TT","CC","AA","GG"]:
+                            S += 1
+                    try:
+                        score[a][b] = 0 - w * math.log(S/lgs/w)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
+                    score[b][a] = score[a][b]
+                    
+        elif model == "P":
+            for a in range(otu):
+                for b in range(a):
+                    D = 0
+                    for i in range(lgs):
+                        if seqData[a][i] != seqData[b][i]:
+                            D += 1
+                            
+                    score[a][b] = D / lgs
+                    score[b][a] = score[a][b]
+
+        
+    elif plusgap == "not_checked":
+        if model == "PC":
+            for a in range(otu):
+                for b in range(a):
+                    S = 0
+                    lgs = len(seqData[0])
+                    for i in range(lgs):
+                        seq_p = seqData[a][i] + seqData[b][i]
+                        if "-" in seq_p:
+                            lgs -= 1
+                        elif seqData[a][i] == seqData[b][i]:
+                            S += 1
+                            
+                    try:
+                        score[a][b] = 0 - math.log(S/lgs)
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
+                    score[b][a] = score[a][b]
+        elif model == "P":
+            for a in range(otu):
+                for b in range(a):
+                    lgs = len(seqData[0])
+                    D = 0
+                    for i in range(lgs):
+                        if (seqData[a][i] == "-") | (seqData[b][i] == "-"):
+                            lgs -= 1
+                        elif seqData[a][i] != seqData[b][i]:
+                            D += 1
+                            
+                    score[a][b] = D / lgs
+                    score[b][a] = score[a][b]
+    
+    return score
+
+
+
+def calcDiff_ami_old(model,plusgap,seqData,otu):
 #def calcDiffProtein(model,plusgap,seqData,otu):
     import math
 
@@ -324,10 +394,100 @@ def calcDiff_ami(model,plusgap,seqData,otu):
             score[b][a] = score[a][b]
     return score
 
+
 ###塩基配列の遺伝的差異行列生成
 #input...進化モデル名、+Gapオプション、アライメント済配列、生物種数
 #output...遺伝的差異行列
-def calcDiff_nuc(model,plusgap,seqData,otu):   
+def calcDiff_nuc(model,plusgap,seqData,otu):
+    # Example file: otu = 90, range(otu) = (0,90)
+    # score: 90 x 90 Zero-Matrix
+    # r = 5 x 5 Zero-Matrix
+    score = [[0 for a in range(otu)] for b in range(otu)]
+
+    if plusgap == "checked":
+        lgs = len(seqData[0])
+
+        if model == "K2P":
+            for a in range(otu):
+                for b in range(a):
+                    P = 0
+                    Q = 0
+                    S = 0
+                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
+                    for i in range(lgs):
+                        seq_p = seqData[a][i] + seqData[b][i]
+                        if seq_p in ["TT","CC","AA","GG"]:
+                            S += 1
+                        elif seq_p in ["TC","CT","AG","GA"]:
+                            P += 1
+                        elif seq_p in ["TA","AT","CG","GC","TG","GT","AC","CA"]:
+                            Q += 1
+                            
+                    P = P / lgs
+                    Q = Q / lgs
+                    S = S / lgs
+                    try:
+                        score[a][b] = 0.75 * w * math.log(w) - 0.5 * w * math.log((S-P) * math.sqrt(S+P-Q))
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
+                    score[b][a] = score[a][b]
+                    
+        elif model == "P":
+            for a in range(otu):
+                for b in range(a):
+                    D = 0
+                    for i in range(lgs):
+                        if seqData[a][i] != seqData[b][i]:
+                            D += 1
+                            
+                    score[a][b] = D / lgs
+                    score[b][a] = score[a][b]
+
+        
+    elif plusgap == "not_checked":
+        if model == "K2P":
+            for a in range(otu):
+                for b in range(a):
+                    P = 0
+                    Q = 0
+                    lgs = len(seqData[0])
+                    for i in range(lgs):
+                        seq_p = seqData[a][i] + seqData[b][i]
+                        if "-" in seq_p:
+                            lgs -= 1
+                        elif seq_p in ["TC","CT","AG","GA"]:
+                            P += 1
+                        elif seq_p in ["TA","AT","CG","GC","TG","GT","AC","CA"]:
+                            Q += 1
+                            
+                    P = P / lgs
+                    Q = Q / lgs
+                    try:
+                        score[a][b] = 0 - math.log(1 - 2 * P - Q) / 2 - math.log(1 - 2 * Q) / 4
+                    except:
+                        raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
+                    score[b][a] = score[a][b]
+        elif model == "P":
+            for a in range(otu):
+                for b in range(a):
+                    lgs = len(seqData[0])
+                    D = 0
+                    for i in range(lgs):
+                        if (seqData[a][i] == "-") | (seqData[b][i] == "-"):
+                            lgs -= 1
+                        elif seqData[a][i] != seqData[b][i]:
+                            D += 1
+                            
+                    score[a][b] = D / lgs
+                    score[b][a] = score[a][b]
+    
+    return score
+
+
+###塩基配列の遺伝的差異行列生成
+#input...進化モデル名、+Gapオプション、アライメント済配列、生物種数
+#output...遺伝的差異行列
+def calcDiff_nuc_old(model,plusgap,seqData,otu):   
 #def calcDiff(model,plusgap,seqData,otu):   
     # Example file: otu = 90, range(otu) = (0,90)
     # score: 90 x 90 Zero-Matrix
