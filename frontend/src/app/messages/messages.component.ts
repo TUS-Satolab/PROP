@@ -36,6 +36,7 @@ export class MessagesComponent implements OnInit {
   data: any;
   linearFlag: boolean;
   downloadFlag = 0;
+  activateFlag = 0;
 
   // tslint:disable-next-line: max-line-length
   constructor(private _checkstatus: checkstatus, private httpClient: HttpClient, private cookieService: CookieService, public messageService: MessageService, private router: Router) { }
@@ -61,6 +62,7 @@ export class MessagesComponent implements OnInit {
     formData.set('result_id', input);
     formData.set('result_kind', 'complete');
     this.downloadFlag = 1;
+    this.activateFlag = input;
     this.httpClient.post(QUERY_URL, formData, {observe: 'response'}).subscribe(query => {
       if (query.body['msg'] === 'Finished') {
         this.httpClient.post(GET_RESULT_URL, formData, {responseType: 'arraybuffer'}).subscribe(async data => {
@@ -94,6 +96,7 @@ export class MessagesComponent implements OnInit {
           await this.delay(5000);
           this.deleteTree();
           this.downloadFlag = 0;
+          this.activateFlag = 0;
         });
       } else {
         // pass
