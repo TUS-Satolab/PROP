@@ -22,16 +22,3 @@ EOF
 docker-compose -f docker-compose.yml up -d --build
 
 rm .dockerignore
-cat <<EOF >./.dockerignore
-.git
-.cache
-.gitignore
-requests
-frontend/node_modules
-EOF
-
-cd frontend
-npm install
-cd ..
-docker-compose -f docker-compose-angular.yml up -d --build
-rm .dockerignore
