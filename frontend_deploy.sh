@@ -1,12 +1,12 @@
 #!/bin/sh
 
-IP_ADDRESS=$2
+IP_ADDRESS=$1
 echo "IP_ADDRESS=$IP_ADDRESS" > .env
 cat >./frontend/src/app/env.json <<EOF 
 {
   "env": [
               {"id":1,"ip_address":"$IP_ADDRESS"},
-              {"id":2,"local_flag":"$1"}
+              {"id":2,"local_flag":"2"}
    ]
 }
 EOF
