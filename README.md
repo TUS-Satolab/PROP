@@ -21,7 +21,8 @@
 6. go to folder `frontend/src/app`
 7. rename `env_Dummy.json` to `env.json`
 8. Replace the ip address of the backend server in the line with `id:1`
-9. ng build --prod
+9. `cd ../..` (so that you are in the folder `frontend`)
+10. `ng build --prod`
 
 ## Usage via browser
 
