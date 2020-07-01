@@ -6,9 +6,15 @@
 ## Installation
 1. Pull this repo
 2. `cd canal_project`
-3. `./dc_script.sh 1` (for local environment) or `./dc_script.sh 2` (for server environment)
+3. `cd frontend`
+4. `sudo npm install`
+5. `cd ..` (so that you are in folder canal_project again)
+6. `sudo ./dc_script.sh 1` (for local environment) or `sudo ./dc_script.sh 2` (for server environment)
 
 ## Usage via browser
-1. Get the IP address of the server where the docker containers are running   
-   If it's locally: `http://localhost:4200/`
-2. In your browser input: [IP-address]:5004
+ If local environment: 
+   - `http://localhost:5004/`    
+   
+If server environment:
+   - Get the IP address of the server instance --> IP_ADDRESS
+   - `[IP_ADDRESS]:5004`
