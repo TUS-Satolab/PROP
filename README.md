@@ -1,8 +1,12 @@
 # canal_project
 
 ## Prerequisites
-
-- Docker
+- Docker & docker-compose
+  - https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
+  - https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04
+- npm
+  - `curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -`
+  - `sudo apt install nodejs`
 
 ## Installation Backend
 
