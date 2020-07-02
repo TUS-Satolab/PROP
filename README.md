@@ -30,11 +30,11 @@
 7. `cd ../..` (so that you are in the folder `frontend`)
 8. `ng build --prod --output-path ../docs`
 9. copy `frontend/src/styles.css` to the `docs` folder
-10. in the `docs` folder in both `main-es5...`-files
+10. in the `docs` folder in both `main-es5...`-files:
 
-- search/replace .`./..//assets/canal_logo.svg` with `./assets/canal_logo.svg`
+    - search/replace .`./..//assets/canal_logo.svg` with `./assets/canal_logo.svg`
 
-9. Host the docs folder on a hosting platform
+11. Host the docs folder on a hosting platform
 
 ## Installation Frontend (Docker)
 
