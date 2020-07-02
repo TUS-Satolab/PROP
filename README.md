@@ -47,7 +47,11 @@ If local environment:
 
 - `http://localhost:5004/`
 
-If server environment:
+If server environment (Docker):
 
 - Get the IP address of the server instance --> IP_ADDRESS
 - `[IP_ADDRESS]:5004`
+
+If static hosting:
+
+- use the domain provided by the hosting platform
