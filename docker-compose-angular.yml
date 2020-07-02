@@ -1,21 +1,21 @@
-version: '3.7'
+version: "3.7"
 
 services:
   angular-service:
-      build: 
-        context: .
-        dockerfile: ./frontend/Dockerfile_frontend
-      image: angularcontainer
-      volumes:
-        - ./frontend:/usr/src/app
-        - ./frontend/node_modules:/usr/src/app/node_modules
-      ports:
-        - '4200:4200'
-      expose:
-        - '80'
-        - '4200'
-      command: yarn run start
-      external_links:
-        - requests
-      environment:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile_frontend
+    image: angularcontainer
+    volumes:
+      - ./frontend:/usr/src/app
+      - ./frontend/node_modules:/usr/src/app/node_modules
+    ports:
+      - "4200:4200"
+    expose:
+      - "80"
+      - "4200"
+    command: yarn run start
+    external_links:
+      - requests
+    environment:
       - USERNAME=foobar

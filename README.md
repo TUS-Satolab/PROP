@@ -8,18 +8,39 @@
   - `curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -`
   - `sudo apt install nodejs`
 
-## Installation
+## Installation Backend
+
+1. Pull this repo
+2. `cd canal_project`
+3. `sudo ./dc_script.sh 1` (for local environment) or `sudo ./dc_script.sh 2` (for server environment)
+4. write down the IP address of the server instance
+
+## Installation Frontend (static)
+
 1. Pull this repo
 2. `cd canal_project`
 3. `cd frontend`
 4. `sudo npm install`
-5. `cd ..` (so that you are in folder canal_project again)
-6. `sudo ./dc_script.sh 1` (for local environment) or `sudo ./dc_script.sh 2` (for server environment)
+5. open `node_modules/phylotree/src/cli/phylotree.js`  
+   5.1 Delete the first line: `#!/usr/bin/env node`
+6. go to folder `frontend/src/app`
+7. rename `env_Dummy.json` to `env.json`
+8. Replace the ip address of the backend server in the line with `id:1`
+9. `cd ../..` (so that you are in the folder `frontend`)
+10. `ng build --prod`
+
+## Installation Frontent (Docker)
+
+1. go into folder `canal_project` (root folder)
+2. `sudo ./frontend_deploy.sh IP_ADDRESS_OF_BACKEND_SERVER`
 
 ## Usage via browser
- If local environment: 
-   - `http://localhost:5004/`    
-   
+
+If local environment:
+
+- `http://localhost:5004/`
+
 If server environment:
-   - Get the IP address of the server instance --> IP_ADDRESS
-   - `[IP_ADDRESS]:5004`
+
+- Get the IP address of the server instance --> IP_ADDRESS
+- `[IP_ADDRESS]:5004`
