@@ -7,8 +7,6 @@ import { TreeComponent } from './tree/tree.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 
-
-
 const routes: Routes = [
   { path: '', redirectTo: 'complete', pathMatch: 'full' },
   { path: 'align', component: AlignComponent },
@@ -21,6 +19,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

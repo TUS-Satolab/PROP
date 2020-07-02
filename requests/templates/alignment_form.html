@@ -1,26 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<body>
-    <form method="post" action="/alignment" enctype = "multipart/form-data">
-            <div class="form-group">
-                    <label>align_method</label>
-                    <select class="form-control" id="align_method" name="align_method">
-                        <option value="clustalw">clustalw</option>
-                        <option value="mafft">mafft</option>
-                        <option value="none" selected>none</option>
-                    </select>
-                    <label>input_type</label>
-                    <select class="form-control" id="input_type" name="input_type">
-                        <option value="nuc">nuc</option>
-                        <option value="ami">ami</option>
-                        <option value="none" selected>none</option>
-                    </select>
-                    <p>align_clw_opt <input type = "text" id="align_clw_opt" name = "align_clw_opt" /></p>
-                    <p> <input type = "hidden" id="flag" name = "flag" value="0"/></p>
-                    <input type = "file" id="file" name = "file" />
-            </div>
-            <button type="submit" name="submit_button" value="calculate">Calculate</button>
-            <button type="submit" name="submit_button" value="go_back">Go back</button>
+  <body>
+    <form method="post" action="/alignment" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>align_method</label>
+        <select class="form-control" id="align_method" name="align_method">
+          <option value="clustalw">clustalw</option>
+          <option value="mafft">mafft</option>
+          <option value="none" selected>none</option>
+        </select>
+        <label>input_type</label>
+        <select class="form-control" id="input_type" name="input_type">
+          <option value="nuc">nuc</option>
+          <option value="ami">ami</option>
+          <option value="none" selected>none</option>
+        </select>
+        <p>align_clw_opt <input type="text" id="align_clw_opt" name="align_clw_opt" /></p>
+        <p><input type="hidden" id="flag" name="flag" value="0" /></p>
+        <input type="file" id="file" name="file" />
+      </div>
+      <button type="submit" name="submit_button" value="calculate">Calculate</button>
+      <button type="submit" name="submit_button" value="go_back">Go back</button>
     </form>
-</body>  
+  </body>
 </html>

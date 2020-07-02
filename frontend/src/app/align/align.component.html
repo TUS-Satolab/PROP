@@ -1,11 +1,5 @@
-<div
-  class="container col-xs-12 col-sm-10 col-md-8 col-lg-6"
-  style="margin-top: 15rem;"
->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-  />
+<div class="container col-xs-12 col-sm-10 col-md-8 col-lg-6" style="margin-top: 15rem;">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   <h1 class="text-center">Alignment Calculation</h1>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="d-flex flex-column form-group">
@@ -22,15 +16,7 @@
           </label>
           <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
             Browse
-            <input
-              #fileInput
-              id="browse"
-              type="file"
-              name="file"
-              (change)="onFileSelect($event)"
-              required
-              hidden
-            />
+            <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden />
           </label>
         </div>
       </div>
@@ -62,9 +48,7 @@
               required
               [checked]="true"
             />
-            <label for="input_type_nuc" class="form-check-label"
-              >Nucleotide</label
-            >
+            <label for="input_type_nuc" class="form-check-label">Nucleotide</label>
           </div>
           <div class="radio radio-danger form-check form-check-inline">
             <input
@@ -107,9 +91,7 @@
                 id="align_method"
               >
                 <!-- <option value="none" selected>none</option> -->
-                <option value="clustalw" [selected]="true" selected
-                  >Clustal W2</option
-                >
+                <option value="clustalw" [selected]="true" selected>Clustal W2</option>
                 <option value="mafft">MAFFT</option>
                 <option value="None">No alignment necessary</option>
               </select>
@@ -144,20 +126,12 @@
       >
         Create
       </button>
-      <button
-        class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn"
-        type="button"
-        (click)="reset()"
-      >
+      <button class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn" type="button" (click)="reset()">
         Reset
       </button>
     </div>
     <ng-template #elseSubmitting>
-      <button
-        class="btn btn-danger btn-block btn-lg main-btn"
-        type="submit"
-        [disabled]="form.valid"
-      >
+      <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">
         Submitting
       </button>
     </ng-template>

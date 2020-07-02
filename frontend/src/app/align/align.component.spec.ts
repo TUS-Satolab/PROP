@@ -8,9 +8,8 @@ describe('AlignComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AlignComponent ]
-    })
-    .compileComponents();
+      declarations: [AlignComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

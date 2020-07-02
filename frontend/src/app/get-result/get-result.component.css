@@ -8,16 +8,19 @@
   /* margin-top: 0.5em; */
 }
 
-label, h1, h2, h3 {
+label,
+h1,
+h2,
+h3 {
   color: rgb(246, 8, 68);
 }
 
 .border-3 {
-  border-width:3px !important;
+  border-width: 3px !important;
 }
 
 .border-2 {
-  border-width:2px !important;
+  border-width: 2px !important;
 }
 
 #toolbar {

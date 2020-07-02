@@ -1,60 +1,87 @@
 <div class="container col-xs-12 col-sm-10 col-md-8 col-lg-6" style="margin-top: 15rem;">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <h1 class="text-center">Tree Calculation</h1>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="d-flex flex-column form-group">
-            <label class="main-label">Input File</label>
-            <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip-icon tooltip-img">
-                    <div class="tooltip">
-                        <div class="tooltip-description">説明を入力してください。</div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end col-11 col-sm-9">
-                    <label class="filename file-form">
-                      <span>{{filename}}</span>
-                    </label>
-                    <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
-                      Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
-                    </label>
-                </div>
-            </div>
-            <hr class="divider">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <h1 class="text-center">Tree Calculation</h1>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="d-flex flex-column form-group">
+      <label class="main-label">Input File</label>
+      <div class="d-flex flex-row justify-content-between">
+        <div class="tooltip-icon tooltip-img">
+          <div class="tooltip">
+            <div class="tooltip-description">説明を入力してください。</div>
+          </div>
         </div>
-        <div *ngIf="size_flag === 1" class="form-group row">
-            <label class="col-sm-2 col-form-label"></label>
-            <div *ngIf="size_flag === 1" class="col-sm-4 alert alert-danger">
-                File size is too big. (> 20MB)
-            </div>
+        <div class="d-flex justify-content-end col-11 col-sm-9">
+          <label class="filename file-form">
+            <span>{{ filename }}</span>
+          </label>
+          <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
+            Browse
+            <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden />
+          </label>
         </div>
-        <div class="d-flex flex-column form-group">
-            <label for="gapdel" class="main-label">Phylogenetic tree</label>
-            <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip-icon tooltip-img">
-                    <div class="tooltip">
-                        <div class="tooltip-description">説明を入力してください。</div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end col-sm-9">
-                    <div class="radio radio-danger form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_nj" value="nj" [checked]='true' required>
-                        <label class="form-check-label" for="tree_nj">NJ</label>
-                    </div>
-                    <div class="radio radio-danger form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="tree" formControlName="tree" id="tree_upgma" value="upgma" required>
-                        <label class="form-check-label" for="tree_upgma">UPGMA</label>
-                    </div>
-                </div>
-            </div>
-            <hr class="divider">
+      </div>
+      <hr class="divider" />
+    </div>
+    <div *ngIf="size_flag === 1" class="form-group row">
+      <label class="col-sm-2 col-form-label"></label>
+      <div *ngIf="size_flag === 1" class="col-sm-4 alert alert-danger">
+        File size is too big. (> 20MB)
+      </div>
+    </div>
+    <div class="d-flex flex-column form-group">
+      <label for="gapdel" class="main-label">Phylogenetic tree</label>
+      <div class="d-flex flex-row justify-content-between">
+        <div class="tooltip-icon tooltip-img">
+          <div class="tooltip">
+            <div class="tooltip-description">説明を入力してください。</div>
+          </div>
         </div>
+        <div class="d-flex justify-content-end col-sm-9">
+          <div class="radio radio-danger form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="tree"
+              formControlName="tree"
+              id="tree_nj"
+              value="nj"
+              [checked]="true"
+              required
+            />
+            <label class="form-check-label" for="tree_nj">NJ</label>
+          </div>
+          <div class="radio radio-danger form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="tree"
+              formControlName="tree"
+              id="tree_upgma"
+              value="upgma"
+              required
+            />
+            <label class="form-check-label" for="tree_upgma">UPGMA</label>
+          </div>
+        </div>
+      </div>
+      <hr class="divider" />
+    </div>
 
-        <div class="form-group">
-            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg create-btn main-btn" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn" type="button" (click)="reset()">Reset</button>
-        </div>
-        <ng-template #elseSubmitting>
-            <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">Submitting</button>
-        </ng-template>
-    </form>
+    <div class="form-group">
+      <button
+        *ngIf="submit_flag === 0; else elseSubmitting"
+        class="btn btn-canal-primary btn-block btn-lg create-btn main-btn"
+        type="submit"
+        [disabled]="!form.valid"
+      >
+        Create
+      </button>
+      <button class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn" type="button" (click)="reset()">
+        Reset
+      </button>
+    </div>
+    <ng-template #elseSubmitting>
+      <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">Submitting</button>
+    </ng-template>
+  </form>
 </div>
