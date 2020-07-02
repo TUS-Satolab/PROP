@@ -16,6 +16,8 @@
 3. `sudo ./dc_script.sh 1`
 4. write down the IP address of the server instance
 
+- OR: open the website on `localhost:5004/`
+
 ## Installation Frontend (static)
 
 1. Pull this repo
