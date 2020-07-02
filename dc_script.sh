@@ -1,6 +1,9 @@
 #!/bin/sh
 
 IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+# ----------------------------
+# Creation of backend
+# ----------------------------
 echo "IP_ADDRESS=$IP_ADDRESS" > .env
 cat >./frontend/src/app/env.json <<EOF 
 {
@@ -22,6 +25,9 @@ EOF
 docker-compose -f docker-compose.yml up -d --build
 
 rm .dockerignore
+# ----------------------------
+# Creation of frontend locally
+# ----------------------------
 cat <<EOF >./.dockerignore
 .git
 .cache

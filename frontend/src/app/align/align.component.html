@@ -1,54 +1,88 @@
-<div class="container col-xs-12 col-sm-10 col-md-8 col-lg-6" style="margin-top: 15rem;">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <h1 class="text-center">Alignment Calculation</h1>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="d-flex flex-column form-group">
-            <label class="main-label">Input File</label>
-            <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip-icon tooltip-img">
-                    <div class="tooltip">
-                        <div class="tooltip-description">説明を入力してください。</div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end col-11 col-sm-9">
-                    <label class="filename file-form">
-                      <span>{{filename}}</span>
-                    </label>
-                    <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
-                      Browse <input #fileInput id="browse" type="file" name="file" (change)="onFileSelect($event)" required hidden>
-                    </label>
-                </div>
-            </div>
-            <hr class="divider">
+<div
+  class="container col-xs-12 col-sm-10 col-md-8 col-lg-6"
+  style="margin-top: 15rem;"
+>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
+  <h1 class="text-center">Alignment Calculation</h1>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="d-flex flex-column form-group">
+      <label class="main-label">Input File</label>
+      <div class="d-flex flex-row justify-content-between">
+        <div class="tooltip-icon tooltip-img">
+          <div class="tooltip">
+            <div class="tooltip-description">説明を入力してください。</div>
+          </div>
         </div>
-        <div *ngIf="size_flag === 1" class="form-group row">
-            <label class="col-sm-2 col-form-label"></label>
-            <div *ngIf="size_flag === 1" class="col-sm-4 alert alert-danger">
-                File size is too big. (> 20MB)
-            </div>
+        <div class="d-flex justify-content-end col-11 col-sm-9">
+          <label class="filename file-form">
+            <span>{{ filename }}</span>
+          </label>
+          <label for="browse" class="btn btn-canal-primary btn-lg browse-btn">
+            Browse
+            <input
+              #fileInput
+              id="browse"
+              type="file"
+              name="file"
+              (change)="onFileSelect($event)"
+              required
+              hidden
+            />
+          </label>
         </div>
-        <div class="d-flex flex-column form-group">
-            <label for="input_type" class="main-label">Sequence type</label>
-            <div class="d-flex flex-row justify-content-between">
-                <div class="tooltip-icon tooltip-img">
-                    <div class="tooltip">
-                        <div class="tooltip-description">説明を入力してください。</div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end col-sm-9">
-                    <div class="radio radio-danger form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_nuc" value="nuc" (click)="onTypeSelect('nuc')" required [checked]='true'>
-                        <label for="input_type_nuc" class="form-check-label">Nucleotide</label>
-                    </div>
-                    <div class="radio radio-danger form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="input_type" formControlName="input_type" id="input_type_ami" value="ami" (click)="onTypeSelect('ami')" required>
-                        <label for="input_type_ami" class="form-check-label">Protein</label>
-                    </div>
-                </div>
-            </div>
-            <hr class="divider">
+      </div>
+      <hr class="divider" />
+    </div>
+    <div *ngIf="size_flag === 1" class="form-group row">
+      <label class="col-sm-2 col-form-label"></label>
+      <div *ngIf="size_flag === 1" class="col-sm-4 alert alert-danger">
+        File size is too big. (> 20MB)
+      </div>
+    </div>
+    <div class="d-flex flex-column form-group">
+      <label for="input_type" class="main-label">Sequence type</label>
+      <div class="d-flex flex-row justify-content-between">
+        <div class="tooltip-icon tooltip-img">
+          <div class="tooltip">
+            <div class="tooltip-description">説明を入力してください。</div>
+          </div>
         </div>
-        <!-- <div class="form-group">
+        <div class="d-flex justify-content-end col-sm-9">
+          <div class="radio radio-danger form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="input_type"
+              formControlName="input_type"
+              id="input_type_nuc"
+              value="nuc"
+              required
+              [checked]="true"
+            />
+            <label for="input_type_nuc" class="form-check-label"
+              >Nucleotide</label
+            >
+          </div>
+          <div class="radio radio-danger form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="input_type"
+              formControlName="input_type"
+              id="input_type_ami"
+              value="ami"
+              required
+            />
+            <label for="input_type_ami" class="form-check-label">Protein</label>
+          </div>
+        </div>
+      </div>
+      <hr class="divider" />
+    </div>
+    <!-- <div class="form-group">
             <label>align_method</label>
             <select class="form-control" placeholder="align_method" formControlName="align_method">
                 <option value="clustalw">clustalw</option>
@@ -56,46 +90,76 @@
                 <option value="none" selected>none</option>
             </select>
         </div> -->
-        <div class="d-flex flex-column">
-            <div class="form-group">
-                <label for="align_method" class="main-label">Alignment</label>
-                <div class="d-flex flex-row justify-content-between">
-                    <div class="tooltip-icon tooltip-img">
-                        <div class="tooltip">
-                            <div class="tooltip-description">説明を入力してください。</div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-end col-11 col-sm-9">
-                        <label class="custom-select-component">
-                            <select class="custom-select form-control form-control-sm" formControlName="align_method" id="align_method">
-                                <!-- <option value="none" selected>none</option> -->
-                                <option value="clustalw" [selected]='true' selected>Clustal W2</option>
-                                <option value="mafft">MAFFT</option>
-                                <option value="None">No alignment necessary</option>
-                            </select>
-                        </label>
-                    </div>
-                </div>
+    <div class="d-flex flex-column">
+      <div class="form-group">
+        <label for="align_method" class="main-label">Alignment</label>
+        <div class="d-flex flex-row justify-content-between">
+          <div class="tooltip-icon tooltip-img">
+            <div class="tooltip">
+              <div class="tooltip-description">説明を入力してください。</div>
             </div>
-            <!-- <div class="form-group row">
+          </div>
+          <div class="d-flex justify-content-end col-11 col-sm-9">
+            <label class="custom-select-component">
+              <select
+                class="custom-select form-control form-control-sm"
+                formControlName="align_method"
+                id="align_method"
+              >
+                <!-- <option value="none" selected>none</option> -->
+                <option value="clustalw" [selected]="true" selected
+                  >Clustal W2</option
+                >
+                <option value="mafft">MAFFT</option>
+                <option value="None">No alignment necessary</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="form-group row">
             <label class="col-sm-2 col-form-label"></label>
             <input class="border-2 border-danger form-control form-control-sm col-sm-4" placeholder="Options" formControlName="align_clw_opt" id="options">
         </div> -->
-            <div class="d-flex flex-row justify-content-end form-group">
-                <div class="d-flex flex-column justify-content-end col-sm-9 col-11">
-                    <label for="options" class="main-label">Options</label>
-                    <input [attr.disabled]="noalign()" class="form-control form-control-sm" formControlName="align_clw_opt" id="options">
-                </div>
-            </div>
-            <hr class="divider">
+      <div class="d-flex flex-row justify-content-end form-group">
+        <div class="d-flex flex-column justify-content-end col-sm-9 col-11">
+          <label for="options" class="main-label">Options</label>
+          <input
+            [attr.disabled]="noalign()"
+            class="form-control form-control-sm"
+            formControlName="align_clw_opt"
+            id="options"
+          />
         </div>
+      </div>
+      <hr class="divider" />
+    </div>
 
-        <div class="form-group">
-            <button *ngIf="submit_flag === 0; else elseSubmitting" class="btn btn-canal-primary btn-block btn-lg create-btn main-btn" type="submit" [disabled]="!form.valid">Create</button>
-            <button class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn" type="button" (click)="reset()">Reset</button>
-        </div>
-        <ng-template #elseSubmitting>
-            <button class="btn btn-danger btn-block btn-lg main-btn" type="submit" [disabled]="form.valid">Submitting</button>
-        </ng-template>
-    </form>
+    <div class="form-group">
+      <button
+        *ngIf="submit_flag === 0; else elseSubmitting"
+        class="btn btn-canal-primary btn-block btn-lg create-btn main-btn"
+        type="submit"
+        [disabled]="!form.valid"
+      >
+        Create
+      </button>
+      <button
+        class="btn btn-canal-secondary btn-block btn-lg main-btn reset-btn"
+        type="button"
+        (click)="reset()"
+      >
+        Reset
+      </button>
+    </div>
+    <ng-template #elseSubmitting>
+      <button
+        class="btn btn-danger btn-block btn-lg main-btn"
+        type="submit"
+        [disabled]="form.valid"
+      >
+        Submitting
+      </button>
+    </ng-template>
+  </form>
 </div>
