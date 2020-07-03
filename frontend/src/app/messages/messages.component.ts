@@ -357,4 +357,11 @@ export class MessagesComponent implements OnInit {
     this.linearFlag = true;
     this.tree.display.update();
   }
+  
+  async clear_history(){
+	this.messageService.clear();
+	await this.router.navigateByUrl("/refresh",{skipLocationChange:true});
+	this.router.navigate(["/"]);
+  }
+  
 }
