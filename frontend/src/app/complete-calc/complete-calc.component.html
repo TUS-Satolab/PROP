@@ -5,8 +5,7 @@
         {{today | date: "yyyy/mm/dd/ HH:mm"}}
     </p> -->
   <div class="caption text-center">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua.
+    P*R*O*P is phylogenetic analysis tool. See detail "Documentation".
   </div>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="d-flex flex-column form-group">
@@ -14,7 +13,7 @@
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">説明を入力してください。</div>
+            <div class="tooltip-description">Upload an input sequence file in FASTA format.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-11 col-sm-9">
@@ -44,11 +43,11 @@
       </div>
     </div>
     <div class="d-flex flex-column form-group">
-      <label for="input_type" class="main-label">Sequence type</label>
+      <label for="input_type" class="main-label">Sequence Type</label>
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">説明を入力してください。</div>
+            <div class="tooltip-description">Select whether the input sequences are a nucleotide or amino acid sequences.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-sm-9">
@@ -89,7 +88,7 @@
         <div class="d-flex flex-row justify-content-between">
           <div class="tooltip-icon tooltip-img">
             <div class="tooltip">
-              <div class="tooltip-description">説明を入力してください。</div>
+              <div class="tooltip-description">Select an alignment method. Specify “Not Necessary” if you use a set of aligned sequences. You can specify options for the alignment. See individual instructions for the alignment options.</div>
             </div>
           </div>
           <div class="d-flex justify-content-end col-11 col-sm-9">
@@ -132,7 +131,7 @@
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">説明を入力してください。</div>
+            <div class="tooltip-description">Specify how to calculate genetic differences. Available genetic differences depend on sequence type.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-11 col-sm-9">
@@ -163,11 +162,11 @@
       <hr class="divider" />
     </div>
     <div class="d-flex flex-column form-group">
-      <label for="gapdel" class="main-label">Treatment of gaps</label>
+      <label for="gapdel" class="main-label">Treatment of Gaps</label>
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">説明を入力してください。</div>
+            <div class="tooltip-description">Specify treatment of gaps. “+ Gap” means incorporating the evolutionary information of sites containing insertions and deletions into genetic difference measures.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-10 col-sm-11">
@@ -209,11 +208,11 @@
       <hr class="divider" />
     </div>
     <div class="d-flex flex-column form-group">
-      <label for="gapdel" class="main-label">Phylogenetic tree</label>
+      <label for="gapdel" class="main-label">Phylogenetic Tree</label>
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">説明を入力してください。</div>
+            <div class="tooltip-description">Select a method to generate the phylogenetic tree.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-sm-9">
