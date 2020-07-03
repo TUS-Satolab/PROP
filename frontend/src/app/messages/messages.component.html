@@ -7,7 +7,7 @@
     <h2>Tasks</h2>
     <div class="btn-clear-container">
       <button class="clear btn btn-sm btn-clear pull-right tasks-btn" (click)="clear_history()">
-        Clear history
+        Clear History
       </button>
     </div>
     <div *ngIf="prevIdArray" class="table-responsive">
@@ -204,7 +204,7 @@
 
     <!-- <div class="form-group" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
     <div class="form-group">
-      <label *ngIf="showButton === false"> Click the View button to show a Phylogenetic Tree here</label>
+      <label *ngIf="showButton === false"> Click the (View) button to show a phylogenetic tree here</label>
       <!-- <svg id="tree_display" height="900" width="900"></svg> -->
       <div id="container" class="mt-10">
         <svg
