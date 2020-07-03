@@ -29,7 +29,7 @@ export class MessageService {
     // this.messagesId = [];
     this.messagesMsg = [];
     this.cookieService.deleteAll();
-    location.reload();
+    //location.reload();
   }
   clear_info() {
     this.messagesMsg = [];
