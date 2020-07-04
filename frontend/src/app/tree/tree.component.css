@@ -679,7 +679,7 @@ input[type='radio'] .styled:checked + label::after {
   z-index: 1;
   opacity: 0;
   transition: opacity 500ms;
-  width: 120px;
+  width: 330px;
   bottom: 120%;
   left: 90%;
   margin-left: -35px;

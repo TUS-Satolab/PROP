@@ -47,7 +47,7 @@
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">Select whether the input sequences are a nucleotide or amino acid sequences.</div>
+            <div class="tooltip-description">Select whether the input sequences are nucleotide or amino acid sequences.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-sm-9">
@@ -88,7 +88,7 @@
         <div class="d-flex flex-row justify-content-between">
           <div class="tooltip-icon tooltip-img">
             <div class="tooltip">
-              <div class="tooltip-description">Select an alignment method. Specify “Not Necessary” if you use a set of aligned sequences. You can specify options for the alignment. See individual instructions for the alignment options.</div>
+              <div class="tooltip-description">Select an alignment method. Specify “Not Necessary” if you use a set of aligned sequences.</div>
             </div>
           </div>
           <div class="d-flex justify-content-end col-11 col-sm-9">
@@ -116,6 +116,13 @@
       <div class="d-flex flex-row justify-content-end form-group">
         <div class="d-flex flex-column justify-content-end col-sm-9 col-11">
           <label for="options" class="main-label">Options</label>
+          <div class="tooltip-icon tooltip-img">
+            <div class="tooltip">
+              <div class="tooltip-description">Specify options for the alignment. See <a href="https://www.rs.tus.ac.jp/bioinformatics/prop/documentation" target="_blank">individual instructions</a> for the alignment options.</div>
+            </div>
+          </div>
+
+
           <input
             [attr.disabled]="noalign()"
             class="form-control form-control-sm"
@@ -131,7 +138,7 @@
       <div class="d-flex flex-row justify-content-between">
         <div class="tooltip-icon tooltip-img">
           <div class="tooltip">
-            <div class="tooltip-description">Specify how to calculate genetic differences. Available genetic differences depend on sequence type.</div>
+            <div class="tooltip-description">Specify how to calculate genetic differences.</div>
           </div>
         </div>
         <div class="d-flex justify-content-end col-11 col-sm-9">
