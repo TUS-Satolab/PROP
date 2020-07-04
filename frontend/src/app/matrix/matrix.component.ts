@@ -47,8 +47,8 @@ export class MatrixComponent implements OnInit {
       this.form.get('model').setValue('K2P');
       this.differences = ['P', 'K2P'];
     } else if (input == 'ami') {
-      this.form.get('model').setValue('Poisson');
-      this.differences = ['P', 'Poisson'];
+      this.form.get('model').setValue('JC');
+      this.differences = ['P', 'JC'];
     }
     return this.differences;
   }
@@ -93,8 +93,8 @@ export class MatrixComponent implements OnInit {
     formData.append('file', this.form.get('file').value);
     formData.append('task_id', this.form.get('task_id').value);
     formData.append('input_type', this.form.get('input_type').value);
-    if (this.form.get('model').value === 'Poisson') {
-      formData.append('model', 'PC');
+    if (this.form.get('model').value === 'JC') {
+      formData.append('model', 'JC');
     } else {
       formData.append('model', this.form.get('model').value);
     }
