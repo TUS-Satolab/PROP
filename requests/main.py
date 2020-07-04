@@ -250,7 +250,7 @@ def get_result_completed(result_id=None, result_kind=None):
 # plusgap: "checked" / ""
 # gapdel: "comp" / "pair"
 # input_type: nuc or ami [not necessary for mafft]
-# model: P, PC, JS or K2P
+# model: P, PC, JC or K2P
 @app.route('/matrix', methods=['GET', 'POST'])
 def matrix(task_id=None):
     res = {}
@@ -406,7 +406,7 @@ def tree():
 # align_clw_opt: [string]
 # plusgap: "checked" / ""
 # gapdel: "comp" / "pair"
-# model: P, PC, JS or K2P
+# model: P, PC, JC or K2P
 # tree: nj or upgma
 
 @app.route('/complete', methods=['GET', 'POST'])
