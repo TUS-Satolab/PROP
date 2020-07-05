@@ -61,7 +61,7 @@ def main(args):
     timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
     out_align = timestamp + "alignment.txt"
     matrix_output = timestamp + "matrix.txt"
-    out_tree = timestamp + "treex.txt"
+    out_tree = timestamp + "tree.txt"
     ############ docopt arguments ###############
     input_file = args["--input_file"]
     input_type = args["--type"]
@@ -273,6 +273,7 @@ def parse_otus(input_file):
 
 
 def calcDiff_ami(model,plusgap,seqData,otu):
+
     score = [[0 for a in range(otu)] for b in range(otu)]
 
     if plusgap == "checked":
@@ -306,6 +307,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                             D += 1
                             
                     score[a][b] = D / lgs
+                    #score[a][b] = 0.12345
                     score[b][a] = score[a][b]
 
         
@@ -794,7 +796,7 @@ if __name__ == '__main__':
         DL_message = "[DOWNLOAD]"
         DL_alignment = "alignment.txt"
         DL_matrix = "matrix.txt"
-        DL_tree = "treex.txt"
+        DL_tree = "tree.txt"
         DL_alignment_result = results[1]
         DL_matrix_result = results[2]
         DL_tree_result = results[3]
