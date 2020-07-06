@@ -12,7 +12,7 @@ Options:
   --type=<type>                     nuc or ami
   --align=<align>                   clustalw, mafft or none
   --align_clw_opt=<align_clw_opt>   string of options [default: ]
-  --model=<model>                   P, PC, JS or K2P
+  --model=<model>                   P, PC, JC or K2P
   --plusgap=<plusgap>               "checked" / "not_checked" [default: not_checked]
   --gapdel=<gapdel>                 "comp" / "pair" 
   --tree=<tree>                     "nj" / "upgma"
@@ -20,6 +20,7 @@ Options:
 
 import datetime, time, shutil, sys, os, Bio, math, pickle, requests
 import docker
+import re
 #import subprocess 
 
 from docopt import docopt
@@ -157,13 +158,24 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
     (otus, seqs) = parse_otus(aligned_input) 
     #Complete Deletionオプション(plusGapオプションなしの場合)
     if plusgap == "not_checked" and gapdel == "comp":
-        for i in range(len(seqs[0])):
-            for j in range(len(otus)):
-                if seqs[j][i] == "-":
-                    for k in range(len(otus)):
-                        tmp = list(seqs[k])
-                        tmp[i] = "-"
-                        seqs[k] = "".join(tmp)
+        # for i in range(len(seqs[0])):
+        #     for j in range(len(otus)):
+        #         if seqs[j][i] == "-":
+        #             for k in range(len(otus)):
+        #                 tmp = list(seqs[k])
+        #                 tmp[i] = "-"
+        #                 seqs[k] = "".join(tmp)
+
+        dropnum=[]
+        for s in seqs:
+            dropnum += [m.span()[0] for m in re.finditer("-", s)]    
+        droplist = list(set(dropnum))
+        droplist.sort(reverse=True)
+        
+        for d in droplist:
+            for i in range(len(seqs)):
+                seqs[i] = seqs[i][:d]+seqs[i][d+1:]
+    
 
     #距離行列作成
     print("Create Distance Matrix...")
@@ -261,27 +273,32 @@ def parse_otus(input_file):
 
 
 def calcDiff_ami(model,plusgap,seqData,otu):
+
     score = [[0 for a in range(otu)] for b in range(otu)]
 
     if plusgap == "checked":
         lgs = len(seqData[0])
 
-        if model == "PC":
+        if model == "JC":
             for a in range(otu):
                 for b in range(a):
                     S = 0
+                    D = 0
                     w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
                     for i in range(lgs):
-                        seq_p = seqData[a][i] + seqData[b][i]
-                        if seq_p in ["TT","CC","AA","GG"]:
-                            S += 1
+                        if seqData[a][i] == seqData[b][i]:
+                            if seqData[a][i] != "-":
+                                S += 1
+                        else:
+                             if (seqData[a][i] != "-") & (seqData[b][i] != "-"):
+                                D += 1
                     try:
-                        score[a][b] = 0 - w * math.log(S/lgs/w)
+                        score[a][b] = 0 - 0.95 * w * math.log((S - D / 19) / lgs / w)
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
                     
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     D = 0
@@ -290,11 +307,12 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                             D += 1
                             
                     score[a][b] = D / lgs
+                    #score[a][b] = 0.12345
                     score[b][a] = score[a][b]
 
         
     elif plusgap == "not_checked":
-        if model == "PC":
+        if model == "JC":
             for a in range(otu):
                 for b in range(a):
                     S = 0
@@ -307,11 +325,12 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                             S += 1
                             
                     try:
-                        score[a][b] = 0 - math.log(S/lgs)
+                        #score[a][b] = 0 - math.log(S/lgs)
+                        score[a][b] = 0 - 0.95 * math.log((20*S-1)/19/lgs)
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     lgs = len(seqData[0])
@@ -357,7 +376,7 @@ def calcDiff_ami_old(model,plusgap,seqData,otu):
             if plusgap == "not_checked":
                 lgs = S + D
                 S = S / lgs
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S
                 elif model == "PC":
                     try:
@@ -377,7 +396,7 @@ def calcDiff_ami_old(model,plusgap,seqData,otu):
                 S = S / lgs
                 w = 1 - (G/2 + X)
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - X - S
                 elif model == "PC":
                     try:
@@ -432,7 +451,7 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
                     
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     D = 0
@@ -467,7 +486,7 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     lgs = len(seqData[0])
@@ -556,7 +575,7 @@ def calcDiff_nuc_old(model,plusgap,seqData,otu):
                 lgs = r[1][1] + r[1][2] + r[1][3] + r[1][4] + r[2][1] + r[2][2] + r[2][3] + r[2][4] + r[3][1] + r[3][2] + r[3][3] + r[3][4] + r[4][1] + r[4][2] + r[4][3] + r[4][4]
                 S = (r[1][1]+r[2][2]+r[3][3]+r[4][4])/lgs
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S
 
                 elif model == "PC":
@@ -587,7 +606,7 @@ def calcDiff_nuc_old(model,plusgap,seqData,otu):
                 X = r[0][0]/lgs
                 w = 1 - (G/2 + X)
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S - X
 
                 elif model == "PC":

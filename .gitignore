@@ -126,3 +126,4 @@ dc.env
 node_modules
 
 docs
+.vscode

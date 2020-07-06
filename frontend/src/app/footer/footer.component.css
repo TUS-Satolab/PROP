@@ -8,4 +8,5 @@ footer {
   text-align: center;
   background-color: var(--dark);
   color: var(--light);
+  font-family: "Times New Roman";
 }

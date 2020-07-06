@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'matrix', component: MatrixComponent },
   { path: 'tree', component: TreeComponent },
   { path: 'messages', component: MessagesComponent },
-  { path: 'documentation', component: DocumentationComponent },
+  { path: 'instructions', component: DocumentationComponent },
 ];
 
 @NgModule({
