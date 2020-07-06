@@ -30,7 +30,7 @@ export class CompleteCalcComponent implements OnInit {
     private httpClient: HttpClient,
     private messageService: MessageService
   ) {}
-  differences = ['P', 'K2P'];
+  differences = ['P-distance', 'K2P'];
   ngOnInit() {
     this.form = this.fb.group({
       file: ['', Validators.required],
@@ -49,10 +49,10 @@ export class CompleteCalcComponent implements OnInit {
     // var differences = [''];
     if (input == 'nuc') {
       this.form.get('model').setValue('K2P');
-      this.differences = ['P', 'K2P'];
+      this.differences = ['P-distance', 'K2P'];
     } else if (input == 'ami') {
       this.form.get('model').setValue('JC');
-      this.differences = ['P', 'JC'];
+      this.differences = ['P-distance', 'JC'];
     }
     return this.differences;
   }
@@ -60,7 +60,7 @@ export class CompleteCalcComponent implements OnInit {
   reset() {
     this.form.setValue(this._originalData);
     this.filename = '';
-    this.differences = ['P', 'K2P'];
+    this.differences = ['P-distance', 'K2P'];
     this.size_flag = 0;
   }
 

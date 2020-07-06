@@ -298,7 +298,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
                     
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     D = 0
@@ -330,7 +330,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     lgs = len(seqData[0])
@@ -376,7 +376,7 @@ def calcDiff_ami_old(model,plusgap,seqData,otu):
             if plusgap == "not_checked":
                 lgs = S + D
                 S = S / lgs
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S
                 elif model == "PC":
                     try:
@@ -396,7 +396,7 @@ def calcDiff_ami_old(model,plusgap,seqData,otu):
                 S = S / lgs
                 w = 1 - (G/2 + X)
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - X - S
                 elif model == "PC":
                     try:
@@ -451,7 +451,7 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
                     
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     D = 0
@@ -486,7 +486,7 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     lgs = len(seqData[0])
@@ -575,7 +575,7 @@ def calcDiff_nuc_old(model,plusgap,seqData,otu):
                 lgs = r[1][1] + r[1][2] + r[1][3] + r[1][4] + r[2][1] + r[2][2] + r[2][3] + r[2][4] + r[3][1] + r[3][2] + r[3][3] + r[3][4] + r[4][1] + r[4][2] + r[4][3] + r[4][4]
                 S = (r[1][1]+r[2][2]+r[3][3]+r[4][4])/lgs
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S
 
                 elif model == "PC":
@@ -606,7 +606,7 @@ def calcDiff_nuc_old(model,plusgap,seqData,otu):
                 X = r[0][0]/lgs
                 w = 1 - (G/2 + X)
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S - X
 
                 elif model == "PC":

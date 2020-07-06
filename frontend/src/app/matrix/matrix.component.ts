@@ -17,7 +17,7 @@ export class MatrixComponent implements OnInit {
   form: FormGroup;
   filename = '';
   _originalData = [];
-  differences = ['P', 'K2P'];
+  differences = ['P-distance', 'K2P'];
   size_flag = 0;
   submit_flag = 0;
 
@@ -45,10 +45,10 @@ export class MatrixComponent implements OnInit {
     // var differences = [''];
     if (input == 'nuc') {
       this.form.get('model').setValue('K2P');
-      this.differences = ['P', 'K2P'];
+      this.differences = ['P-distance', 'K2P'];
     } else if (input == 'ami') {
       this.form.get('model').setValue('JC');
-      this.differences = ['P', 'JC'];
+      this.differences = ['P-distance', 'JC'];
     }
     return this.differences;
   }
@@ -60,7 +60,7 @@ export class MatrixComponent implements OnInit {
   reset() {
     this.form.setValue(this._originalData);
     this.filename = '';
-    this.differences = ['P', 'K2P'];
+    this.differences = ['P-distance', 'K2P'];
     this.size_flag = 0;
   }
 

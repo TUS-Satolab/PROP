@@ -38,6 +38,7 @@ h1 {
   color: var(--grey-2);
   border-radius: 9px;
   margin-bottom: 3rem;
+  font-family: "Times New Roman";
 }
 
 .divider {
