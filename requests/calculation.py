@@ -20,7 +20,7 @@ Options:
 
 import datetime, time, shutil, sys, os, Bio, math, pickle, requests
 import docker
-import re
+#import re
 #import subprocess 
 
 from docopt import docopt
@@ -168,13 +168,13 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
 
         dropnum=[]
         for s in seqs:
-            dropnum += [m.span()[0] for m in re.finditer("-", s)]    
+            dropnum += [i for i in range(len(s)) if s[i] == "-"]   
         droplist = list(set(dropnum))
         droplist.sort(reverse=True)
         
         for d in droplist:
             for i in range(len(seqs)):
-                seqs[i] = seqs[i][:d]+seqs[i][d+1:]
+                seqs[i] = "".join(seqs[i][:d])+"".join(seqs[i][d+1:])
     
 
     #距離行列作成
