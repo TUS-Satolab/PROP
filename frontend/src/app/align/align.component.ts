@@ -31,7 +31,7 @@ export class AlignComponent implements OnInit {
     this.form = this.fb.group({
       file: ['', Validators.required],
       align_clw_opt: [''],
-      align_method: ['clustalw', Validators.required],
+      align_method: ['mafft', Validators.required],
       input_type: [{ value: 'nuc', disabled: false }, Validators.required],
     });
     this._originalData = this.form.value;
