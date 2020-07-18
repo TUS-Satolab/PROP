@@ -159,7 +159,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
     # TODO: is it correct to input the aligned file? Get error otherwise
     print("Filename is:", aligned_input)
     (otus, seqs) = parse_otus(aligned_input) 
-    #Complete Deletionオプション(plusGapオプションなしの場合)
+    #Complete Deletion Option
     if plusgap == "not_checked" and gapdel == "comp":
         # for i in range(len(seqs[0])):
         #     for j in range(len(otus)):
@@ -180,7 +180,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
                 seqs[i] = "".join(seqs[i][:d])+"".join(seqs[i][d+1:])
     
 
-    #距離行列作成
+    #Create distance matrix
     print("Create Distance Matrix...")
     function_mapping = {
         'nuc': 'calcDiff_nuc',
@@ -205,12 +205,11 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
             f.write(otus[n])
             f.write(" ")
             for m in range(len(otus)):
-                score[m][n] = score[m][n] + 0.00000000001 #マイナスゼロ対策
+                score[m][n] = score[m][n] + 0.00000001 #minus zero
                 f.write("%0.5f " % score[m][n])
             f.write("\r")
         f.close()
     except:
-        # raise Exception("遺伝的差異計算Error")
         raise Exception("Calculating Genetic Difference Error")
     #print(score)
     #print(otus)
@@ -227,7 +226,6 @@ def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
             print("upgma")
             Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
-        # raise Exception("系統樹作成Error")
         raise Exception("Phylogenetic Tree Generation Error")
 
 def phylo_tree_score_otus(input_file, tree, path='./files', out_tree='out_tree.txt'):
@@ -255,7 +253,6 @@ def phylo_tree_score_otus(input_file, tree, path='./files', out_tree='out_tree.t
             print("upgma")
             Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
-        # raise Exception("系統樹作成Error")
         raise Exception("Phylogenetic Tree Generation Error")
 
 def parse_otus(input_file):
