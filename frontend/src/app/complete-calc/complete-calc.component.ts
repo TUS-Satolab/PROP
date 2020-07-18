@@ -34,7 +34,7 @@ export class CompleteCalcComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       file: ['', Validators.required],
-      align_method: ['clustalw', Validators.required],
+      align_method: ['mafft', Validators.required],
       input_type: [{ value: 'nuc', disabled: false }, Validators.required],
       gapdel: ['plusgap'],
       model: ['K2P', Validators.required],

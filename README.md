@@ -55,3 +55,6 @@ If server environment (Docker):
 If static hosting:
 
 - use the domain provided by the hosting platform
+
+
+This software is released under the MIT License, see LICENSE.txt.
