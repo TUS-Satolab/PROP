@@ -116,7 +116,7 @@ def align(task_id=None, filename=None):
             q = Queue(connection=redis_connection)
             job = q.enqueue(alignment,
                             job_id=task_id,
-                            job_timeout='24h',
+                            job_timeout='3h',
                             result_ttl='168h',
                             args=(out_align, filename, input_type, align_method,  align_clw_opt))
             #return render_template('get_completed_results_form.html', msg=task_id)
@@ -312,7 +312,7 @@ def matrix(task_id=None):
         q = Queue(connection=redis_connection)
         job = q.enqueue(distance_matrix,
                         job_id=task_id,
-                        job_timeout='24h',
+                        job_timeout='3h',
                         result_ttl='168h',
                         args=(filename, matrix_output, gapdel, 
                             input_type, model, plusgap_checked))
@@ -386,7 +386,7 @@ def tree():
         #                 args=(score, otus, tree, UPLOAD_FOLDER, out_tree))
         job = q.enqueue(phylo_tree_score_otus,
                         job_id=task_id,
-                        job_timeout='24h',
+                        job_timeout='3h',
                         result_ttl='168h',
                         args=(filename, tree, UPLOAD_FOLDER, out_tree))
         # return render_template('get_completed_results_form.html', msg=task_id)
@@ -460,7 +460,7 @@ def complete():
             #     shutil.copy(os.path.join(app.config['UPLOAD_FOLDER'], filename), os.path.join(app.config['UPLOAD_FOLDER'], out_align))
         job = q.enqueue(complete_calc,
                         job_id=task_id,
-                        job_timeout='24h',
+                        job_timeout='3h',
                         result_ttl='168h',
                         args=(out_align, filename, input_type, align_method, 
                             align_clw_opt, matrix_output, gapdel, model, 

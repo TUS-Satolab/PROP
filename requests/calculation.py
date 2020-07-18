@@ -46,7 +46,9 @@ def complete_calc(out_align, filename, input_type, align_method,
     if align_method == 'mafft' and len(data_first_block_stripped) > 3000 and count_n > 5000:
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align_method == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 2000:
+    elif align_method == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 1000:
+        raise Exception("Linecount maximum exceeded")
+    elif align_method == 'None' and len(data_first_block_stripped) > 3000 and count_n > 10000:
         raise Exception("Linecount maximum exceeded")
         
     alignment(out_align, filename, input_type, align_method, align_clw_opt)
@@ -56,7 +58,7 @@ def complete_calc(out_align, filename, input_type, align_method,
 
 
 def main(args):
-    #タイムスタンプ取得(ファイル名に使うのみ)
+    #get timestamp
     start = time.time()
     timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
     out_align = timestamp + "alignment.txt"
@@ -83,8 +85,7 @@ def main(args):
 
     phylo_tree(score, otus, tree, out_tree=out_tree)
     
-    #ここまで行ったら結果出力する
-    #結果表示
+    #get result
     f = open(os.path.join('./files', out_align))
     align_result = f.read()
     f.close()
@@ -112,7 +113,9 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
     if align == 'mafft' and len(data_first_block_stripped) > 3000 and count_n > 5000:
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 2000:
+    elif align == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 1000:
+        raise Exception("Linecount maximum exceeded")
+    elif align == 'None' and len(data_first_block_stripped) > 3000 and count_n > 10000:
         raise Exception("Linecount maximum exceeded")
 
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
