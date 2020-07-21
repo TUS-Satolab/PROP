@@ -33,11 +33,11 @@ def complete_calc(out_align, filename, input_type, align_method,
     align_clw_opt, matrix_output, gapdel, model, 
     tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
     with open(os.path.join('./files', filename), 'r') as infile:
-        data = infile.read(5000)
+        data = infile.read()
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
         data_first_block_stripped = data_first_block.replace('\n','')
-        data = infile.readlines()
+        #data = infile.readlines()
         count_n = 0
         for i in data:
                 if i.startswith(">"):
@@ -100,11 +100,11 @@ def main(args):
 
 def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None):
     with open(os.path.join('./files', input_file), 'r') as infile:
-        data = infile.read(5000)
+        data = infile.read()
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
         data_first_block_stripped = data_first_block.replace('\n','')
-        data = infile.readlines()
+        #data = infile.readlines()
         count_n = 0
         for i in data:
                 if i.startswith(">"):
@@ -273,7 +273,6 @@ def parse_otus(input_file):
 
 
 def calcDiff_ami(model,plusgap,seqData,otu):
-
     score = [[0 for a in range(otu)] for b in range(otu)]
 
     if plusgap == "checked":
@@ -284,7 +283,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                 for b in range(a):
                     S = 0
                     D = 0
-                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
+                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs*0.5
                     for i in range(lgs):
                         if seqData[a][i] == seqData[b][i]:
                             if seqData[a][i] != "-":
@@ -307,7 +306,6 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                             D += 1
                             
                     score[a][b] = D / lgs
-                    #score[a][b] = 0.12345
                     score[b][a] = score[a][b]
 
         
@@ -318,8 +316,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                     S = 0
                     lgs = len(seqData[0])
                     for i in range(lgs):
-                        seq_p = seqData[a][i] + seqData[b][i]
-                        if "-" in seq_p:
+                        if (seqData[a][i] == "-") | (seqData[b][i] == "-"):
                             lgs -= 1
                         elif seqData[a][i] == seqData[b][i]:
                             S += 1
@@ -422,17 +419,16 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
     # score: 90 x 90 Zero-Matrix
     # r = 5 x 5 Zero-Matrix
     score = [[0 for a in range(otu)] for b in range(otu)]
-
+    lgs = len(seqData[0])
+    
     if plusgap == "checked":
-        lgs = len(seqData[0])
-
         if model == "K2P":
             for a in range(otu):
                 for b in range(a):
                     P = 0
                     Q = 0
                     S = 0
-                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
+                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs*0.5
                     for i in range(lgs):
                         seq_p = seqData[a][i] + seqData[b][i]
                         if seq_p in ["TT","CC","AA","GG"]:
@@ -469,35 +465,37 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                 for b in range(a):
                     P = 0
                     Q = 0
-                    lgs = len(seqData[0])
+                    S = 0
                     for i in range(lgs):
                         seq_p = seqData[a][i] + seqData[b][i]
-                        if "-" in seq_p:
-                            lgs -= 1
+                        if seq_p in ["TT","CC","AA","GG"]:
+                            S += 1
                         elif seq_p in ["TC","CT","AG","GA"]:
                             P += 1
                         elif seq_p in ["TA","AT","CG","GC","TG","GT","AC","CA"]:
                             Q += 1
                             
-                    P = P / lgs
-                    Q = Q / lgs
+                    lgs_tmp = P + Q + S
+                    P = P / lgs_tmp
+                    Q = Q / lgs_tmp
                     try:
-                        score[a][b] = 0 - math.log(1 - 2 * P - Q) / 2 - math.log(1 - 2 * Q) / 4
+                        score[a][b] = 0 - math.log(1 - 2 * P - Q) * 0.5 - math.log(1 - 2 * Q) * 0.25
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
         elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
-                    lgs = len(seqData[0])
+                    S = 0
                     D = 0
                     for i in range(lgs):
-                        if (seqData[a][i] == "-") | (seqData[b][i] == "-"):
-                            lgs -= 1
-                        elif seqData[a][i] != seqData[b][i]:
+                        seq_p = seqData[a][i] + seqData[b][i]
+                        if seq_p in ["TT","CC","AA","GG"]:
+                            S += 1
+                        elif seq_p in ["TC","CT","AG","GA","TA","AT","CG","GC","TG","GT","AC","CA"]:
                             D += 1
                             
-                    score[a][b] = D / lgs
+                    score[a][b] = D / (S+D)
                     score[b][a] = score[a][b]
     
     return score
