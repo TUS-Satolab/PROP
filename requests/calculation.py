@@ -156,6 +156,22 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
 # OUTPUTS: score, otus, matrix_output
 #################################################################################
 def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap):
+
+    # with open(os.path.join('./files', aligned_input), 'r') as infile:
+    #     data = infile.read()
+    #     data_split = data.split(">")
+    #     data_first_block = data_split[1][data_split[1].index('\n')+1:]
+    #     data_first_block_stripped = data_first_block.replace('\n','')
+    #     #data = infile.readlines()
+    #     count_n = 0
+    #     for i in data:
+    #             if i.startswith(">"):
+    #                 count_n += 1
+    # # the length within a block is allowed to be below 900 and 10k total blocks
+    # if len(data_first_block_stripped) > 3000 or count_n > 3000:
+    #     raise Exception("Linecount maximum exceeded")
+
+
     # TODO: is it correct to input the aligned file? Get error otherwise
     print("Filename is:", aligned_input)
     (otus, seqs) = parse_otus(aligned_input) 
