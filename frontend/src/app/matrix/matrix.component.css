@@ -698,7 +698,7 @@ input[type='radio'] .styled:checked + label::after {
   content: ' ';
   position: absolute;
   top: 100%;
-  left: 25%;
+  left: 8%;
   margin-left: -16px;
   border-width: 5px;
   border-style: solid;
