@@ -1,4 +1,4 @@
-# P*R*O*P
+# P\*R\*O\*P
 
 ## Prerequisites
 
