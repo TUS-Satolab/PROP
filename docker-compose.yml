@@ -11,7 +11,6 @@ services:
     expose:
       - '80'
       - '5004'
-    # TODO: Revert back to calling main.py from within the docker container
     command: bash -c "cron && python3 /py_file/main.py run -h 0.0.0.0"
     volumes:
       - ./requests:/py_file/
@@ -21,6 +20,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - 'BACKEND_APIKEY=${BACKEND_APIKEY}'
     privileged: true
     depends_on:
       - redis
@@ -39,7 +39,7 @@ services:
       - requests
     links:
       - redis
-  
+
   dashboard:
     image: eoranged/rq-dashboard
     ports:
@@ -64,7 +64,7 @@ services:
     #   - type: volume
     #     source: mydata
     #     target: /data
-    links: 
+    links:
       - requests
       - worker
 
@@ -77,16 +77,16 @@ services:
       - type: volume
         source: mydata
         target: /data
-    links: 
+    links:
       - requests
       - worker
 
   # angular-service:
-  #     build: 
+  #     build:
   #       context: .
   #       dockerfile: ./frontend/Dockerfile_frontend
   #     environment:
-  #       IP_ADDRESS: ${IP_ADDRESS} 
+  #       IP_ADDRESS: ${IP_ADDRESS}
   #     image: angularcontainer
   #     volumes:
   #       - ./frontend:/usr/src/app

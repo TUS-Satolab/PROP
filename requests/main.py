@@ -1,4 +1,4 @@
-from flask import Flask, request, flash, redirect, url_for, send_from_directory, send_file, jsonify, render_template
+from flask import Flask, request, flash, redirect, url_for, send_from_directory, send_file, jsonify, render_template, abort
 from calculation import alignment, distance_matrix, phylo_tree, complete_calc, phylo_tree_score_otus
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
@@ -8,7 +8,17 @@ from rq.job import Job
 from flask_cors import CORS
 import datetime, time, os, uuid, pickle, glob, redis, rq_dashboard
 import shutil
+from functools import wraps
 
+# Function to check for API key
+def require_appkey(view_function):
+    @wraps(view_function)
+    def decorated_function(*args, **kwargs):
+        if request.headers.get('BACKEND_APIKEY') and request.headers.get('BACKEND_APIKEY') == os.environ['BACKEND_APIKEY']:
+            return view_function(*args, **kwargs)
+        else:
+            abort(401)
+    return decorated_function
 
 # Global variables
 # UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + "/files"
@@ -62,6 +72,7 @@ def allowed_file(filename):
 # necessary input: 
 # file: [select file]
 @app.route('/upload', methods=['GET', 'POST'])
+@require_appkey
 def upload_file(f_name):
     f_name = f_name
     if request.method == 'POST':
@@ -93,6 +104,7 @@ def upload_file(f_name):
 # align_method: clustalw or mafft
 # input_type: nuc or ami [not necessary for mafft]
 @app.route('/alignment', methods=['GET', 'POST'])
+@require_appkey
 def align(task_id=None, filename=None):
     res = {}
     res['msg'] = ""
@@ -127,6 +139,7 @@ def align(task_id=None, filename=None):
         return render_template('alignment_form.html')
 
 @app.route('/cancel_job', methods=['GET', 'POST'])
+@require_appkey
 def cancel_job():
     if request.method == 'POST':
         res = {}
@@ -145,6 +158,7 @@ def cancel_job():
 
 
 @app.route('/task_query', methods=['GET', 'POST'])
+@require_appkey
 def task_query():
 
     if request.method == 'POST':
@@ -193,6 +207,7 @@ def task_query():
             return(res)
 
 @app.route('/get_result_completed', methods=['GET', 'POST'])
+@require_appkey
 def get_result_completed(result_id=None, result_kind=None):
     test = []
     if request.method == 'POST':
@@ -252,6 +267,7 @@ def get_result_completed(result_id=None, result_kind=None):
 # input_type: nuc or ami [not necessary for mafft]
 # model: P, PC, JC or K2P
 @app.route('/matrix', methods=['GET', 'POST'])
+@require_appkey
 def matrix(task_id=None):
     res = {}
     res['msg'] = ""
@@ -331,6 +347,7 @@ def matrix(task_id=None):
 # task_id: [if files are not specified]
 # tree: nj or upgma
 @app.route('/tree', methods=['GET', 'POST'])
+@require_appkey
 def tree():
     res = {}
     res['msg'] = ""
@@ -410,6 +427,7 @@ def tree():
 # tree: nj or upgma
 
 @app.route('/complete', methods=['GET', 'POST'])
+@require_appkey
 def complete():
     res = {}
     res['msg'] = ""
@@ -474,6 +492,7 @@ def complete():
 
 # Website Stuff
 @app.route('/')
+@require_appkey
 def index():
     return render_template('index.html')
 
