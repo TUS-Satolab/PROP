@@ -20,7 +20,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - APP_SETTINGS=project.server.config.DevelopmentConfig
-      - 'BACKEND_APIKEY=${BACKEND_APIKEY}'
+      - 'BACKEND_APIKEY=${APIKEY}'
     privileged: true
     depends_on:
       - redis

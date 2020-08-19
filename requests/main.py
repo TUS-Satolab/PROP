@@ -14,7 +14,7 @@ from functools import wraps
 def require_appkey(view_function):
     @wraps(view_function)
     def decorated_function(*args, **kwargs):
-        if request.headers.get('BACKEND_APIKEY') and request.headers.get('BACKEND_APIKEY') == os.environ['BACKEND_APIKEY']:
+        if request.headers['Apikey'] and request.headers['Apikey'] == os.environ['BACKEND_APIKEY']:
             return view_function(*args, **kwargs)
         else:
             abort(401)
