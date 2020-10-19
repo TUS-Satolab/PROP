@@ -280,7 +280,8 @@ def parse_otus(input_file):
     #filedata = open(input_file,"r")
     filedata = open(os.path.join('./files', input_file),"r")
     for record in SeqIO.parse(filedata, "fasta"):
-        otu = str(record.id)
+        #otu = str(record.id)
+        otu = str(record.description)
         seq = str(record.seq).upper().replace("U","T")
         otus.append(otu)
         seqs.append(list(seq))
