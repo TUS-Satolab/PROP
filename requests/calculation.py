@@ -340,7 +340,7 @@ def calcDiff_ami(model,plusgap,seqData,otu):
                             
                     try:
                         #score[a][b] = 0 - math.log(S/lgs)
-                        score[a][b] = 0 - 0.95 * math.log((20*S-1)/19/lgs)
+                        score[a][b] = 0 - 0.95 * math.log((20*S/lgs-1)/19)
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
