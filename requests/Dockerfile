@@ -16,9 +16,13 @@ RUN apt-get update && apt-get -y install cron && \
 RUN chmod 0644 /etc/cron.d/cron_del_files && \
     crontab /etc/cron.d/cron_del_files && \
     cron
+# Add API Key from .env file to the Docker container env variables
+ARG BACKEND_APIKEY
+ENV BACKEND_APIKEY=${BACKEND_APIKEY}
 
 # Added so that main.py can import calculation.py 
 ENV PYTHONPATH=/data
+ENV APP_SETTINGS=project.server.config.DevelopmentConfig
 
 # install numpy and requirements
 RUN bash -c 'mkdir -p /data/{files,zipped}' && \

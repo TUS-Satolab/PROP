@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: ./requests/Dockerfile
+      args:
+        - BACKEND_APIKEY=${BACKEND_APIKEY}
+        - IP_ADDRESS=${IP_ADDRESS}
     image: requests
     ports:
       - '5004:5000'
@@ -18,9 +21,8 @@ services:
         source: mydata
         target: /data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - APP_SETTINGS=project.server.config.DevelopmentConfig
-      - 'BACKEND_APIKEY=${APIKEY}'
+    env_file:
+      - .env
     privileged: true
     depends_on:
       - redis
