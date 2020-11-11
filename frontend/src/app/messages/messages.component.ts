@@ -155,7 +155,7 @@ export class MessagesComponent implements AfterViewInit {
       
       //open image 
       window.location.href=canvas.toDataURL( "image/png" );
-    //   };
+    };
     // image.onload = function(){
     //     ctx.drawImage( image, 0, 0 );
     //     var a = document.createElement("a");
