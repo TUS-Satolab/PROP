@@ -8,9 +8,8 @@ describe('MatrixComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MatrixComponent ]
-    })
-    .compileComponents();
+      declarations: [MatrixComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

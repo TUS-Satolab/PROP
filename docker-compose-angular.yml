@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   angular-service:
@@ -10,11 +10,11 @@ services:
       - ./frontend:/usr/src/app
       - ./frontend/node_modules:/usr/src/app/node_modules
     ports:
-      - "4200:4200"
+      - '4200:4200'
     expose:
-      - "80"
-      - "4200"
-    command: yarn run start
+      - '80'
+      - '4200'
+    command: npm start
     external_links:
       - requests
     environment:

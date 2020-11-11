@@ -2,16 +2,15 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessageService {
   messagesMsg: any[] = [];
   docuFlag = 'off';
   // messagesId: string[] = [];
   // messagesDate: string[] = [];
-  constructor(private cookieService: CookieService) { }
+  constructor(private cookieService: CookieService) {}
 
   setDocuFlag(value: string) {
     this.docuFlag = value;
@@ -30,7 +29,7 @@ export class MessageService {
     // this.messagesId = [];
     this.messagesMsg = [];
     this.cookieService.deleteAll();
-    location.reload();
+    //location.reload();
   }
   clear_info() {
     this.messagesMsg = [];

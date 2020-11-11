@@ -1,21 +1,21 @@
 :root {
-    --color-primary: #D11120;
-    --color-primary-75: #D64651;
-    --color-primary-50: #DA7A82;
-    --color-primary-25: #E0B0B4;
-    --dark: #101820;
-    --grey-3: #4A4A4A;
-    --grey-2: #9B9B9B;
-    --grey-1: #CCCCCC;
-    --grey-0: #F3F3F3;
-    --light: #FFFFFF;
-    --dark-opacity-03: rgb(0, 0, 0, 0.3);
-    --light-opacity-05: rgb(255, 255, 255, 0.5);
-    --light-opacity-02: rgb(255, 255, 255, 0.2);
+  --color-primary: #d11120;
+  --color-primary-75: #d64651;
+  --color-primary-50: #da7a82;
+  --color-primary-25: #e0b0b4;
+  --dark: #101820;
+  --grey-3: #4a4a4a;
+  --grey-2: #9b9b9b;
+  --grey-1: #cccccc;
+  --grey-0: #f3f3f3;
+  --light: #ffffff;
+  --dark-opacity-03: rgb(0, 0, 0, 0.3);
+  --light-opacity-05: rgb(255, 255, 255, 0.5);
+  --light-opacity-02: rgb(255, 255, 255, 0.2);
 }
 
 body {
-    background-image: url(./assets/bg_white.png);
-    background-size: cover;
-    font-family: 'Lato', 'arial';
+  background-image: url(./assets/bg_white.png);
+  background-size: cover;
+  font-family: 'Lato', 'arial';
 }

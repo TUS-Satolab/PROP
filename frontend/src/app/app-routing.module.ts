@@ -7,8 +7,6 @@ import { TreeComponent } from './tree/tree.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 
-
-
 const routes: Routes = [
   { path: '', redirectTo: 'complete', pathMatch: 'full' },
   { path: 'align', component: AlignComponent },
@@ -16,11 +14,13 @@ const routes: Routes = [
   { path: 'matrix', component: MatrixComponent },
   { path: 'tree', component: TreeComponent },
   { path: 'messages', component: MessagesComponent },
-  { path: 'documentation', component: DocumentationComponent },
+  { path: 'instructions', component: DocumentationComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes, {
+    useHash: true, //add
+  })],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

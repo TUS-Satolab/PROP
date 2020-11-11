@@ -124,3 +124,9 @@ dc.env
 .dockerignore
 .dockerignore
 node_modules
+
+docs
+.vscode
+*.code-workspace
+frontend/src/app/env.json
+frontend/.npm/

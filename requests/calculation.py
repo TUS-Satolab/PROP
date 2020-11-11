@@ -12,7 +12,7 @@ Options:
   --type=<type>                     nuc or ami
   --align=<align>                   clustalw, mafft or none
   --align_clw_opt=<align_clw_opt>   string of options [default: ]
-  --model=<model>                   P, PC, JS or K2P
+  --model=<model>                   P, PC, JC or K2P
   --plusgap=<plusgap>               "checked" / "not_checked" [default: not_checked]
   --gapdel=<gapdel>                 "comp" / "pair" 
   --tree=<tree>                     "nj" / "upgma"
@@ -20,6 +20,7 @@ Options:
 
 import datetime, time, shutil, sys, os, Bio, math, pickle, requests
 import docker
+#import re
 #import subprocess 
 
 from docopt import docopt
@@ -32,20 +33,22 @@ def complete_calc(out_align, filename, input_type, align_method,
     align_clw_opt, matrix_output, gapdel, model, 
     tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
     with open(os.path.join('./files', filename), 'r') as infile:
-        data = infile.read(5000)
+        data = infile.read()
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
         data_first_block_stripped = data_first_block.replace('\n','')
-        data = infile.readlines()
+        #data = infile.readlines()
         count_n = 0
         for i in data:
                 if i.startswith(">"):
                     count_n += 1
     # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
-    if align_method == 'mafft' and len(data_first_block_stripped) > 3000 and count_n > 5000:
+    if align_method == 'mafft' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align_method == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 2000:
+    elif align_method == 'clustalw' and (len(data_first_block_stripped) > 3000 or count_n > 1000):
+        raise Exception("Linecount maximum exceeded")
+    elif align_method == 'None' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
         raise Exception("Linecount maximum exceeded")
         
     alignment(out_align, filename, input_type, align_method, align_clw_opt)
@@ -55,7 +58,7 @@ def complete_calc(out_align, filename, input_type, align_method,
 
 
 def main(args):
-    #タイムスタンプ取得(ファイル名に使うのみ)
+    #get timestamp
     start = time.time()
     timestamp = datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S")
     out_align = timestamp + "alignment.txt"
@@ -82,8 +85,7 @@ def main(args):
 
     phylo_tree(score, otus, tree, out_tree=out_tree)
     
-    #ここまで行ったら結果出力する
-    #結果表示
+    #get result
     f = open(os.path.join('./files', out_align))
     align_result = f.read()
     f.close()
@@ -98,20 +100,22 @@ def main(args):
 
 def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None):
     with open(os.path.join('./files', input_file), 'r') as infile:
-        data = infile.read(5000)
+        data = infile.read()
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
         data_first_block_stripped = data_first_block.replace('\n','')
-        data = infile.readlines()
+        #data = infile.readlines()
         count_n = 0
         for i in data:
                 if i.startswith(">"):
                     count_n += 1
     # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
-    if align == 'mafft' and len(data_first_block_stripped) > 3000 and count_n > 5000:
+    if align == 'mafft' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align == 'clustalw' and len(data_first_block_stripped) > 3000 and count_n > 2000:
+    elif align == 'clustalw' and (len(data_first_block_stripped) > 3000 or count_n > 1000):
+        raise Exception("Linecount maximum exceeded")
+    elif align == 'None' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
         raise Exception("Linecount maximum exceeded")
 
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
@@ -152,20 +156,47 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
 # OUTPUTS: score, otus, matrix_output
 #################################################################################
 def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap):
+
+    # with open(os.path.join('./files', aligned_input), 'r') as infile:
+    #     data = infile.read()
+    #     data_split = data.split(">")
+    #     data_first_block = data_split[1][data_split[1].index('\n')+1:]
+    #     data_first_block_stripped = data_first_block.replace('\n','')
+    #     #data = infile.readlines()
+    #     count_n = 0
+    #     for i in data:
+    #             if i.startswith(">"):
+    #                 count_n += 1
+    # # the length within a block is allowed to be below 900 and 10k total blocks
+    # if len(data_first_block_stripped) > 3000 or count_n > 3000:
+    #     raise Exception("Linecount maximum exceeded")
+
+
     # TODO: is it correct to input the aligned file? Get error otherwise
     print("Filename is:", aligned_input)
     (otus, seqs) = parse_otus(aligned_input) 
-    #Complete Deletionオプション(plusGapオプションなしの場合)
+    #Complete Deletion Option
     if plusgap == "not_checked" and gapdel == "comp":
-        for i in range(len(seqs[0])):
-            for j in range(len(otus)):
-                if seqs[j][i] == "-":
-                    for k in range(len(otus)):
-                        tmp = list(seqs[k])
-                        tmp[i] = "-"
-                        seqs[k] = "".join(tmp)
+        # for i in range(len(seqs[0])):
+        #     for j in range(len(otus)):
+        #         if seqs[j][i] == "-":
+        #             for k in range(len(otus)):
+        #                 tmp = list(seqs[k])
+        #                 tmp[i] = "-"
+        #                 seqs[k] = "".join(tmp)
 
-    #距離行列作成
+        dropnum=[]
+        for s in seqs:
+            dropnum += [i for i in range(len(s)) if s[i] == "-"]   
+        droplist = list(set(dropnum))
+        droplist.sort(reverse=True)
+        
+        for d in droplist:
+            for i in range(len(seqs)):
+                seqs[i] = "".join(seqs[i][:d])+"".join(seqs[i][d+1:])
+    
+
+    #Create distance matrix
     print("Create Distance Matrix...")
     function_mapping = {
         'nuc': 'calcDiff_nuc',
@@ -190,12 +221,11 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
             f.write(otus[n])
             f.write(" ")
             for m in range(len(otus)):
-                score[m][n] = score[m][n] + 0.00000000001 #マイナスゼロ対策
+                score[m][n] = score[m][n] + 0.00000001 #minus zero
                 f.write("%0.5f " % score[m][n])
             f.write("\r")
         f.close()
     except:
-        # raise Exception("遺伝的差異計算Error")
         raise Exception("Calculating Genetic Difference Error")
     #print(score)
     #print(otus)
@@ -212,7 +242,6 @@ def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
             print("upgma")
             Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
-        # raise Exception("系統樹作成Error")
         raise Exception("Phylogenetic Tree Generation Error")
 
 def phylo_tree_score_otus(input_file, tree, path='./files', out_tree='out_tree.txt'):
@@ -240,7 +269,6 @@ def phylo_tree_score_otus(input_file, tree, path='./files', out_tree='out_tree.t
             print("upgma")
             Phylo.write(makeUpgma(score,otus), os.path.join(path, out_tree), "newick")
     except: 
-        # raise Exception("系統樹作成Error")
         raise Exception("Phylogenetic Tree Generation Error")
 
 def parse_otus(input_file):
@@ -252,7 +280,8 @@ def parse_otus(input_file):
     #filedata = open(input_file,"r")
     filedata = open(os.path.join('./files', input_file),"r")
     for record in SeqIO.parse(filedata, "fasta"):
-        otu = str(record.id)
+        #otu = str(record.id)
+        otu = str(record.description)
         seq = str(record.seq).upper().replace("U","T")
         otus.append(otu)
         seqs.append(list(seq))
@@ -266,22 +295,26 @@ def calcDiff_ami(model,plusgap,seqData,otu):
     if plusgap == "checked":
         lgs = len(seqData[0])
 
-        if model == "PC":
+        if model == "JC":
             for a in range(otu):
                 for b in range(a):
                     S = 0
-                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
+                    D = 0
+                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs*0.5
                     for i in range(lgs):
-                        seq_p = seqData[a][i] + seqData[b][i]
-                        if seq_p in ["TT","CC","AA","GG"]:
-                            S += 1
+                        if seqData[a][i] == seqData[b][i]:
+                            if seqData[a][i] != "-":
+                                S += 1
+                        else:
+                             if (seqData[a][i] != "-") & (seqData[b][i] != "-"):
+                                D += 1
                     try:
-                        score[a][b] = 0 - w * math.log(S/lgs/w)
+                        score[a][b] = 0 - 0.95 * w * math.log((S - D / 19) / lgs / w)
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
                     
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     D = 0
@@ -294,24 +327,24 @@ def calcDiff_ami(model,plusgap,seqData,otu):
 
         
     elif plusgap == "not_checked":
-        if model == "PC":
+        if model == "JC":
             for a in range(otu):
                 for b in range(a):
                     S = 0
                     lgs = len(seqData[0])
                     for i in range(lgs):
-                        seq_p = seqData[a][i] + seqData[b][i]
-                        if "-" in seq_p:
+                        if (seqData[a][i] == "-") | (seqData[b][i] == "-"):
                             lgs -= 1
                         elif seqData[a][i] == seqData[b][i]:
                             S += 1
                             
                     try:
-                        score[a][b] = 0 - math.log(S/lgs)
+                        #score[a][b] = 0 - math.log(S/lgs)
+                        score[a][b] = 0 - 0.95 * math.log((20*S/lgs-1)/19)
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     lgs = len(seqData[0])
@@ -357,7 +390,7 @@ def calcDiff_ami_old(model,plusgap,seqData,otu):
             if plusgap == "not_checked":
                 lgs = S + D
                 S = S / lgs
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S
                 elif model == "PC":
                     try:
@@ -377,7 +410,7 @@ def calcDiff_ami_old(model,plusgap,seqData,otu):
                 S = S / lgs
                 w = 1 - (G/2 + X)
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - X - S
                 elif model == "PC":
                     try:
@@ -403,17 +436,16 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
     # score: 90 x 90 Zero-Matrix
     # r = 5 x 5 Zero-Matrix
     score = [[0 for a in range(otu)] for b in range(otu)]
-
+    lgs = len(seqData[0])
+    
     if plusgap == "checked":
-        lgs = len(seqData[0])
-
         if model == "K2P":
             for a in range(otu):
                 for b in range(a):
                     P = 0
                     Q = 0
                     S = 0
-                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs/2
+                    w = 1.0 - (seqData[a].count("-") + seqData[b].count("-"))/lgs*0.5
                     for i in range(lgs):
                         seq_p = seqData[a][i] + seqData[b][i]
                         if seq_p in ["TT","CC","AA","GG"]:
@@ -432,7 +464,7 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
                     
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
                     D = 0
@@ -450,35 +482,37 @@ def calcDiff_nuc(model,plusgap,seqData,otu):
                 for b in range(a):
                     P = 0
                     Q = 0
-                    lgs = len(seqData[0])
+                    S = 0
                     for i in range(lgs):
                         seq_p = seqData[a][i] + seqData[b][i]
-                        if "-" in seq_p:
-                            lgs -= 1
+                        if seq_p in ["TT","CC","AA","GG"]:
+                            S += 1
                         elif seq_p in ["TC","CT","AG","GA"]:
                             P += 1
                         elif seq_p in ["TA","AT","CG","GC","TG","GT","AC","CA"]:
                             Q += 1
                             
-                    P = P / lgs
-                    Q = Q / lgs
+                    lgs_tmp = P + Q + S
+                    P = P / lgs_tmp
+                    Q = Q / lgs_tmp
                     try:
-                        score[a][b] = 0 - math.log(1 - 2 * P - Q) / 2 - math.log(1 - 2 * Q) / 4
+                        score[a][b] = 0 - math.log(1 - 2 * P - Q) * 0.5 - math.log(1 - 2 * Q) * 0.25
                     except:
                         raise Exception('log(0) in Distance Matrix Calculation. Check Type and Genetic Difference')
                     score[b][a] = score[a][b]
-        elif model == "P":
+        elif model == "P-distance":
             for a in range(otu):
                 for b in range(a):
-                    lgs = len(seqData[0])
+                    S = 0
                     D = 0
                     for i in range(lgs):
-                        if (seqData[a][i] == "-") | (seqData[b][i] == "-"):
-                            lgs -= 1
-                        elif seqData[a][i] != seqData[b][i]:
+                        seq_p = seqData[a][i] + seqData[b][i]
+                        if seq_p in ["TT","CC","AA","GG"]:
+                            S += 1
+                        elif seq_p in ["TC","CT","AG","GA","TA","AT","CG","GC","TG","GT","AC","CA"]:
                             D += 1
                             
-                    score[a][b] = D / lgs
+                    score[a][b] = D / (S+D)
                     score[b][a] = score[a][b]
     
     return score
@@ -556,7 +590,7 @@ def calcDiff_nuc_old(model,plusgap,seqData,otu):
                 lgs = r[1][1] + r[1][2] + r[1][3] + r[1][4] + r[2][1] + r[2][2] + r[2][3] + r[2][4] + r[3][1] + r[3][2] + r[3][3] + r[3][4] + r[4][1] + r[4][2] + r[4][3] + r[4][4]
                 S = (r[1][1]+r[2][2]+r[3][3]+r[4][4])/lgs
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S
 
                 elif model == "PC":
@@ -587,7 +621,7 @@ def calcDiff_nuc_old(model,plusgap,seqData,otu):
                 X = r[0][0]/lgs
                 w = 1 - (G/2 + X)
 
-                if model == "P":
+                if model == "P-distance":
                     score[a][b] = 1 - S - X
 
                 elif model == "PC":

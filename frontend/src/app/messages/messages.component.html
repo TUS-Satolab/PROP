@@ -1,141 +1,160 @@
 <div class="messages-bg">
-    <div *ngIf="messageService.docuFlag !== 'on'" class="container col-xs-12 col-sm-10 col-md-8 col-lg-6">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <div style="height: 50px;"></div>
+  <div *ngIf="messageService.docuFlag !== 'on'" class="container col-xs-12 col-sm-10 col-md-8 col-lg-6">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <div style="height: 50px;"></div>
 
-        <!-- changed table view / starts -->
-        <h2>Tasks</h2>
-        <div class="btn-clear-container">
-            <button class="clear btn btn-sm btn-clear pull-right tasks-btn" (click)="messageService.clear()">Clear history</button>
-        </div>
-        <div *ngIf="prevIdArray" class="table-responsive">
-            <table class="table table-bordered">
-                <thead class="table-head">
-                    <tr>
-                        <th class="th-number">Number</th>
-                        <th class="th-time">Time</th>
-                        <th class="th-status">Status</th>
-                        <th class="th-result">Result</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor='let cookieID of prevIdArray'>
-                        <td>
-                            <div>{{cookieID.number}}</div>
-                        </td>
-                        <td>
-                            <div>{{cookieID.time}}</div>
-                        </td>
-                        <td>
-                            <div>{{cookieID.msg}}</div>
-                        </td>
-                        <td>
-                            <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
-                                <div *ngIf="started(cookieID.msg); else elseCancel">
-                                    <div class="row completed-result">
-                                        <!-- <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn tasks-btn btn-view btn-sm">View</button></div> -->
-                                        <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock">
-                                            <div *ngIf="downloadFlag === 0; else elseView">
-                                                <button [disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn tasks-btn btn-view btn-sm">View</button>
-                                            </div>
-                                        </div>
-                                        <div *ngIf="downloadFlag === 0; else elseDownloading"><button [disabled]="notfinished(cookieID.msg)" (click)="downloadFiles(cookieID.id)" class="btn tasks-btn btn-download btn-sm">Download</button></div>
-                                    </div>
-                                </div>
-                                <ng-template #elseDownloading>
-                                    <!-- <div><button [disabled]="!notfinished(cookieID.msg)" class="btn tasks-btn btn-downloading btn-sm">Downloading</button></div> -->
-                                    <div *ngIf="cookieID.id === activateFlag; else elseDownload"><button [disabled]="!notfinished(cookieID.msg)" class="btn tasks-btn btn-downloading btn-sm">Downloading</button></div>
-                                </ng-template>
-                                <ng-template #elseDownload>
-                                    <div><button type="button" disabled class="btn tasks-btn btn-download btn-sm">Download</button></div>
-                                </ng-template>
-                                <ng-template #elseView>
-                                    <div><button type="button" disabled class="btn tasks-btn btn-download btn-sm">View</button></div>
-                                </ng-template>
-                                <ng-template #normalView2>
-                                    <div><button type="button" disabled class="btn tasks-btn btn-view btn-sm">View</button></div>
-                                </ng-template>
-                                <ng-template #elseCancel>
-                                    <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
-                                </ng-template>
-                                <ng-template #showCancelBtn>
-                                    <button (click)="cancelJob(cookieID.id)" class="btn btn-clear tasks-btn btn-sm">Cancel Task</button>
-                                </ng-template>
-                                <ng-template #elseBlock>
-                                    <div [style.opacity]="0">{{ cookieID.type }}</div>
-                                </ng-template>
-                            </div>
-                            <ng-template #errormsg>
-                                <div>{{cookieID.id}}</div>
-                            </ng-template>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-
-        <h2>Phylogenetic Tree</h2>
-        <div *ngIf="showButton === true">
-            <br>
-            <!-- <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
-            <div class="form-group row">
-                <div class="btn-group">
-                    <div *ngIf="linearFlag === true; else showRadialBtns">
-                        <button type="button" class="btn btn-tree btn-sm" data-direction='vertical' data-amount='1' title="Expand vertical spacing" (click)=vertical_increase()>
-                                                <i class="fa fa-arrows-v" ></i>
-                                                </button>
-                        <button type="button" class="btn btn-tree btn-sm" data-direction='vertical' data-amount='-1' title="Compress vertical spacing" (click)=vertical_decrease()>
-                                                <i class="fa  fa-compress fa-rotate-135" ></i>
-                                                </button>
-                        <button type="button" class="btn btn-tree btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
-                                                <i class="fa fa-arrows-h" ></i>
-                                                </button>
-                        <button type="button" class="btn btn-tree btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
-                                                <i class="fa  fa-compress fa-rotate-45" ></i>
-                                                </button>
-                    </div>
-                    <ng-template #showRadialBtns>
-                        <button type="button" class="btn btn-tree btn-sm" data-direction='vertical' data-amount='1' title="Expand radius" (click)=radial_increase()>
-                                                        <i class="fa fa-arrows-v" ></i>
-                                                        </button>
-                        <button type="button" class="btn btn-tree btn-sm" data-direction='vertical' data-amount='-1' title="Shrink radius" (click)=radial_decrease()>
-                                                        <i class="fa  fa-compress fa-rotate-135" ></i>
-                                                        </button>
-                        <button type="button" disabled class="btn btn-tree btn-sm" data-direction='horizontal' data-amount='1' title="Expand horizonal spacing" (click)=horizontal_increase()>
-                            <i class="fa fa-arrows-h" ></i>
-                            </button>
-                        <button type="button" disabled class="btn btn-tree btn-sm" data-direction='horizontal' data-amount='-1' title="Compress horizonal spacing" (click)=horizontal_decrease()>
-                            <i class="fa  fa-compress fa-rotate-45" ></i>
-                            </button>
-                    </ng-template>
-                    <button type="button" class="btn btn-light btn-sm" (click)=linear()>
-                                        Linear
-                                        </button>
-                    <button type="button" class="btn btn-light btn-sm" (click)=radial()>
-                                        Radial
-                                        </button>
-                    <!-- <button type="button" class="btn btn-light btn-sm" (click)=downloadTree()>
-                        Download
-                        </button> -->
-                    <button class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
-                                                Delete Tree
-                                        </button>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- <div class="form-group" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
-        <div class="form-group">
-            <label *ngIf="showButton === false"> Click the View button to show a Phylogenetic Tree here</label>
-            <!-- <svg id="tree_display" height="900" width="900"></svg> -->
-            <div id="container" class="mt-10">
-                <svg #svg xmlns="http://www.w3.org/2000/svg" id="tree_display" [attr.height.px]="heightSVG" [attr.width.px]="widthSVG"></svg>
-                <div id="minimap"></div>
-            </div>
-            <br>
-
-        </div>
+    <!-- changed table view / starts -->
+    <h2>Tasks</h2>
+    <div class="btn-clear-container">
+      <button class="clear btn btn-sm btn-clear pull-right tasks-btn" (click)="clear_history()">
+        Clear History
+      </button>
     </div>
+    <div  *ngIf="prevIdArray" class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-head">
+          <tr>
+            <th class="th-number">Number</th>
+            <th class="th-time">Time</th>
+            <th class="th-status">Status</th>
+            <th class="th-result">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cookieID of prevIdArray">
+            <td>
+              <div>{{ cookieID.number }}</div>
+            </td>
+            <td>
+              <div>{{ cookieID.time }}</div>
+            </td>
+            <td>
+              <div>{{ cookieID.msg }}</div>
+            </td>
+            <td>
+              <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
+                <div *ngIf="started(cookieID.msg); else elseCancel">
+                  <div class="row completed-result">
+                    <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock">
+                      <div *ngIf="downloadFlag === 0; else elseView">
+                        <button
+                          [disabled]="notfinished(cookieID.msg)"
+                          (click)="showTree(cookieID.id)"
+                          class="btn tasks-btn btn-view btn-sm"
+                        >
+                          View
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="downloadFlag === 0; else elseDownloading">
+                      <button
+                        [disabled]="notfinished(cookieID.msg)"
+                        (click)="downloadFiles(cookieID.id)"
+                        class="btn tasks-btn btn-download btn-sm"
+                      >
+                        Download
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #elseDownloading>
+                  <div *ngIf="cookieID.id === activateFlag; else elseDownload">
+                    <button [disabled]="!notfinished(cookieID.msg)" class="btn tasks-btn btn-downloading btn-sm">
+                      Downloading
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template #elseDownload>
+                  <div><button type="button" disabled class="btn tasks-btn btn-download btn-sm">Download</button></div>
+                </ng-template>
+                <ng-template #elseView>
+                  <div><button type="button" disabled class="btn tasks-btn btn-download btn-sm">View</button></div>
+                </ng-template>
+                <ng-template #normalView2>
+                  <div><button type="button" disabled class="btn tasks-btn btn-view btn-sm">View</button></div>
+                </ng-template>
+                <ng-template #elseCancel>
+                  <div *ngIf="cookieID.msg === 'Cancelled'; else showCancelBtn"></div>
+                </ng-template>
+                <ng-template #showCancelBtn>
+                  <button (click)="cancelJob(cookieID.id)" class="btn btn-clear tasks-btn btn-sm">Cancel Task</button>
+                </ng-template>
+                <ng-template #elseBlock>
+                  <div [style.opacity]="0">{{ cookieID.type }}</div>
+                </ng-template>
+              </div>
+              <ng-template #errormsg>
+                <div>{{ cookieID.id }}</div>
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Phylogenetic Tree</h2>
+    <div *ngIf="showButton === true">
+      <br />
+      <!-- <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
+      <div class="form-group row">
+        <div class="btn-group">
+          <div *ngIf="linearFlag === true; else showRadialBtns">
+            <button
+              type="button"
+              class="btn btn-tree btn-sm"
+              title="Expand vertical spacing"
+              (click)="vertical_increase()"
+            >
+              <i class="fa fa-arrows-v"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-tree btn-sm"
+              title="Compress vertical spacing"
+              (click)="vertical_decrease()"
+            >
+              <i class="fa fa-compress fa-rotate-135"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-tree btn-sm"
+              title="Expand horizonal spacing"
+              (click)="horizontal_increase()"
+            >
+              <i class="fa fa-arrows-h"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-tree btn-sm"
+              title="Compress horizonal spacing"
+              (click)="horizontal_decrease()"
+            >
+              <i class="fa fa-compress fa-rotate-45"></i>
+            </button>
+          </div>
+          <button class="border-1 btn btn-light btn-sm" (click)="downloadTree()">
+            Download Tree
+          </button>
+          <button class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
+            Delete Tree
+          </button>
+        </div>
+        <div class="form-group">
+          <label *ngIf="showButton === false"> Click the (View) button to show a phylogenetic tree here</label>
+
+          <div id="tree_display" style="background-color: white; width: 900px; height: 900px; overflow: scroll;">
+            <figure>
+              <svg #svg123 [attr.width]="svgWidth" [attr.height]="svgHeight"></svg>
+            </figure>
+          </div>
+        
+          <br />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- <div class="form-group" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
+   
+  </div>
 </div>

@@ -4,14 +4,12 @@ import { MessageService } from '../message.service';
 @Component({
   selector: 'app-documentation',
   templateUrl: './documentation.component.html',
-  styleUrls: ['./documentation.component.css']
+  styleUrls: ['./documentation.component.css'],
 })
 export class DocumentationComponent implements OnInit {
-
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService) {}
 
   ngOnInit() {
     this.messageService.setDocuFlag('on');
   }
-
 }
