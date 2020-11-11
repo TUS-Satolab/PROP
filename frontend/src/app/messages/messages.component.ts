@@ -129,28 +129,13 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   async downloadTree() {
-    const svg = this.treeSvg.nativeElement;
-    var sheets = document.styleSheets;
-    var styleStr = '';
-    Array.prototype.forEach.call(sheets, function(sheet){
-      try{ // we need a try-catch block for external stylesheets that could be there...
-          styleStr += Array.prototype.reduce.call(sheet.cssRules, function(a, b){
-              return a + b.cssText; // just concatenate all our cssRules' text
-              }, "");
-          }
-      catch(e){console.log(e);}
-    });
-    // create our svg nodes that will hold all these rules
-    var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    var style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
-    style.innerHTML = styleStr;
-    defs.appendChild(style);
-    // now append it in your svg node
-    svg[0].insertBefore(defs, svg[0].firstElementChild);
+    const svgOrig = this.treeSvg.nativeElement;
+    var svg = document.getElementById('tree_display');
+
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
-    canvas.width = svg.width.baseVal.value;
-    canvas.height = svg.height.baseVal.value;
+    canvas.width = svgOrig.width.baseVal.value;
+    canvas.height = svgOrig.height.baseVal.value;
 
     const ctx = canvas.getContext("2d");
 
@@ -159,15 +144,26 @@ export class MessagesComponent implements AfterViewInit {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    const image = new Image();
-    image.onload = function(){
-        ctx.drawImage( image, 0, 0 );
-        var a = document.createElement("a");
-        a.href = canvas.toDataURL("image/png");
-        a.setAttribute("download", "tree.png");
-        a.dispatchEvent(new MouseEvent("click"));
-    }
-    image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
+    var img = document.createElement( "img" );
+    img.setAttribute( "src", "data:image/svg+xml;base64," + btoa( svgData ) );
+    img.onload = function() {
+      ctx.drawImage( img, 0, 0 );
+      
+      //image link
+      console.log( canvas.toDataURL( "image/png" ) );
+      
+      
+      //open image 
+      window.location.href=canvas.toDataURL( "image/png" );
+    //   };
+    // image.onload = function(){
+    //     ctx.drawImage( image, 0, 0 );
+    //     var a = document.createElement("a");
+    //     a.href = canvas.toDataURL("image/png");
+    //     a.setAttribute("download", "tree.png");
+    //     a.dispatchEvent(new MouseEvent("click"));
+    // }
+    // image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
   }
 
   dataURItoBlob(dataURI) {
