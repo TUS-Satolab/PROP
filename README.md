@@ -17,10 +17,10 @@
 4. write down the IP address of the server instance
 Optional
 5. Delete Angular Frontend Docker container if debugging is not needed.
-  
-  - `docker stop canal_project_angular-service_1`
-  - `docker rm canal_project_angular-service_1` 
-  
+```
+  docker stop canal_project_angular-service_1
+  docker rm canal_project_angular-service_1
+```  
 - For debugging: open the website on `localhost:4200/`
 
 ## Installation Frontend (static)
