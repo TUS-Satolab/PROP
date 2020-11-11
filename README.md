@@ -15,8 +15,11 @@
 2. `cd canal_project`
 3. `sudo ./dc_script.sh 1`
 4. write down the IP address of the server instance
-
-- OR: open the website on `localhost:4200/`
+Optional
+5. Delete Angular Frontend Docker container if debugging is not needed.
+  - `docker stop canal_project_angular-service_1`
+  - `docker rm canal_project_angular-service_1`
+- For debugging: open the website on `localhost:4200/`
 
 ## Installation Frontend (static)
 
