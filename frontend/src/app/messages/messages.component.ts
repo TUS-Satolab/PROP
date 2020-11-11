@@ -130,6 +130,23 @@ export class MessagesComponent implements AfterViewInit {
 
   async downloadTree() {
     const svg = this.treeSvg.nativeElement;
+    var sheets = document.styleSheets;
+    var styleStr = '';
+    Array.prototype.forEach.call(sheets, function(sheet){
+      try{ // we need a try-catch block for external stylesheets that could be there...
+          styleStr += Array.prototype.reduce.call(sheet.cssRules, function(a, b){
+              return a + b.cssText; // just concatenate all our cssRules' text
+              }, "");
+          }
+      catch(e){console.log(e);}
+    });
+    // create our svg nodes that will hold all these rules
+    var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    var style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    style.innerHTML = styleStr;
+    defs.appendChild(style);
+    // now append it in your svg node
+    svg[0].insertBefore(defs, svg[0].firstElementChild);
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
     canvas.width = svg.width.baseVal.value;
