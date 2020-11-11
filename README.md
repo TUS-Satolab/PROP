@@ -9,7 +9,7 @@
   - `curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -`
   - `sudo apt install nodejs`
 
-## Installation Backend (and for local Frontend debugging)
+## Installation Backend (with debugging UI)
 
 1. Pull this repo
 2. `cd canal_project`
