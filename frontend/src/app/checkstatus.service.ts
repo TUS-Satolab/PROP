@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QUERY_URL, VERSION } from './globals';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import * as arrList from './env.json'
 const moment = require('moment');
 
 @Injectable({
@@ -13,6 +14,7 @@ export class checkstatus {
 
   checkStatus() {
     let formStatus = new FormData();
+    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
     const error_arr = [
       'Error',
       'File format',
@@ -45,7 +47,7 @@ export class checkstatus {
       } else {
         formStatus.set('result_id', valueSplit[0]);
         formStatus.set('result_kind', 'complete');
-        this.httpClient.post(QUERY_URL, formStatus, { observe: 'response' }).subscribe((query) => {
+        this.httpClient.post(QUERY_URL, formStatus, { headers, observe: 'response'}).subscribe((query) => {
           valueSplit[1] = query.body['msg'];
           // valueSplit[1] = query;
           valueSplit[0] = query.body['result_id'];

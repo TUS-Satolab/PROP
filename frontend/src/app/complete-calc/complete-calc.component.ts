@@ -8,6 +8,7 @@ import { SERVER_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
 import { checkstatus } from '../checkstatus.service';
 import { image } from 'd3';
+import * as arrList from '../env.json'
 
 @Component({
   selector: 'app-complete-calc',
@@ -86,6 +87,7 @@ export class CompleteCalcComponent implements OnInit {
   }
 
   onSubmit() {
+    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
     formData.append('file', this.form.get('file').value);
@@ -108,7 +110,7 @@ export class CompleteCalcComponent implements OnInit {
     this.submit_flag = 1;
     return this.httpClient
       .post(SERVER_URL, formData, {
-        observe: 'response',
+        headers, observe: 'response',
       })
       .subscribe((data) => {
         var unparsed_id = data.body['task_id'];

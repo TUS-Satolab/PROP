@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { MATRIX_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
+import * as arrList from '../env.json'
 
 @Component({
   selector: 'app-matrix',
@@ -88,6 +89,7 @@ export class MatrixComponent implements OnInit {
   }
 
   onSubmit() {
+    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
     formData.append('file', this.form.get('file').value);
@@ -116,7 +118,7 @@ export class MatrixComponent implements OnInit {
     if (this.form.get('file').value === '' && this.form.get('task_id').value === '') {
       return this.messageService.add_msg('Add either a file or a task ID');
     } else {
-      return this.httpClient.post(MATRIX_URL, formData, { observe: 'response' }).subscribe((data) => {
+      return this.httpClient.post(MATRIX_URL, formData, { headers, observe: 'response' }).subscribe((data) => {
         var unparsed_id = data.body['task_id'];
         var parsed_id = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
         var unparsed_msg = data.body['msg'];

@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { ALIGN_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
+import * as arrList from '../env.json'
 
 @Component({
   selector: 'app-align',
@@ -74,6 +75,7 @@ export class AlignComponent implements OnInit {
     const formData: any = new FormData();
     let res: [''];
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
+    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
 
     const httpOptions: { headers; observe } = {
       headers: new HttpHeaders({
@@ -92,7 +94,7 @@ export class AlignComponent implements OnInit {
     this.submit_flag = 1;
     return this.httpClient
       .post(ALIGN_URL, formData, {
-        observe: 'response',
+        headers, observe: 'response',
       })
       .subscribe((data) => {
         var unparsed_id = data.body['task_id'];
