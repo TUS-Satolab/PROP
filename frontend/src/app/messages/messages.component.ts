@@ -129,28 +129,130 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   async downloadTree() {
-    const svg = this.treeSvg.nativeElement;
+    console.log("clicked")
+
+    // TODO: Keep styling of tree when downloading
+    // const xlinkNS = 'http://www.w3.org/1999/xlink'
+    // const triggerDownload = (fileName, imgURI) => {
+    //   const evt = new MouseEvent('click', {
+    //     view: window,
+    //     bubbles: false,
+    //     cancelable: true
+    //   });
+    
+    //   const a = document.createElement('a');
+    //   a.setAttribute('download', `${fileName}.png`);
+    //   a.setAttribute('href', imgURI);
+    //   a.setAttribute('target', '_blank');
+    
+    //   a.dispatchEvent(evt);
+    // }
+    // const exportDoc = (svg) => {
+    //   const svgData = (new XMLSerializer()).serializeToString(svg)
+    //   const svgURL = `data:image/svg+xml;base64,${btoa(svgData)}`
+    
+    //   const svgImg = document.createElement('img')
+    
+    //   svgImg.onload = function() {
+    //     const canvas = document.createElement('canvas')
+    //     canvas.width = svgImg.width
+    //     canvas.height = svgImg.height
+    
+    //     canvas.getContext('2d').drawImage(svgImg, 0, 0)
+    
+    //     triggerDownload('tree.png', canvas.toDataURL('image/png'))
+    //   }
+    
+    //   svgImg.src = svgURL
+    // }
+
+    // const imgToDataUrl = inputImage => {
+    //   return new Promise((resolve, reject) => {
+    //     const img = document.createElement('img')
+    
+    //     img.onload = () => {
+    //       const canvas = document.createElement('canvas')
+    //       canvas.width = img.width
+    //       canvas.height = img.height
+    //       canvas.getContext('2d').drawImage(img, 0, 0)
+    
+    //       inputImage.setAttributeNS(xlinkNS, 'href', canvas.toDataURL())
+    
+    //       resolve(inputImage)
+    //     }
+        
+    //     img.onerror = () => {
+    //       const oldSrc = img.src
+    //       img.onerror = () => {
+    //         console.warn(`failed to load an image at: ${img.src}`)
+    //         resolve(inputImage)
+    //       }
+    //       img.src = ''
+    //       img.src = oldSrc
+    //     }
+    
+    //     img.src = inputImage.getAttributeNS(xlinkNS, 'href')
+    //   })
+    // }
+
+    // const svg = document.getElementById('tree_display')
+    // const hasHrefAttribute = image => image.getAttributeNS(xlinkNS, 'href').indexOf('data:image') < 0
+    // const processedImages = Array.from(svg.querySelectorAll('image'))
+    //   .filter(hasHrefAttribute)
+    //   .map(imgToDataUrl)
+  
+    // Promise.all(processedImages)
+    //   .then(() => exportDoc(svg))
+
+    // **************************
+    // OLD **********************
+    // **************************
+
+    const svgOrig = this.treeSvg.nativeElement;
+    const svg = document.getElementById('tree_display');
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
-    canvas.width = svg.width.baseVal.value;
-    canvas.height = svg.height.baseVal.value;
-
+    canvas.width = svgOrig.width.baseVal.value;
+    canvas.height = svgOrig.height.baseVal.value;
     const ctx = canvas.getContext("2d");
-
-    if (this.fillFlag) {
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
     const image = new Image();
-    image.onload = function(){
-        ctx.drawImage( image, 0, 0 );
+    image.onload = function() {
+      ctx.drawImage( image, 0, 0 );
         var a = document.createElement("a");
         a.href = canvas.toDataURL("image/png");
         a.setAttribute("download", "tree.png");
         a.dispatchEvent(new MouseEvent("click"));
     }
-    image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
+    // svgImg.src  = `data:image/svg+xml;base64,${btoa(svgData)}`
+    image.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+
+      
+
+
+
+
+    // const svg = this.treeSvg.nativeElement;
+    // const svgData = new XMLSerializer().serializeToString(svg);
+    // const canvas = document.createElement("canvas");
+    // canvas.width = svg.width.baseVal.value;
+    // canvas.height = svg.height.baseVal.value;
+
+    // const ctx = canvas.getContext("2d");
+
+    // if (this.fillFlag) {
+    //   ctx.fillStyle = 'white';
+    //   ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // }
+
+    // const image = new Image();
+    // image.onload = function(){
+    //     ctx.drawImage( image, 0, 0 );
+    //     var a = document.createElement("a");
+    //     a.href = canvas.toDataURL("image/png");
+    //     a.setAttribute("download", "tree.png");
+    //     a.dispatchEvent(new MouseEvent("click"));
+    // }
+    // image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
   }
 
   dataURItoBlob(dataURI) {

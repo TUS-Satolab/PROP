@@ -1,0 +1,7 @@
+{
+  "env": [
+    { "id": 1, "ip_address": "" },
+    { "id": 2, "local_flag": "2" },
+    { "id": 3, "apikey": "1" }
+  ]
+}
