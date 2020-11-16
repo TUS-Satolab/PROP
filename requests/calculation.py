@@ -28,11 +28,11 @@ from flask import Flask, render_template, request
 from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
 client = docker.from_env()
-
+RESULT_FOLDER = "./files"
 def complete_calc(out_align, filename, input_type, align_method, 
     align_clw_opt, matrix_output, gapdel, model, 
     tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
-    with open(os.path.join('./files', filename), 'r') as infile:
+    with open(os.path.join(RESULT_FOLDER, filename), 'r') as infile:
         data = infile.read()
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
@@ -86,20 +86,20 @@ def main(args):
     phylo_tree(score, otus, tree, out_tree=out_tree)
     
     #get result
-    f = open(os.path.join('./files', out_align))
+    f = open(os.path.join(RESULT_FOLDER, out_align))
     align_result = f.read()
     f.close()
-    f = open(os.path.join('./files', matrix_output))
+    f = open(os.path.join(RESULT_FOLDER, matrix_output))
     matrix_result = f.read()
     f.close()
-    f = open(os.path.join('./files', out_tree))
+    f = open(os.path.join(RESULT_FOLDER, out_tree))
     tree_result = f.read()
     f.close()
 
     return ["Complete.",align_result.replace("\n","NEWLINE"),matrix_result.replace("\n","NEWLINE"),tree_result.replace("\n","NEWLINE")]
 
 def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None):
-    with open(os.path.join('./files', input_file), 'r') as infile:
+    with open(os.path.join(RESULT_FOLDER, input_file), 'r') as infile:
         data = infile.read()
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
@@ -126,27 +126,19 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
         # shutil.copy(input_file, out_align)
     elif align == "clustalw":
         try:
-            client.containers.run(image="my_clustalw", command="clustalw -INFILE=files/"+input_file+ \
-                                " -OUTFILE=./files/"+ out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
+            client.containers.run(image="my_clustalw", command="clustalw -INFILE="+ RESULT_FOLDER +input_file+ \
+                                " -OUTFILE=" + RESULT_FOLDER + out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
                                 + d + " " + align_clw_opt, \
                                 volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
-            # subprocess.call("docker run -v "+ path +":/data --rm my_clustalw clustalw \
-            #         -INFILE=" + input_file + " -OUTFILE=./" + out_align + \
-            #         " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" + d + " "+align_clw_opt,shell=True)
-        except:
-            raise Exception("Alignment error")
+        except Exception as e:
+            raise Exception("Alignment error", e)
     elif align == "mafft":
         try:
             client.containers.run(image="my_mafft", command="bash -c 'mafft " + "files/" + input_file + \
                                 " > files/" + out_align + "'", \
                                 volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
-            # client.containers.run(image="my_mafft", command="mafft "+ "./files/" + input_file + \
-            #                     " > ./files/"+ out_align, \
-            #                     #volumes={path: {'bind': '/data', 'mode': 'rw'}},remove=True)
-            #                     volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
-            # subprocess.call("docker run -v "+ path +":/data --rm my_mafft mafft "+ input_file +" > ./files/"+ out_align,shell=True)
-        except: 
-            raise Exception("Alignment error")
+        except Exception as e: 
+            raise Exception("Alignment error", e)
     else:
         raise Exception("Check datatype or align definitions")
     print("Created alignment file")
@@ -213,7 +205,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
     #距離行列書き出し + Inter/Intra距離計算
     #f = open(os.path.join('./files', matrix_output))
     try:
-        f = open(os.path.join('./files', matrix_output),"w")
+        f = open(os.path.join(RESULT_FOLDER, matrix_output),"w")
         f.write(str(len(otus)))
         f.write("\n")
         for n in range(len(otus)):
@@ -231,7 +223,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
     #print(otus)
     return (score, otus)
 
-def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
+def phylo_tree(score, otus, tree, path=RESULT_FOLDER, out_tree='out_tree.txt'):
     #系統樹作成
     print("Create Phylogenetic Tree...")
     try:
@@ -244,11 +236,11 @@ def phylo_tree(score, otus, tree, path='./files', out_tree='out_tree.txt'):
     except: 
         raise Exception("Phylogenetic Tree Generation Error")
 
-def phylo_tree_score_otus(input_file, tree, path='./files', out_tree='out_tree.txt'):
+def phylo_tree_score_otus(input_file, tree, path=RESULT_FOLDER, out_tree='out_tree.txt'):
     #系統樹作成
     score = []
     otus = []
-    f = open(os.path.join('./files', input_file),"r")
+    f = open(os.path.join(RESULT_FOLDER, input_file),"r")
     try:
         line_count = int(f.readline())
         for n in range(line_count):
@@ -278,7 +270,7 @@ def parse_otus(input_file):
     #ここでfiledateにファイル読み込む
     #try:
     #filedata = open(input_file,"r")
-    filedata = open(os.path.join('./files', input_file),"r")
+    filedata = open(os.path.join(RESULT_FOLDER, input_file),"r")
     for record in SeqIO.parse(filedata, "fasta"):
         #otu = str(record.id)
         otu = str(record.description)

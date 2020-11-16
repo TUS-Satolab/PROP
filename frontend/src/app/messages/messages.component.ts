@@ -19,6 +19,14 @@ import { Tree, FigTree, rectangularLayout, branch, circle, tipLabel, internalNod
   styleUrls: ['./messages.component.css'],
 })
 export class MessagesComponent implements AfterViewInit {
+  horizontalMultiplier = 1.1
+  verticalMultiplier = 1.1
+  onKeyHor(value:number) {
+    this.horizontalMultiplier = value
+  }
+  onKeyVert(value:number) {
+    this.verticalMultiplier = value
+  }
   svgWidth  = 900;
   svgHeight = 900;
 
@@ -55,12 +63,19 @@ export class MessagesComponent implements AfterViewInit {
   ngAfterViewInit(): void {
   }
   ngOnInit() {
-    const firstCookie: string = this.cookieService.get('1');
-    const valueSplit = firstCookie.split(';');
-    if (valueSplit.length < 6) {
-      this.cookieService.deleteAll();
-    } else if (Number(valueSplit[5]) !== VERSION) {
-      this.cookieService.deleteAll();
+    const allCookies: {} = this.cookieService.getAll();
+    for (const key in allCookies) {
+      if (!key.startsWith("CANALPROJECT")) {
+        delete allCookies[key]
+      }
+    }
+    for (let key in allCookies) {
+      const valueSplit = allCookies[key].split(';')
+      if (valueSplit.length < 6) {
+        this.cookieService.delete(key);
+      } else if (Number(valueSplit[5]) !== VERSION) {
+        this.cookieService.delete(key);
+      }
     }
 
     this.prevIdArray = this._checkstatus.getStatus();
@@ -77,9 +92,9 @@ export class MessagesComponent implements AfterViewInit {
     formData.set('result_kind', 'complete');
     this.downloadFlag = 1;
     this.activateFlag = input;
-    await this.httpClient.post(QUERY_URL, formData, { headers, observe: 'response' }).subscribe( async (query) => {
+    const query = await this.httpClient.post(QUERY_URL, formData, { headers, observe: 'response' }).toPromise()
       if (query.body['msg'] === 'Finished') {
-        await this.httpClient.post(GET_RESULT_URL, formData, { headers, responseType: 'arraybuffer' }).subscribe(async (data) => {
+        const data = await this.httpClient.post(GET_RESULT_URL, formData, { headers, responseType: 'arraybuffer' }).toPromise()
           const blob = new Blob([data], {
             type: 'application/zip',
           });
@@ -87,12 +102,14 @@ export class MessagesComponent implements AfterViewInit {
           let result: any;
           await jszip.loadAsync(blob).then(async (zip) => {
             try {
-              result = await this.showTree(input);
+              if (this.figTree === undefined ) {
+                result = await this.showTree(input);
+              }
               while (this.treeActiveFlag === false) {
                 console.log("waiting for showTree to finish, sleep 1 sec")
                   await this.delay(1000);
               }
-              if (result === "DONE") {
+              if (result !== "ERROR") {
                 while (!this.figTree || this.figTree.scales.width === 0 || this.figTree.scales.height === 0) {
                   console.log("sleep 1 sec")
                   await this.delay(1000);
@@ -101,7 +118,12 @@ export class MessagesComponent implements AfterViewInit {
                 const canvas = document.createElement("canvas");
                 canvas.width = svg.width.baseVal.value;
                 canvas.height = svg.height.baseVal.value;
-                await svg_download.svgAsPngUri(svg, {}, (uri: any) => {
+                await svg_download.svgAsPngUri(svg, {modifyCss: (selector, properties) => {
+                  selector = selector.replace('.internal-node ', '');
+                  selector = selector.replace('.external-node ', '');
+                  properties = ''
+                  return selector + '{' + properties + '}';
+                }}, (uri: any) => {
                   const output = this.dataURItoBlob(uri);
                   zip.file('figtree.png', output);
                 });
@@ -114,23 +136,24 @@ export class MessagesComponent implements AfterViewInit {
               await saveAs(content, 'results.zip');
             });
           });
-          if (result === "DONE") {
-            const result = await this.deleteTree();
-          }
           this.downloadFlag = 0;
           this.activateFlag = 0;
-        });
       }
-    });
+    
   }
 
-  deleteAllCookies() {
-    this.cookieService.deleteAll();
-  }
+  // deleteAllCookies() {
+  //   this.cookieService.deleteAll();
+  // }
 
   async downloadTree() {
     const svg = this.treeSvg.nativeElement;
-    await svg_download.svgAsPngUri(svg, 'figtree.png', async (uri: any) => {
+    await svg_download.svgAsPngUri(svg, {modifyCss: (selector, properties) => {
+      selector = selector.replace('.internal-node ', '');
+      selector = selector.replace('.external-node ', '');
+      properties = ''
+      return selector + '{' + properties + '}';
+    }}, async (uri: any) => {
       const output = this.dataURItoBlob(uri);
       await saveAs(output, 'figtree.png');
     });
@@ -175,6 +198,12 @@ export class MessagesComponent implements AfterViewInit {
     formData.append('result_id', input);
     const allCookies: {} = this.cookieService.getAll();
 
+    for (const key in allCookies) {
+      if (!key.startsWith("CANALPROJECT")) {
+        delete allCookies[key]
+      }
+    }
+
     this.httpClient.post(CANCEL_URL, formData, { headers, observe: 'response' }).subscribe((query) => {
       // tslint:disable-next-line: forin
       for (let key in allCookies) {
@@ -195,7 +224,7 @@ export class MessagesComponent implements AfterViewInit {
               ';' +
               valueSplit[4] +
               ';' +
-              valueSplit[5]
+              valueSplit[5], 7
           );
         }
       }
@@ -205,7 +234,7 @@ export class MessagesComponent implements AfterViewInit {
   async showTree(input): Promise<string> {
     try {
       if (!!this.figTree && !!this.figTree.scales && (this.figTree.scales.width !== 0 || this.figTree.scales.height !== 0)) {
-        await this.deleteTree();
+        const result = await this.deleteTree();
       }
       this.showButton = true;
       const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
@@ -263,46 +292,37 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   async deleteTree(): Promise<string> {
-    this.showButton = false;
-    const tree = await Tree.parseNewick("");
-    const layout = rectangularLayout;
-    const margins = { top: 10, bottom: 60, left: 10, right: 400 };
-    this.branchSettings = branch().hilightOnHover().reRootOnClick().curve(d3.curveStepBefore);
-
-    this.figTree = await new FigTree(this.treeSvg.nativeElement, margins, tree, { width: 0, height: 0 })
-                .layout(rectangularLayout)
-
-    layout.internalNodeLabels="probability";
+    d3.select(this.treeSvg.nativeElement).selectAll("*").remove();
+    this.figTree = undefined
+    this.showButton = false
     return 'Done'
   }
   horizontal_increase() {
-    this.svgWidth = this.svgWidth * 1.1;
+    this.svgWidth = this.svgWidth * this.horizontalMultiplier;
     this.figTree.settings.width = this.svgWidth;
     this.figTree.update();
   }
 
   horizontal_decrease() {
-    this.svgWidth = this.svgWidth * 0.9;
+    this.svgWidth = this.svgWidth * this.horizontalMultiplier;
     this.figTree.settings.width = this.svgWidth;
     this.figTree.update();
   }
 
   vertical_increase() {
-    this.svgHeight = this.svgHeight * 1.1;
+    this.svgHeight = this.svgHeight * this.verticalMultiplier;
     this.figTree.settings.height = this.svgHeight;
     this.figTree.update();
   }
 
   vertical_decrease() {
-    this.svgHeight = this.svgHeight * 0.9;
+    this.svgHeight = this.svgHeight * this.verticalMultiplier;
     this.figTree.settings.height = this.svgHeight;
     this.figTree.update();
   }
   
   async clear_history(){
 	this.messageService.clear();
-	await this.router.navigateByUrl("/refresh",{skipLocationChange:true});
-	this.router.navigate(["/"]);
   }
   
 }

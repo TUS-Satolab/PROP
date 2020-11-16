@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { MATRIX_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
@@ -43,7 +42,6 @@ export class MatrixComponent implements OnInit {
   }
 
   onTypeSelect(input) {
-    // var differences = [''];
     if (input == 'nuc') {
       this.form.get('model').setValue('K2P');
       this.differences = ['P-distance', 'K2P'];
@@ -54,10 +52,6 @@ export class MatrixComponent implements OnInit {
     return this.differences;
   }
 
-  // reset() {
-  //   this.form.reset();
-  // }
-
   reset() {
     this.form.setValue(this._originalData);
     this.filename = '';
@@ -67,14 +61,9 @@ export class MatrixComponent implements OnInit {
 
   onFileSelect(event) {
     if (event.target.files.length === 1) {
-      // const file = event.target.files[0];
-      // this.form.get('file').setValue(file);
-      // this.filename = file.name;
-      // this.fileInput.nativeElement.value = null;
       this.filename = '';
       this.form.get('file').setValue('');
       const file = event.target.files[0];
-      // var upload = document.getElementById('browse');
       var upload = this.fileInput.nativeElement;
       if (upload.files[0].size > 20000000) {
         this.size_flag = 1;
@@ -100,7 +89,6 @@ export class MatrixComponent implements OnInit {
     } else {
       formData.append('model', this.form.get('model').value);
     }
-    // formData.append('model', this.form.get('model').value);
     if (this.form.get('gapdel').value === 'plusgap') {
       formData.append('plusgap', 'checked');
       formData.append('gapdel', 'null');
@@ -109,11 +97,6 @@ export class MatrixComponent implements OnInit {
       formData.append('gapdel', this.form.get('gapdel').value);
     }
 
-    // formData.append('gapdel', this.form.get('gapdel').value);
-    // if (this.form.get('plusgap').value === true) {
-    //   formData.append('plusgap', this.form.get('plusgap').value);
-    // }
-    // formData.append('plusgap', this.form.get('plusgap').value);
     this.submit_flag = 1;
     if (this.form.get('file').value === '' && this.form.get('task_id').value === '') {
       return this.messageService.add_msg('Add either a file or a task ID');
@@ -125,13 +108,19 @@ export class MatrixComponent implements OnInit {
         var parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
         this.messageService.add_msg({ id: parsed_id, msg: parsed_msg, time: dateTime });
         const allCookies: {} = this.cookieService.getAll();
-        let i = Object.keys(allCookies).length + 1;
-        // console.log(i);
+        let count = 0 
+        for (const key in allCookies) {
+          if (key.startsWith("CANALPROJECT")) {
+            let keySplit = key.split('.');
+            count = Number(keySplit[1]) > count ? Number(keySplit[1]) : count;
+          }
+        }
+        count++
+
         if (parsed_id !== 'None') {
-          // this.cookieService.set(String ( i ), parsed_id);
           this.cookieService.set(
-            String(i),
-            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'matrix' + ';' + VERSION
+            "CANALPROJECT."+String(count),
+            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'matrix' + ';' + String(VERSION), 7
           );
           this.submit_flag = 0;
         }

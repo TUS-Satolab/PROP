@@ -222,3 +222,9 @@ svg#tree_display {
   /* width: 100%; */
   padding: 20px;
 }
+input[type='text'] {
+  width: 60px;
+  height: 33px;
+  font-size: 12pt;
+  margin: 0;
+}

@@ -93,51 +93,69 @@
     </div>
 
     <h2>Phylogenetic Tree</h2>
-    <div *ngIf="showButton === true">
+    <div>
       <br />
       <!-- <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
       <div class="form-group row">
         <div class="btn-group">
           <div>
+            <input
+            type="text"
+            #vertical_multiplier
+            value="1.1"
+            (keyup)="onKeyVert(vertical_multiplier.value)"
+            [disabled]="!showButton"
+            />
             <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              title="Expand vertical spacing"
-              (click)="vertical_increase()"
+            [disabled]="!showButton"
+            type="button"
+            class="btn btn-tree btn-sm"
+            title="Expand vertical spacing"
+            (click)="vertical_increase(vertical_multiplier)"
             >
               <i class="fa fa-arrows-v"></i>
             </button>
-            <button
+            <!-- <button
+            [disabled]="!showButton"
               type="button"
               class="btn btn-tree btn-sm"
               title="Compress vertical spacing"
-              (click)="vertical_decrease()"
+              (click)="vertical_decrease(vertical_multiplier)"
             >
               <i class="fa fa-compress fa-rotate-135"></i>
-            </button>
+            </button> -->
+            <input
+            type="text"
+            #horizontal_multiplier
+            value="1.1"
+            (keyup)="onKeyHor(horizontal_multiplier.value)"
+            [disabled]="!showButton"
+            />
             <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              title="Expand horizonal spacing"
-              (click)="horizontal_increase()"
+            [disabled]="!showButton"
+            type="button"
+            class="btn btn-tree btn-sm"
+            title="Expand horizonal spacing"
+            (click)="horizontal_increase(horizontal_multiplier)"
             >
               <i class="fa fa-arrows-h"></i>
             </button>
-            <button
+            <!-- <button
+            [disabled]="!showButton"
               type="button"
               class="btn btn-tree btn-sm"
               title="Compress horizonal spacing"
-              (click)="horizontal_decrease()"
+              (click)="horizontal_decrease(horizontal_multiplier)"
             >
               <i class="fa fa-compress fa-rotate-45"></i>
+            </button> -->
+            <button [disabled]="!showButton" class="border-1 btn btn-light btn-sm" (click)="downloadTree()">
+              Download Tree
+            </button>
+            <button [disabled]="!showButton" class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
+              Delete Tree
             </button>
           </div>
-          <button class="border-1 btn btn-light btn-sm" (click)="downloadTree()">
-            Download Tree
-          </button>
-          <button class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
-            Delete Tree
-          </button>
         </div>
         <div class="form-group">
           <div id="tree_display" style="background-color: white; width: 900px; height: 900px; overflow: scroll;">

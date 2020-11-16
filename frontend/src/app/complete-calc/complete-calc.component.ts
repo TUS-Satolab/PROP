@@ -123,11 +123,17 @@ export class CompleteCalcComponent implements OnInit {
           time: dateTime,
         });
         const allCookies: {} = this.cookieService.getAll();
-        let i = Object.keys(allCookies).length + 1;
-        console.log(parsed_id);
+        let count = 0 
+        for (const key in allCookies) {
+          if (key.startsWith("CANALPROJECT")) {
+            let keySplit = key.split('.');
+            count = Number(keySplit[1]) > count ? Number(keySplit[1]) : count;
+          }
+        }
+        count++
         this.cookieService.set(
-          String(i),
-          parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'complete' + ';' + String(VERSION)
+          "CANALPROJECT."+String(count),
+          parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'complete' + ';' + String(VERSION), 7
         );
         this.submit_flag = 0;
       });

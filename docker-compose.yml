@@ -83,35 +83,9 @@ services:
       - requests
       - worker
 
-  # angular-service:
-  #     build:
-  #       context: .
-  #       dockerfile: ./frontend/Dockerfile_frontend
-  #     environment:
-  #       IP_ADDRESS: ${IP_ADDRESS}
-  #     image: angularcontainer
-  #     volumes:
-  #       - ./frontend:/usr/src/app
-  #       - /usr/src/app/node_modules
-  #     ports:
-  #       - '4200:4200'
-  #     expose:
-  #       - '80'
-  #       - '4200'
-  #     command: yarn run start
-  #     links:
-  #       - requests
-
   redis:
     image: redis:5.0.6-alpine
 
 volumes:
   mydata:
     name: canal_project
-  # dashboard:
-  #   build: ./project/dashboard
-  #   image: dashboard
-  #   container_name: dashboard
-  #   ports:
-  #     - '9181:9181'
-  #   command: rq-dashboard -H redis
