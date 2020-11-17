@@ -302,27 +302,12 @@ export class MessagesComponent implements AfterViewInit {
     this.showButton = false
     return 'Done'
   }
-  horizontal_increase() {
-    this.svgWidth = this.horizontalMultiplier;
-    this.figTree.settings.width = this.svgWidth;
-    this.figTree.update();
-  }
 
-  horizontal_decrease() {
-    this.svgWidth = this.horizontalMultiplier;
-    this.figTree.settings.width = this.svgWidth;
-    this.figTree.update();
-  }
-
-  vertical_increase() {
+  applySize() {
     this.svgHeight = this.verticalMultiplier;
     this.figTree.settings.height = this.svgHeight;
-    this.figTree.update();
-  }
-
-  vertical_decrease() {
-    this.svgHeight = this.verticalMultiplier;
-    this.figTree.settings.height = this.svgHeight;
+    this.svgWidth = this.horizontalMultiplier;
+    this.figTree.settings.width = this.svgWidth;
     this.figTree.update();
   }
   

@@ -228,7 +228,16 @@ input[type='text'] {
   margin: 0;
 }
 
-p {
+p#px {
+  color: var(--light);
   display: inline;
-  padding: 5px;
+  padding: 2px;
+  margin-right: 1rem;
+}
+
+p#description {
+  color: var(--light);
+  display: inline;
+  padding: 2px;
+  font-weight: bold;
 }
