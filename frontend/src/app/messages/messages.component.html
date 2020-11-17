@@ -95,14 +95,14 @@
     <h2>Phylogenetic Tree</h2>
     <div>
       <br />
-      <!-- <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
       <div class="form-group row">
         <div class="btn-group">
           <div>
+            <p>Height: </p>
             <input
             type="text"
             #vertical_multiplier
-            value="1.1"
+            value="900"
             (keyup)="onKeyVert(vertical_multiplier.value)"
             [disabled]="!showButton"
             />
@@ -114,20 +114,13 @@
             (click)="vertical_increase()"
             >
               <i class="fa fa-arrows-v"></i>
-            </button>
-            <!-- <button
-            [disabled]="!showButton"
-              type="button"
-              class="btn btn-tree btn-sm"
-              title="Compress vertical spacing"
-              (click)="vertical_decrease(vertical_multiplier)"
-            >
-              <i class="fa fa-compress fa-rotate-135"></i>
-            </button> -->
+            </button> 
+            <p [style.margin-left]="'0.1rem'">px</p>
+            <p [style.margin-left]="'1.0rem'">Width: </p>
             <input
             type="text"
             #horizontal_multiplier
-            value="1.1"
+            value="900"
             (keyup)="onKeyHor(horizontal_multiplier.value)"
             [disabled]="!showButton"
             />
@@ -140,15 +133,7 @@
             >
               <i class="fa fa-arrows-h"></i>
             </button>
-            <!-- <button
-            [disabled]="!showButton"
-              type="button"
-              class="btn btn-tree btn-sm"
-              title="Compress horizonal spacing"
-              (click)="horizontal_decrease(horizontal_multiplier)"
-            >
-              <i class="fa fa-compress fa-rotate-45"></i>
-            </button> -->
+            <p [style.margin-left]="'0.1rem'" [style.margin-right]="'1.0rem'">px</p>
             <button [disabled]="!showButton" class="border-1 btn btn-light btn-sm" (click)="downloadTree()">
               Download Tree
             </button>
@@ -157,20 +142,15 @@
             </button>
           </div>
         </div>
-        <div class="form-group">
-          <div id="tree_display" style="background-color: white; width: 900px; height: 900px; overflow: scroll;">
-            <figure>
-              <svg #svg123 [attr.width]="svgWidth" [attr.height]="svgHeight"></svg>
-            </figure>
+        <div class="form-group" id="container">
+          <div id="tree_display" style="overflow: scroll; background-color: white;" >
+              <figure>
+                <svg #svg123 [attr.width]="svgWidth" [attr.height]="svgHeight"></svg>
+              </figure>
           </div>
-        
-          <br />
         </div>
 
       </div>
     </div>
-
-    <!-- <div class="form-group" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
-   
   </div>
 </div>

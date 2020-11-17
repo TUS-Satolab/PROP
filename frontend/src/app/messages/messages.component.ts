@@ -19,16 +19,16 @@ import { Tree, FigTree, rectangularLayout, branch, circle, tipLabel, internalNod
   styleUrls: ['./messages.component.css'],
 })
 export class MessagesComponent implements AfterViewInit {
-  horizontalMultiplier = 1.1
-  verticalMultiplier = 1.1
+  horizontalMultiplier = 900
+  verticalMultiplier = 900
+  svgWidth  = 900;
+  svgHeight = 900;
   onKeyHor(value:number) {
     this.horizontalMultiplier = value
   }
   onKeyVert(value:number) {
     this.verticalMultiplier = value
   }
-  svgWidth  = 900;
-  svgHeight = 900;
 
 
   branchSettings: any;
@@ -119,9 +119,11 @@ export class MessagesComponent implements AfterViewInit {
                 canvas.width = svg.width.baseVal.value;
                 canvas.height = svg.height.baseVal.value;
                 await svg_download.svgAsPngUri(svg, {modifyCss: (selector, properties) => {
-                  selector = selector.replace('.internal-node ', '');
-                  selector = selector.replace('.external-node ', '');
-                  properties = ''
+                  if (selector.startsWith('.internal-node') || selector.startsWith('.external-node')) {
+                    properties = 'opacity: 0;'
+                  } else {
+                    properties = ''
+                  }
                   return selector + '{' + properties + '}';
                 }}, (uri: any) => {
                   const output = this.dataURItoBlob(uri);
@@ -149,9 +151,12 @@ export class MessagesComponent implements AfterViewInit {
   async downloadTree() {
     const svg = this.treeSvg.nativeElement;
     await svg_download.svgAsPngUri(svg, {modifyCss: (selector, properties) => {
-      selector = selector.replace('.internal-node ', '');
-      selector = selector.replace('.external-node ', '');
-      properties = ''
+
+      if (selector.startsWith('.internal-node') || selector.startsWith('.external-node')) {
+        properties = 'opacity: 0;'
+      } else {
+        properties = ''
+      }
       return selector + '{' + properties + '}';
     }}, async (uri: any) => {
       const output = this.dataURItoBlob(uri);
@@ -298,25 +303,25 @@ export class MessagesComponent implements AfterViewInit {
     return 'Done'
   }
   horizontal_increase() {
-    this.svgWidth = this.svgWidth * this.horizontalMultiplier;
+    this.svgWidth = this.horizontalMultiplier;
     this.figTree.settings.width = this.svgWidth;
     this.figTree.update();
   }
 
   horizontal_decrease() {
-    this.svgWidth = this.svgWidth * this.horizontalMultiplier;
+    this.svgWidth = this.horizontalMultiplier;
     this.figTree.settings.width = this.svgWidth;
     this.figTree.update();
   }
 
   vertical_increase() {
-    this.svgHeight = this.svgHeight * this.verticalMultiplier;
+    this.svgHeight = this.verticalMultiplier;
     this.figTree.settings.height = this.svgHeight;
     this.figTree.update();
   }
 
   vertical_decrease() {
-    this.svgHeight = this.svgHeight * this.verticalMultiplier;
+    this.svgHeight = this.verticalMultiplier;
     this.figTree.settings.height = this.svgHeight;
     this.figTree.update();
   }

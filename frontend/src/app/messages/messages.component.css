@@ -219,7 +219,6 @@ div#container {
 svg#tree_display {
   background-color: var(--grey-0);
   position: relative;
-  /* width: 100%; */
   padding: 20px;
 }
 input[type='text'] {
@@ -227,4 +226,9 @@ input[type='text'] {
   height: 33px;
   font-size: 12pt;
   margin: 0;
+}
+
+p {
+  display: inline;
+  padding: 5px;
 }
