@@ -210,10 +210,8 @@ h5 {
 }
 
 div#container {
-  height: 500px;
   border: 2px solid #000;
   background-color: var(--grey-0);
-  overflow: auto;
 }
 
 svg#tree_display {
