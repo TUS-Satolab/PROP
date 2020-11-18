@@ -278,10 +278,8 @@ export class MessagesComponent implements AfterViewInit {
                       )
                       .branches(this.branchSettings);
           layout.internalNodeLabels="probability";
-          this.svgWidth = 900;
-          this.figTree.settings.width = this.svgWidth;
-          this.svgHeight = 900;
-          this.figTree.settings.height = this.svgHeight;
+          this.figTree.settings.width = this.horizontalMultiplier;
+          this.figTree.settings.height = this.verticalMultiplier;
           this.figTree.update();
           this.linearFlag = true;
           this.treeActiveFlag = true;

@@ -41,6 +41,7 @@ text {
 
 .external-node .node-shape:not(.rough) {
   fill: var(--grey-2);
+  opacity: 0;
 }
 
 .external-node .node-shape.hovered {
