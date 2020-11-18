@@ -101,18 +101,18 @@
             <p id="description">Height:</p>
             <input
             type="text"
-            #vertical_multiplier
             value="900"
-            (keyup)="onKeyVert(vertical_multiplier.value)"
+            (keyup)="verticalScale($event)"
+            (keydown.enter)="applySize()"
             [disabled]="!showButton"
             />
             <p id="px">px</p>
             <p id="description">Width:</p>
             <input
             type="text"
-            #horizontal_multiplier
             value="900"
-            (keyup)="onKeyHor(horizontal_multiplier.value)"
+            (keyup)="horizontalScale($event)"
+            (keydown.enter)="applySize()"
             [disabled]="!showButton"
             />
             <p id="px">px</p>

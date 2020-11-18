@@ -23,11 +23,11 @@ export class MessagesComponent implements AfterViewInit {
   verticalMultiplier = 900
   svgWidth  = 900;
   svgHeight = 900;
-  onKeyHor(value:number) {
-    this.horizontalMultiplier = value
+  horizontalScale(event:any) {
+    this.horizontalMultiplier = event.target.value 
   }
-  onKeyVert(value:number) {
-    this.verticalMultiplier = value
+  verticalScale(event:any) {
+    this.verticalMultiplier = event.target.value 
   }
 
 
