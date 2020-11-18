@@ -29,15 +29,16 @@ Optional
 2. `cd canal_project`
 3. `cd frontend`
 4. `sudo npm install`
-5. make sure that in `frontend/src/app/env.json` `local_flag=2`
-6. `cd ../..` (so that you are in the folder `frontend`)
-7. `npx ng build --prod --output-path ../docs --base-href /bioinformatics/prop/`
-8. copy `frontend/src/styles.css` to the `docs` folder
+5. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
+6. make sure that in `frontend/src/app/env.json` `local_flag=2`
+7. `cd ../..` (so that you are in the folder `frontend`)
+8. `npx ng build --prod --output-path ../docs --base-href /bioinformatics/prop/`
+9. copy `frontend/src/styles.css` to the `docs` folder
     
-9. open `header.component.html`
+10. open `header.component.html`
    - Change from `../../assets/canal_logo.svg` to `/bioinformatics/prop/assets/canal_logo.svg`
 
-10. Host the docs folder on a hosting platform
+11. Host the docs folder on a hosting platform
 
 ## Usage via browser
 
