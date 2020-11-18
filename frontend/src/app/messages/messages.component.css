@@ -210,15 +210,32 @@ h5 {
 }
 
 div#container {
-  height: 500px;
   border: 2px solid #000;
   background-color: var(--grey-0);
-  overflow: auto;
 }
 
 svg#tree_display {
   background-color: var(--grey-0);
   position: relative;
-  /* width: 100%; */
   padding: 20px;
+}
+input[type='text'] {
+  width: 60px;
+  height: 33px;
+  font-size: 12pt;
+  margin: 0;
+}
+
+p#px {
+  color: var(--light);
+  display: inline;
+  padding: 2px;
+  margin-right: 1rem;
+}
+
+p#description {
+  color: var(--light);
+  display: inline;
+  padding: 2px;
+  font-weight: bold;
 }

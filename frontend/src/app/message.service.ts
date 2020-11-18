@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,8 +7,7 @@ import { Observable } from 'rxjs';
 export class MessageService {
   messagesMsg: any[] = [];
   docuFlag = 'off';
-  // messagesId: string[] = [];
-  // messagesDate: string[] = [];
+
   constructor(private cookieService: CookieService) {}
 
   setDocuFlag(value: string) {
@@ -19,17 +17,17 @@ export class MessageService {
   add_msg(message) {
     this.messagesMsg.push(message);
   }
-  // add_id(message: string) {
-  //   this.messagesId.push(message);
-  // }
-  // add_date(message: string) {
-  //   this.messagesDate.push(message);
-  // }
+
   clear() {
-    // this.messagesId = [];
     this.messagesMsg = [];
-    this.cookieService.deleteAll();
-    //location.reload();
+
+    const allCookies: {} = this.cookieService.getAll();
+
+    for (const key in allCookies) {
+      if (key.startsWith("CANALPROJECT")) {
+        this.cookieService.delete(key);
+      }
+    }
   }
   clear_info() {
     this.messagesMsg = [];

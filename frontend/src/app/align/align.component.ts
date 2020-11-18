@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { ALIGN_URL, VERSION } from '../globals';
 import { CookieService } from 'ngx-cookie-service';
+import * as arrList from '../env.json'
 
 @Component({
   selector: 'app-align',
@@ -37,9 +37,6 @@ export class AlignComponent implements OnInit {
     this._originalData = this.form.value;
     this.messageService.setDocuFlag('off');
   }
-  // reset() {
-  //   this.form.reset();
-  // }
 
   reset() {
     this.form.setValue(this._originalData);
@@ -49,14 +46,9 @@ export class AlignComponent implements OnInit {
 
   onFileSelect(event) {
     if (event.target.files.length === 1) {
-      // const file = event.target.files[0];
-      // this.form.get('file').setValue(file);
-      // this.filename = file.name;
-      // this.fileInput.nativeElement.value = null;
       this.filename = '';
       this.form.get('file').setValue('');
       const file = event.target.files[0];
-      // var upload = document.getElementById('browse');
       var upload = this.fileInput.nativeElement;
       if (upload.files[0].size > 20000000) {
         this.size_flag = 1;
@@ -74,6 +66,7 @@ export class AlignComponent implements OnInit {
     const formData: any = new FormData();
     let res: [''];
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
+    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
 
     const httpOptions: { headers; observe } = {
       headers: new HttpHeaders({
@@ -86,13 +79,10 @@ export class AlignComponent implements OnInit {
     formData.append('file', this.form.get('file').value);
     formData.append('input_type', this.form.get('input_type').value);
     formData.append('align_method', this.form.get('align_method').value);
-    // return this.httpClient.post(ALIGN_URL, formData).subscribe(data => {
-    //   console.log(data);
-    // });
     this.submit_flag = 1;
     return this.httpClient
       .post(ALIGN_URL, formData, {
-        observe: 'response',
+        headers, observe: 'response',
       })
       .subscribe((data) => {
         var unparsed_id = data.body['task_id'];
@@ -105,26 +95,27 @@ export class AlignComponent implements OnInit {
           time: dateTime,
         });
         const allCookies: {} = this.cookieService.getAll();
-        let i = Object.keys(allCookies).length + 1;
-        // console.log(i);
+        let count = 0 
+        for (const key in allCookies) {
+          if (key.startsWith("CANALPROJECT")) {
+            let keySplit = key.split('.');
+            count = Number(keySplit[1]) > count ? Number(keySplit[1]) : count;
+          }
+        }
+        count++
+
         if (parsed_id !== 'None') {
-          // this.cookieService.set(String ( i ), parsed_id);
           this.cookieService.set(
-            String(i),
-            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + i + ';' + 'align' + ';' + VERSION
+            "CANALPROJECT."+String(count),
+            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'align' + ';' + String(VERSION), 7
           );
           this.submit_flag = 0;
         }
       });
-    // this.httpClient.post(ALIGN_URL, formData).subscribe(
-    //   (res) => console.log(res),
-    //   (err) => console.log(err)
-    // );
   }
 
   noalign() {
     if (this.form.get('align_method').value === 'None') {
-      // this.form.controls['align_clw_opt'].reset();
       this.form.get('align_clw_opt').setValue('');
       return true;
     }

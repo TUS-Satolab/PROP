@@ -24,5 +24,4 @@ ENV PATH /opt/bin:$PATH
 # RUN useradd -ms /bin/bash biodev
 # RUN echo 'biodev:biodev' | chpasswd
 # USER biodev
-#WORKDIR /home/biodev
 WORKDIR /data/

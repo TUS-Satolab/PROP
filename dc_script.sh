@@ -4,13 +4,14 @@ IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 # ----------------------------
 # Creation of backend
 # ----------------------------
-grep -q '^IP_ADDRESS' .env && sed -i "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
-
+grep -q '^IP_ADDRESS' .env && sed -i '' -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
+APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed 's/^.*=//')"
 cat >./frontend/src/app/env.json <<EOF 
 {
   "env": [
               {"id":1,"ip_address":"$IP_ADDRESS"},
-              {"id":2,"local_flag":"$1"}
+              {"id":2,"local_flag":"$1"},
+              {"id":3,"apikey":"$APIKEY"}
    ]
 }
 EOF

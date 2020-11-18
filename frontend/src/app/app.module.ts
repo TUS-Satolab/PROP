@@ -10,7 +10,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AlignComponent } from './align/align.component';
 import { MessagesComponent } from './messages/messages.component';
-import { GetResultComponent } from './get-result/get-result.component';
 import { CompleteCalcComponent } from './complete-calc/complete-calc.component';
 import { MatrixComponent } from './matrix/matrix.component';
 import { TreeComponent } from './tree/tree.component';
@@ -23,7 +22,6 @@ import { DocumentationComponent } from './documentation/documentation.component'
     AppComponent,
     AlignComponent,
     MessagesComponent,
-    GetResultComponent,
     CompleteCalcComponent,
     MatrixComponent,
     TreeComponent,

@@ -7,7 +7,7 @@ var ALIGN_URL_TEMP = '';
 var MATRIX_URL_TEMP = '';
 var TREE_URL_TEMP = '';
 var CANCEL_URL_TEMP = '';
-export const VERSION = 5;
+export const VERSION = 6;
 
 const arrList = require('./env.json');
 

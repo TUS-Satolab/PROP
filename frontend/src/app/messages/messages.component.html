@@ -10,7 +10,7 @@
         Clear History
       </button>
     </div>
-    <div *ngIf="prevIdArray" class="table-responsive">
+    <div  *ngIf="prevIdArray" class="table-responsive">
       <table class="table table-bordered">
         <thead class="table-head">
           <tr>
@@ -35,7 +35,6 @@
               <div *ngIf="cookieID.msg !== 'Error' && cookieID.msg !== 'Failed'; else errormsg">
                 <div *ngIf="started(cookieID.msg); else elseCancel">
                   <div class="row completed-result">
-                    <!-- <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock"><button [disabled]="notfinished(cookieID.msg)" (click)="showTree(cookieID.id)" class="btn tasks-btn btn-view btn-sm">View</button></div> -->
                     <div *ngIf="cookieID.type === 'complete' || cookieID.type === 'tree'; else elseBlock">
                       <div *ngIf="downloadFlag === 0; else elseView">
                         <button
@@ -59,7 +58,6 @@
                   </div>
                 </div>
                 <ng-template #elseDownloading>
-                  <!-- <div><button [disabled]="!notfinished(cookieID.msg)" class="btn tasks-btn btn-downloading btn-sm">Downloading</button></div> -->
                   <div *ngIf="cookieID.id === activateFlag; else elseDownload">
                     <button [disabled]="!notfinished(cookieID.msg)" class="btn tasks-btn btn-downloading btn-sm">
                       Downloading
@@ -95,128 +93,55 @@
     </div>
 
     <h2>Phylogenetic Tree</h2>
-    <div *ngIf="showButton === true">
+    <div>
       <br />
-      <!-- <div class="form-group row" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
-      <div class="form-group row">
+      <div class="form-group row" style="padding-bottom: 0.5rem;">
         <div class="btn-group">
-          <div *ngIf="linearFlag === true; else showRadialBtns">
+          <div>
+            <p id="description">Height:</p>
+            <input
+            type="text"
+            value="900"
+            (keyup)="verticalScale($event)"
+            (keydown.enter)="applySize()"
+            [disabled]="!showButton"
+            />
+            <p id="px">px</p>
+            <p id="description">Width:</p>
+            <input
+            type="text"
+            value="900"
+            (keyup)="horizontalScale($event)"
+            (keydown.enter)="applySize()"
+            [disabled]="!showButton"
+            />
+            <p id="px">px</p>
             <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              data-direction="vertical"
-              data-amount="1"
-              title="Expand vertical spacing"
-              (click)="vertical_increase()"
+            [disabled]="!showButton"
+            type="button"
+            class="btn btn-view btn-sm"
+            title="Expand vertical spacing"
+            (click)="applySize()"
+            [style.margin-right]="'1.0rem'"
             >
-              <i class="fa fa-arrows-v"></i>
+              Apply
+            </button> 
+            <button [disabled]="!showButton" class="border-1 btn btn-light btn-sm" (click)="downloadTree()">
+              Download Tree
             </button>
-            <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              data-direction="vertical"
-              data-amount="-1"
-              title="Compress vertical spacing"
-              (click)="vertical_decrease()"
-            >
-              <i class="fa fa-compress fa-rotate-135"></i>
-            </button>
-            <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              data-direction="horizontal"
-              data-amount="1"
-              title="Expand horizonal spacing"
-              (click)="horizontal_increase()"
-            >
-              <i class="fa fa-arrows-h"></i>
-            </button>
-            <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              data-direction="horizontal"
-              data-amount="-1"
-              title="Compress horizonal spacing"
-              (click)="horizontal_decrease()"
-            >
-              <i class="fa fa-compress fa-rotate-45"></i>
+            <button [disabled]="!showButton" class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
+              Delete Tree
             </button>
           </div>
-          <ng-template #showRadialBtns>
-            <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              data-direction="vertical"
-              data-amount="1"
-              title="Expand radius"
-              (click)="radial_increase()"
-            >
-              <i class="fa fa-arrows-v"></i>
-            </button>
-            <button
-              type="button"
-              class="btn btn-tree btn-sm"
-              data-direction="vertical"
-              data-amount="-1"
-              title="Shrink radius"
-              (click)="radial_decrease()"
-            >
-              <i class="fa fa-compress fa-rotate-135"></i>
-            </button>
-            <button
-              type="button"
-              disabled
-              class="btn btn-tree btn-sm"
-              data-direction="horizontal"
-              data-amount="1"
-              title="Expand horizonal spacing"
-              (click)="horizontal_increase()"
-            >
-              <i class="fa fa-arrows-h"></i>
-            </button>
-            <button
-              type="button"
-              disabled
-              class="btn btn-tree btn-sm"
-              data-direction="horizontal"
-              data-amount="-1"
-              title="Compress horizonal spacing"
-              (click)="horizontal_decrease()"
-            >
-              <i class="fa fa-compress fa-rotate-45"></i>
-            </button>
-          </ng-template>
-          <button type="button" class="btn btn-light btn-sm" (click)="linear()">
-            Linear
-          </button>
-          <button type="button" class="btn btn-light btn-sm" (click)="radial()">
-            Radial
-          </button>
-          <!-- <button type="button" class="btn btn-light btn-sm" (click)=downloadTree()>
-                        Download
-                        </button> -->
-          <button class="border-1 btn btn-light btn-sm" (click)="deleteTree()">
-            Delete Tree
-          </button>
         </div>
       </div>
     </div>
-
-    <!-- <div class="form-group" *ngIf="router.url === '/complete' || router.url === '/tree'"> -->
-    <div class="form-group">
-      <label *ngIf="showButton === false"> Click the (View) button to show a phylogenetic tree here</label>
-      <!-- <svg id="tree_display" height="900" width="900"></svg> -->
-      <div id="container" class="mt-10">
-        <svg
-          #svg
-          xmlns="http://www.w3.org/2000/svg"
-          id="tree_display"
-          [attr.height.px]="heightSVG"
-          [attr.width.px]="widthSVG"
-        ></svg>
-        <div id="minimap"></div>
+    <div class="form-group" id="container">
+      <div id="tree_display" style="overflow: scroll; background-color: white; height: 1000px" >
+          <figure>
+            <svg #svg123 [attr.width]="svgWidth" [attr.height]="svgHeight"></svg>
+          </figure>
       </div>
-      <br />
     </div>
   </div>
 </div>

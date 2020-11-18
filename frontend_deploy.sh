@@ -2,11 +2,13 @@
 
 IP_ADDRESS=$1
 echo "IP_ADDRESS=$IP_ADDRESS" > .env
+APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed 's/^.*=//' 
 cat >./frontend/src/app/env.json <<EOF 
 {
   "env": [
               {"id":1,"ip_address":"$IP_ADDRESS"},
-              {"id":2,"local_flag":"2"}
+              {"id":2,"local_flag":"2"},
+              {"id":3,"apikey":"$APIKEY"}
    ]
 }
 EOF

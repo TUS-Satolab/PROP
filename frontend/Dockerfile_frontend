@@ -5,17 +5,13 @@ ENV HOME=/usr/src/app
 ENV PATH /app/node_modules/.bin:$PATH
 
 RUN rm -rf node_modules/
-RUN npm i --save
 
-RUN npm i npm@latest -g
 COPY ./frontend/package.json ./package.json
 COPY ./frontend/package-lock.json ./package-lock.json
 RUN npm install
 
-RUN yarn global add @angular/cli
-RUN yarn add --dev @angular-builders/custom-webpack
-
-
+RUN npm i @angular/cli -g
+RUN npm i -D @angular-builders/custom-webpack
 
 EXPOSE 4200
 
