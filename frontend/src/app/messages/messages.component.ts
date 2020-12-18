@@ -101,39 +101,39 @@ export class MessagesComponent implements AfterViewInit {
           const jszip = new JSZip();
           let result: any;
           await jszip.loadAsync(blob).then(async (zip) => {
-            try {
-              if (this.figTree === undefined ) {
-                result = await this.showTree(input);
-              }
-              while (this.treeActiveFlag === false) {
-                console.log("waiting for showTree to finish, sleep 1 sec")
-                  await this.delay(1000);
-              }
-              if (result !== "ERROR") {
-                while (!this.figTree || this.figTree.scales.width === 0 || this.figTree.scales.height === 0) {
-                  console.log("sleep 1 sec")
-                  await this.delay(1000);
-                }
-                const svg = this.treeSvg.nativeElement;
-                const canvas = document.createElement("canvas");
-                canvas.width = svg.width.baseVal.value;
-                canvas.height = svg.height.baseVal.value;
-                await svg_download.svgAsPngUri(svg, {modifyCss: (selector, properties) => {
-                  if (selector.startsWith('.internal-node') || selector.startsWith('.external-node')) {
-                    properties = 'opacity: 0;'
-                  } else {
-                    properties = ''
-                  }
-                  return selector + '{' + properties + '}';
-                }}, (uri: any) => {
-                  const output = this.dataURItoBlob(uri);
-                  zip.file('figtree.png', output);
-                });
-              } 
-            } catch (e) {
-              console.log("ERROR\n", e)
-              zip.remove('figtree.png');
-            }
+            // try {
+            //   if (this.figTree === undefined ) {
+            //     result = await this.showTree(input);
+            //   }
+            //   while (this.treeActiveFlag === false) {
+            //     console.log("waiting for showTree to finish, sleep 1 sec")
+            //       await this.delay(1000);
+            //   }
+            //   if (result !== "ERROR") {
+            //     while (!this.figTree || this.figTree.scales.width === 0 || this.figTree.scales.height === 0) {
+            //       console.log("sleep 1 sec")
+            //       await this.delay(1000);
+            //     }
+            //     const svg = this.treeSvg.nativeElement;
+            //     const canvas = document.createElement("canvas");
+            //     canvas.width = svg.width.baseVal.value;
+            //     canvas.height = svg.height.baseVal.value;
+            //     await svg_download.svgAsPngUri(svg, {modifyCss: (selector, properties) => {
+            //       if (selector.startsWith('.internal-node') || selector.startsWith('.external-node')) {
+            //         properties = 'opacity: 0;'
+            //       } else {
+            //         properties = ''
+            //       }
+            //       return selector + '{' + properties + '}';
+            //     }}, (uri: any) => {
+            //       const output = this.dataURItoBlob(uri);
+            //       zip.file('figtree.png', output);
+            //     });
+            //   } 
+            // } catch (e) {
+            //   console.log("ERROR\n", e)
+            //   zip.remove('figtree.png');
+            // }
             zip.generateAsync({ type: 'blob' }).then(async function (content) {
               await saveAs(content, 'results.zip');
             });
