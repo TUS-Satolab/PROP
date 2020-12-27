@@ -127,7 +127,7 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
     elif align == "clustalw":
         try:
             client.containers.run(image="my_clustalw", command="clustalw -INFILE="+ RESULT_FOLDER +input_file+ \
-                                " -OUTFILE=" + RESULT_FOLDER + out_align + " -OUTPUT=PIR -OUTORDER=INPUT -TYPE=" \
+                                " -OUTFILE=" + RESULT_FOLDER + out_align + " -OUTPUT=FASTA -OUTORDER=INPUT -TYPE=" \
                                 + d + " " + align_clw_opt, \
                                 volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
         except Exception as e:
@@ -213,8 +213,8 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
             f.write(otus[n])
             f.write(" ")
             for m in range(len(otus)):
-                score[m][n] = score[m][n] + 0.00000001 #minus zero
-                f.write("%0.5f " % score[m][n])
+                score[m][n] = score[m][n] + 0.000001 #minus zero
+                f.write("%0.4f " % score[m][n])
             f.write("\r")
         f.close()
     except:
