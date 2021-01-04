@@ -77,7 +77,7 @@ export class checkstatus {
               ';' +
               valueSplit[4] +
               ';' +
-              String(VERSION), 7
+              String(VERSION), 7,'','',true,"None"
           );
         });
         formStatus.delete('result_id');

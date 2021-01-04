@@ -133,7 +133,8 @@ export class CompleteCalcComponent implements OnInit {
         count++
         this.cookieService.set(
           "CANALPROJECT."+String(count),
-          parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'complete' + ';' + String(VERSION), 7
+          parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'complete' + ';' + String(VERSION), 
+          7,'','',true,"None"
         );
         this.submit_flag = 0;
       });

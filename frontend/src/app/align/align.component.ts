@@ -107,7 +107,8 @@ export class AlignComponent implements OnInit {
         if (parsed_id !== 'None') {
           this.cookieService.set(
             "CANALPROJECT."+String(count),
-            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'align' + ';' + String(VERSION), 7
+            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'align' + ';' + String(VERSION), 
+            7,'','',true,"None"
           );
           this.submit_flag = 0;
         }

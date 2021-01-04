@@ -120,7 +120,8 @@ export class MatrixComponent implements OnInit {
         if (parsed_id !== 'None') {
           this.cookieService.set(
             "CANALPROJECT."+String(count),
-            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'matrix' + ';' + String(VERSION), 7
+            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'matrix' + ';' + String(VERSION), 
+            7,'','',true,"None"
           );
           this.submit_flag = 0;
         }

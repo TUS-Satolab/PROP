@@ -10,7 +10,7 @@ cat >./frontend/src/app/env.json <<EOF
 {
   "env": [
               {"id":1,"ip_address":"$IP_ADDRESS"},
-              {"id":2,"local_flag":"$1"},
+              {"id":2,"local_flag":"1"},
               {"id":3,"apikey":"$APIKEY"}
    ]
 }

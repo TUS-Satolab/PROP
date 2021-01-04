@@ -126,8 +126,8 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
         # shutil.copy(input_file, out_align)
     elif align == "clustalw":
         try:
-            client.containers.run(image="my_clustalw", command="clustalw -INFILE="+ RESULT_FOLDER +input_file+ \
-                                " -OUTFILE=" + RESULT_FOLDER + out_align + " -OUTPUT=FASTA -OUTORDER=INPUT -TYPE=" \
+            client.containers.run(image="my_clustalw", command="clustalw -INFILE="+ RESULT_FOLDER + "/" + input_file + \
+                                " -OUTFILE=" + RESULT_FOLDER + "/" + out_align + " -OUTPUT=FASTA -OUTORDER=INPUT -TYPE=" \
                                 + d + " " + align_clw_opt, \
                                 volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
         except Exception as e:
