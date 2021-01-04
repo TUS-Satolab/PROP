@@ -9,7 +9,8 @@
   - `curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -`
   - `sudo apt install nodejs`
 
-## Installation Backend
+## Installation 
+### Backend
 
 1. Pull this repo
 2. `cd canal_project`
@@ -21,7 +22,7 @@ Optional
   docker rm canal_project_angular-service_1
 ```  
 
-## Installation Frontend (static)
+### Frontend (static)
 
 1. Pull this repo
 2. `cd canal_project`
@@ -38,18 +39,40 @@ Optional
 
 11. Host the docs folder on a hosting platform
 
-## Installation for local debugging
+### local debugging
 
 1. Pull this repo
 2. `cd canal_project`
 3. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
 4. `sudo ./dc_script.sh`
 5. wait for the script to finish
-6. open the website on `localhost:4200/`
+6. open the website on `https://localhost:4200/`
+
+## How to update 
+### frontend only
+1. Stop all running containers: `docker stop $(docker container ls -q)`
+2. Delete frontend container: `docker rm canal_project_angular-service_1`
+3. Delete frontend Docker image: `docker rmi $(docker images -q)`
+4. Delete unused frontend Docker volumes: `docker volume prune`
+5. Rebuild: `sudo ./dc_script.sh`
+
+### backend only
+1. Stop all running containers: `docker stop $(docker container ls -q)`
+2. Delete all containers except frontend: `docker rm $(docker ps -a | grep -v "canal_project_angular-service_1" | awk 'NR>1 {print $1}')`
+3. Delete all unused Docker images: `docker rmi $(docker images -q)`
+4. Delete unused Docker volumes: `docker volume prune`
+5. Rebuild: `sudo ./dc_script.sh`
+
+### re-build / update everything 
+1. Stop all running containers: `docker stop $(docker container ls -q)`
+2. Delete all containers: `docker rm $(docker ps -a)`
+3. Delete all unused docker images: `docker rmi $(docker images -q)`
+4. Delete unused Docker volumes: `docker volume prune`
+5. Rebuild: `sudo ./dc_script.sh`
 
 ## Usage via browser
 
-- local environment: `http://localhost:4200/`
+- local environment: `https://localhost:4200/`
 
 - static hosting: domain provided by the hosting platform
 
