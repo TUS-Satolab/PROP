@@ -38,8 +38,8 @@ requests
 frontend/node_modules
 EOF
 
-# cd frontend
-# npm install
-# cd ..
+cd frontend
+npm install
+cd ..
 docker-compose -f docker-compose-angular.yml up -d --build
 rm .dockerignore

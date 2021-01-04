@@ -13,19 +13,19 @@
 ### Backend
 
 1. Pull this repo
-2. `cd canal_project`
+2. `cd PROP`
 3. `sudo ./dc_script.sh`
 Optional
 4. Delete Angular Frontend Docker container if debugging is not needed.
 ```
-  docker stop canal_project_angular-service_1
-  docker rm canal_project_angular-service_1
+  docker stop prop_frontend_1
+  docker rm prop_frontend_1
 ```  
 
 ### Frontend (static)
 
 1. Pull this repo
-2. `cd canal_project`
+2. `cd PROP`
 3. `cd frontend`
 4. `sudo npm install`
 5. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
@@ -42,8 +42,9 @@ Optional
 ### local debugging
 
 1. Pull this repo
-2. `cd canal_project`
+2. `cd PROP`
 3. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
+4. create .env with `BACKEND_APIKEY=DUMMY`
 4. `sudo ./dc_script.sh`
 5. wait for the script to finish
 6. open the website on `https://localhost:4200/`
@@ -51,14 +52,14 @@ Optional
 ## How to update 
 ### frontend only
 1. Stop all running containers: `docker stop $(docker container ls -q)`
-2. Delete frontend container: `docker rm canal_project_angular-service_1`
+2. Delete frontend container: `docker rm prop_frontend_1`
 3. Delete frontend Docker image: `docker rmi $(docker images -q)`
 4. Delete unused frontend Docker volumes: `docker volume prune`
 5. Rebuild: `sudo ./dc_script.sh`
 
 ### backend only
 1. Stop all running containers: `docker stop $(docker container ls -q)`
-2. Delete all containers except frontend: `docker rm $(docker ps -a | grep -v "canal_project_angular-service_1" | awk 'NR>1 {print $1}')`
+2. Delete all containers except frontend: `docker rm $(docker ps -a | grep -v "prop_frontend_1" | awk 'NR>1 {print $1}')`
 3. Delete all unused Docker images: `docker rmi $(docker images -q)`
 4. Delete unused Docker volumes: `docker volume prune`
 5. Rebuild: `sudo ./dc_script.sh`

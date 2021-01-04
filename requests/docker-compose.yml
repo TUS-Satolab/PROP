@@ -39,7 +39,7 @@ services:
       - requests
     links:
       - redis
-  
+
   dashboard:
     image: eoranged/rq-dashboard
     ports:
@@ -64,7 +64,7 @@ services:
     #   - type: volume
     #     source: mydata
     #     target: /data
-    links: 
+    links:
       - requests
       - worker
 
@@ -77,26 +77,26 @@ services:
       - type: volume
         source: mydata
         target: /data
-    links: 
+    links:
       - requests
       - worker
 
-  angular-service:
-      build: 
-        context: .
-        dockerfile: ../frontend/Dockerfile_frontend
-      image: angularcontainer
-      volumes:
-        - ../frontend:/usr/src/app
-        - /usr/src/app/node_modules/
-      ports:
-        - '4200:4200'
-      expose:
-        - '80'
-        - '4200'
-      command: yarn run start
-      links:
-        - requests
+  frontend:
+    build:
+      context: .
+      dockerfile: ../frontend/Dockerfile_frontend
+    image: angularcontainer
+    volumes:
+      - ../frontend:/usr/src/app
+      - /usr/src/app/node_modules/
+    ports:
+      - '4200:4200'
+    expose:
+      - '80'
+      - '4200'
+    command: yarn run start
+    links:
+      - requests
 
   redis:
     image: redis:5.0.6-alpine
