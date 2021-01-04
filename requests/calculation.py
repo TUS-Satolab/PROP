@@ -212,7 +212,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
             #f.write("%-30s " % otus[n][0:30])
             f.write(otus[n])
             f.write(" ")
-            for m in range(len(otus)):
+            for m in range(n):
                 score[m][n] = score[m][n] + 0.000001 #minus zero
                 f.write("%0.4f " % score[m][n])
             f.write("\r")
