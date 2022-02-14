@@ -27,7 +27,7 @@
     "figtree": "git+https://git@github.com/rambaut/figtree.js.git",
     "file-saver": "^2.0.2",
     "jquery": "^3.4.1",
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "jszip-utils": "^0.1.0",
     "moment": "^2.24.0",
     "ngx-cookie-service": "^2.2.0",
