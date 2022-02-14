@@ -1,4 +1,11 @@
 #!/bin/sh
+
+# Necessary to work for both OSX and Linux
+SEDOPTION=
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  SEDOPTION="-i ''"
+fi
+
 BACKEND_ONLY=0
 FRONTEND_ONLY=0
 # Loop through arguments and process them
@@ -19,7 +26,7 @@ IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 # ----------------------------
 # Creation of backend
 # ----------------------------
-grep -q '^IP_ADDRESS' .env && sed -i '' -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
+grep -q '^IP_ADDRESS' .env && sed $SEDOPTION -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
 APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed 's/^.*=//')"
 cat >./frontend/src/app/env.json <<EOF 
 {
