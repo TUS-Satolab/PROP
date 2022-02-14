@@ -50,26 +50,19 @@ Optional
 6. open the website on `https://localhost:4200/`
 
 ## How to update 
+### MAFFT / ClustalW variables
+- array length and count variables can be set in `./.env.fixedVariables`
+  - can set:
+    - MAFFT array length & count
+    - ClustalW array length & count
 ### frontend only
-1. Stop all running containers: `docker stop $(docker container ls -q)`
-2. Delete frontend container: `docker rm prop_frontend_1`
-3. Delete frontend Docker image: `docker rmi $(docker images -q)`
-4. Delete unused frontend Docker volumes: `docker volume prune` --> type `y` and hit enter
-5. Rebuild: `sudo ./dc_script.sh`
+1. `sudo ./dc_script.sh --frontend-only`
 
 ### backend only
-1. Stop all running containers: `docker stop $(docker container ls -q)`
-2. Delete all containers except frontend: `docker rm $(docker ps -a | grep -v "prop_frontend_1" | awk 'NR>1 {print $1}')`
-3. Delete all unused Docker images: `docker rmi $(docker images -q)`
-4. Delete unused Docker volumes: `docker volume prune` --> type `y` and hit enter
-5. Rebuild: `sudo ./dc_script.sh`
+1. `sudo ./dc_script.sh --backend-only`
 
 ### re-build / update everything 
-1. Stop all running containers: `docker stop $(docker container ls -q)`
-2. Delete all containers: `docker rm $(docker ps -a -q)`
-3. Delete all unused docker images: `docker rmi $(docker images -q)`
-4. Delete unused Docker volumes: `docker volume prune` --> type `y` and hit enter
-5. Rebuild: `sudo ./dc_script.sh`
+1. Rebuild: `sudo ./dc_script.sh`
 
 ## Usage via browser
 

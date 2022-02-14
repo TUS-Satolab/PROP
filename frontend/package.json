@@ -24,7 +24,7 @@
     "bootstrap": "^4.3.1",
     "d3": "^5.12.0",
     "dotenv": "^8.2.0",
-    "figtree": "git+https://github.com/rambaut/figtree.js.git",
+    "figtree": "git+https://git@github.com/rambaut/figtree.js.git",
     "file-saver": "^2.0.2",
     "jquery": "^3.4.1",
     "jszip": "^3.2.2",

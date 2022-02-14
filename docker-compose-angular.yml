@@ -1,11 +1,12 @@
 version: '3.7'
 
 services:
-  frontend:
+  prop_frontend:
+    container_name: prop_frontend
     build:
       context: .
       dockerfile: ./frontend/Dockerfile_frontend
-    image: angularcontainer
+    image: prop_frontend
     volumes:
       - ./frontend:/usr/src/app
       - ./frontend/node_modules:/usr/src/app/node_modules
@@ -16,6 +17,6 @@ services:
       - '4200'
     command: npm start
     external_links:
-      - requests
+      - prop_backend_requests
     environment:
       - USERNAME=foobar

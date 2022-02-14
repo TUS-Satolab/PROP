@@ -1,7 +1,7 @@
 #FROM debian:testing
-FROM biocontainers/biocontainers:debian-stretch-backports
+FROM debian:stable-slim
 
-ENV VERSION=7.429
+ENV VERSION=7.490
 
 ## Install MAFFT.
 RUN apt-get update && \

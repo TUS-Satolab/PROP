@@ -1,4 +1,4 @@
-FROM biocontainers/biocontainers:debian-stretch-backports
+FROM debian:stable-slim
 LABEL    software="clustalw" \ 
     container="clustalw" \ 
     about.summary="global multiple nucleotide or peptide sequence alignment" \ 
