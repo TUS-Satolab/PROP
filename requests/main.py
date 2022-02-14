@@ -34,7 +34,7 @@ app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 app.secret_key = "Nj#z2L86|!'=Cw&CG"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ZIPPED_FOLDER'] = ZIPPED_FOLDER
-app.config['REDIS_URL'] = 'redis://redis:6379/0'
+app.config['REDIS_URL'] = 'redis://prop_backend_redis:6379/0'
 redis_url = app.config['REDIS_URL']
 redis_connection = redis.from_url(redis_url)
 

@@ -20,8 +20,7 @@ Options:
 
 import datetime, time, shutil, sys, os, Bio, math, pickle, requests
 import docker
-#import re
-#import subprocess 
+
 
 from docopt import docopt
 from flask import Flask, render_template, request
@@ -29,6 +28,11 @@ from Bio import Phylo, SeqIO
 from Bio.Phylo import BaseTree
 client = docker.from_env()
 RESULT_FOLDER = "./files"
+
+MAFFT_ARRAY_COUNT = int(os.environ['MAFFT_ARRAY_COUNT'])
+MAFFT_ARRAY_LENGTH = int(os.environ['MAFFT_ARRAY_LENGTH'])
+CLUSTALW_ARRAY_COUNT = int(os.environ['CLUSTALW_ARRAY_COUNT'])
+CLUSTALW_ARRAY_LENGTH = int(os.environ['CLUSTALW_ARRAY_LENGTH'])
 def complete_calc(out_align, filename, input_type, align_method, 
     align_clw_opt, matrix_output, gapdel, model, 
     tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
@@ -37,16 +41,15 @@ def complete_calc(out_align, filename, input_type, align_method,
         data_split = data.split(">")
         data_first_block = data_split[1][data_split[1].index('\n')+1:]
         data_first_block_stripped = data_first_block.replace('\n','')
-        #data = infile.readlines()
         count_n = 0
         for i in data:
                 if i.startswith(">"):
                     count_n += 1
     # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
-    if align_method == 'mafft' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
+    if align_method == 'mafft' and (len(data_first_block_stripped) > MAFFT_ARRAY_LENGTH or count_n > MAFFT_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align_method == 'clustalw' and (len(data_first_block_stripped) > 3000 or count_n > 1000):
+    elif align_method == 'clustalw' and (len(data_first_block_stripped) > CLUSTALW_ARRAY_LENGTH or count_n > CLUSTALW_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
     elif align_method == 'None' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
         raise Exception("Linecount maximum exceeded")
@@ -110,10 +113,10 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
                 if i.startswith(">"):
                     count_n += 1
     # If nucleotide, the length within a block is allowed to be below 900 and 10k total blocks
-    if align == 'mafft' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
+    if align == 'mafft' and (len(data_first_block_stripped) > MAFFT_ARRAY_LENGTH or count_n > MAFFT_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
-    elif align == 'clustalw' and (len(data_first_block_stripped) > 3000 or count_n > 1000):
+    elif align == 'clustalw' and (len(data_first_block_stripped) > CLUSTALW_ARRAY_LENGTH or count_n > CLUSTALW_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
     elif align == 'None' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
         raise Exception("Linecount maximum exceeded")
@@ -126,17 +129,17 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
         # shutil.copy(input_file, out_align)
     elif align == "clustalw":
         try:
-            client.containers.run(image="my_clustalw", command="clustalw -INFILE="+ RESULT_FOLDER + "/" + input_file + \
+            client.containers.run(image="prop_backend_clustalw", command="clustalw -INFILE="+ RESULT_FOLDER + "/" + input_file + \
                                 " -OUTFILE=" + RESULT_FOLDER + "/" + out_align + " -OUTPUT=FASTA -OUTORDER=INPUT -TYPE=" \
                                 + d + " " + align_clw_opt, \
-                                volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+                                volumes={'prop_docker_volume': {'bind': '/data', 'mode': 'rw'}},remove=True)
         except Exception as e:
             raise Exception("Alignment error", e)
     elif align == "mafft":
         try:
-            client.containers.run(image="my_mafft", command="bash -c 'mafft " + "files/" + input_file + \
+            client.containers.run(image="prop_backend_mafft", command="bash -c 'mafft " + "files/" + input_file + \
                                 " > files/" + out_align + "'", \
-                                volumes={'canal_project': {'bind': '/data', 'mode': 'rw'}},remove=True)
+                                volumes={'prop_docker_volume': {'bind': '/data', 'mode': 'rw'}},remove=True)
         except Exception as e: 
             raise Exception("Alignment error", e)
     else:
@@ -149,33 +152,10 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
 #################################################################################
 def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plusgap):
 
-    # with open(os.path.join('./files', aligned_input), 'r') as infile:
-    #     data = infile.read()
-    #     data_split = data.split(">")
-    #     data_first_block = data_split[1][data_split[1].index('\n')+1:]
-    #     data_first_block_stripped = data_first_block.replace('\n','')
-    #     #data = infile.readlines()
-    #     count_n = 0
-    #     for i in data:
-    #             if i.startswith(">"):
-    #                 count_n += 1
-    # # the length within a block is allowed to be below 900 and 10k total blocks
-    # if len(data_first_block_stripped) > 3000 or count_n > 3000:
-    #     raise Exception("Linecount maximum exceeded")
-
-
-    # TODO: is it correct to input the aligned file? Get error otherwise
     print("Filename is:", aligned_input)
     (otus, seqs) = parse_otus(aligned_input) 
     #Complete Deletion Option
     if plusgap == "not_checked" and gapdel == "comp":
-        # for i in range(len(seqs[0])):
-        #     for j in range(len(otus)):
-        #         if seqs[j][i] == "-":
-        #             for k in range(len(otus)):
-        #                 tmp = list(seqs[k])
-        #                 tmp[i] = "-"
-        #                 seqs[k] = "".join(tmp)
 
         dropnum=[]
         for s in seqs:
@@ -194,16 +174,10 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
         'nuc': 'calcDiff_nuc',
         'ami': 'calcDiff_ami'
     }
+
     matrix_func = globals()[function_mapping[input_type]]
-    #score = function_mapping[input_type](model,plusgap,seqs,len(otus))
-    #if input_type == "nuc":
+
     score = matrix_func(model,plusgap,seqs,len(otus))
-        #score = calcDiff(model,plusgap,seqs,len(otus))
-    #elif input_type == "ami":
-        #score = matrix_func(model,plusgap,seqs,len(otus))
-        #score = calcDiffProtein(model,plusgap,seqs,len(otus))
-    #距離行列書き出し + Inter/Intra距離計算
-    #f = open(os.path.join('./files', matrix_output))
     try:
         f = open(os.path.join(RESULT_FOLDER, matrix_output),"w")
         f.write(str(len(otus)))
@@ -219,8 +193,7 @@ def distance_matrix(aligned_input, matrix_output, gapdel, input_type, model, plu
         f.close()
     except:
         raise Exception("Calculating Genetic Difference Error")
-    #print(score)
-    #print(otus)
+
     return (score, otus)
 
 def phylo_tree(score, otus, tree, path=RESULT_FOLDER, out_tree='out_tree.txt'):
@@ -268,11 +241,8 @@ def parse_otus(input_file):
     otus = []
     seqs = []
     #ここでfiledateにファイル読み込む
-    #try:
-    #filedata = open(input_file,"r")
     filedata = open(os.path.join(RESULT_FOLDER, input_file),"r")
     for record in SeqIO.parse(filedata, "fasta"):
-        #otu = str(record.id)
         otu = str(record.description)
         seq = str(record.seq).upper().replace("U","T")
         otus.append(otu)
@@ -355,7 +325,6 @@ def calcDiff_ami(model,plusgap,seqData,otu):
 
 
 def calcDiff_ami_old(model,plusgap,seqData,otu):
-#def calcDiffProtein(model,plusgap,seqData,otu):
     import math
 
     score = [[0 for a in range(otu)] for b in range(otu)]
@@ -775,9 +744,6 @@ def makeUpgma(score,otuName):
         else:
             clade2.branch_length = min_dist * \
                 1.0 / 2 - height_of(clade2)
-        ################################################################
-        ################################################################
-        ################################################################
         # update node list
         clades[min_j] = inner_clade
         del clades[min_i]

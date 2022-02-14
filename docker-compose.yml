@@ -1,91 +1,104 @@
 version: '3.7'
 
 services:
-  requests:
+  prop_backend_requests:
+    container_name: prop_backend_requests
     build:
       context: .
       dockerfile: ./requests/Dockerfile
       args:
         - BACKEND_APIKEY=${BACKEND_APIKEY}
-        - IP_ADDRESS=${IP_ADDRESS}
-    image: requests
+    image: prop_backend_requests
     ports:
       - '5004:5000'
     expose:
       - '80'
       - '5004'
-    command: bash -c "cron && python3 /py_file/main.py run -h 0.0.0.0"
+    command: bash -c "cron && python3 /data/main.py run -h 0.0.0.0"
     volumes:
-      - ./requests:/py_file/
       - type: volume
-        source: mydata
+        source: prop_docker_volume
         target: /data
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
+      - .env.fixedVariables
     privileged: true
     depends_on:
-      - redis
+      - prop_backend_redis
 
-  worker:
-    image: requests
-    command: rq worker --url redis://redis:6379/0
+  prop_backend_worker:
+    container_name: prop_backend_worker
+    image: prop_backend_worker
+    build:
+      context: .
+      dockerfile: ./requests/Dockerfile
+      args:
+        - BACKEND_APIKEY=${BACKEND_APIKEY}
+    command: rq worker --url redis://prop_backend_redis:6379/0
     volumes:
       - type: volume
-        source: mydata
+        source: prop_docker_volume
         target: /data
       - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env
+      - .env.fixedVariables
     privileged: true
     depends_on:
-      - redis
-      - requests
+      - prop_backend_redis
+      - prop_backend_requests
     links:
-      - redis
+      - prop_backend_redis
 
-  dashboard:
+  prop_backend_dashboard:
+    container_name: prop_backend_dashboard
     image: eoranged/rq-dashboard
     ports:
       - '9181:9181'
     environment:
-      - RQ_DASHBOARD_REDIS_URL=redis://redis:6379
+      - RQ_DASHBOARD_REDIS_URL=redis://prop_backend_redis:6379
       - RQ_DASHBOARD_USERNAME=rq
       - RQ_DASHBOARD_PASSWORD=password
       - RQ_DASHBOARD_interval=30000
     depends_on:
-      - redis
-      - requests
+      - prop_backend_redis
+      - prop_backend_requests
     links:
-      - redis
+      - prop_backend_redis
 
-  my_clustalw:
+  prop_backend_clustalw:
+    container_name: prop_backend_clustalw
     build:
       context: .
       dockerfile: ./algorithms/Dockerfile_clustalw
-    image: my_clustalw
+    image: prop_backend_clustalw
     # volumes:
     #   - type: volume
-    #     source: mydata
+    #     source: prop_docker_volume
     #     target: /data
     links:
-      - requests
-      - worker
+      - prop_backend_requests
+      - prop_backend_worker
 
-  my_mafft:
+  prop_backend_mafft:
+    container_name: prop_backend_mafft
     build:
       context: .
       dockerfile: ./algorithms/Dockerfile_mafft
-    image: my_mafft
+    image: prop_backend_mafft
     volumes:
       - type: volume
-        source: mydata
+        source: prop_docker_volume
         target: /data
     links:
-      - requests
-      - worker
+      - prop_backend_requests
+      - prop_backend_worker
 
-  redis:
+  prop_backend_redis:
+    container_name: prop_backend_redis
     image: redis:5.0.6-alpine
 
 volumes:
-  mydata:
-    name: canal_project
+  prop_docker_volume:
+    name: prop_docker_volume

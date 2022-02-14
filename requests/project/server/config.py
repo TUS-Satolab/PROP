@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class BaseConfig(object):
     """Base configuration."""
-    REDIS_URL = 'redis://redis:6379/0'
+    REDIS_URL = 'redis://prop_backend_redis:6379/0'
     QUEUES = ['default']
 
 

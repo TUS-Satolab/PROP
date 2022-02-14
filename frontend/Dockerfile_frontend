@@ -1,11 +1,12 @@
-FROM node:alpine
+FROM node:14.14-alpine
 
 WORKDIR /usr/src/app
 ENV HOME=/usr/src/app
 ENV PATH /app/node_modules/.bin:$PATH
 
 RUN rm -rf node_modules/
-
+RUN apk add --no-cache openssh
+RUN apk add --no-cache git
 COPY ./frontend/package.json ./package.json
 COPY ./frontend/package-lock.json ./package-lock.json
 RUN npm ci
