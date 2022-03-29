@@ -139,9 +139,10 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
             raise Exception("Alignment error", e)
     elif align == "mafft":
         try:
-            client.containers.run(image="prop_backend_mafft", command="bash -c 'mafft " + "files/" + input_file + \
+            container = client.containers.run(image="prop_backend_mafft", command="bash -c 'mafft " + "files/" + input_file + \
                                 " > files/" + out_align + "'", \
                                 volumes={'prop_docker_volume': {'bind': '/data', 'mode': 'rw'}},remove=True)
+            container.logs()
         except Exception as e: 
             raise Exception("Alignment error", e)
     else:
