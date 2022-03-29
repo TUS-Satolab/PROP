@@ -120,7 +120,7 @@ def alignment(out_align, input_file, input_type, align=None,  align_clw_opt=None
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
     elif align == 'clustalw' and (len(data_first_block_stripped) > CLUSTALW_ARRAY_LENGTH or count_n > CLUSTALW_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
-    elif align == 'None' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
+    elif align == 'None' and (len(data_first_block_stripped) > NO_ALIGNMENT_ARRAY_LENGTH or count_n > NO_ALIGNMENT_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
 
     input_type_dict = {"nuc": "DNA", "ami": "PROTEIN"}
