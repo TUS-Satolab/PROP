@@ -51,7 +51,7 @@ def complete_calc(out_align, filename, input_type, align_method,
     # If protein, the length within a block is allowed to be below 300 and 10k total blocks
     elif align_method == 'clustalw' and (len(data_first_block_stripped) > CLUSTALW_ARRAY_LENGTH or count_n > CLUSTALW_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
-    elif align_method == 'None' and (len(data_first_block_stripped) > 3000 or count_n > 3000):
+    elif align_method == 'None' and (len(data_first_block_stripped) > NO_ALIGNMENT_ARRAY_LENGTH or count_n > NO_ALIGNMENT_ARRAY_COUNT):
         raise Exception("Linecount maximum exceeded")
         
     alignment(out_align, filename, input_type, align_method, align_clw_opt)
