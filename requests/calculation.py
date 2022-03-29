@@ -33,6 +33,8 @@ MAFFT_ARRAY_COUNT = int(os.environ['MAFFT_ARRAY_COUNT'])
 MAFFT_ARRAY_LENGTH = int(os.environ['MAFFT_ARRAY_LENGTH'])
 CLUSTALW_ARRAY_COUNT = int(os.environ['CLUSTALW_ARRAY_COUNT'])
 CLUSTALW_ARRAY_LENGTH = int(os.environ['CLUSTALW_ARRAY_LENGTH'])
+NO_ALIGNMENT_ARRAY_COUNT = int(os.environ['NO_ALIGNMENT_ARRAY_COUNT'])
+NO_ALIGNMENT_ARRAY_LENGTH = int(os.environ['NO_ALIGNMENT_ARRAY_LENGTH'])
 def complete_calc(out_align, filename, input_type, align_method, 
     align_clw_opt, matrix_output, gapdel, model, 
     tree, UPLOAD_FOLDER, out_tree, plusgap_checked):
