@@ -10,10 +10,10 @@ var CANCEL_URL_TEMP = '';
 const LOCALHOST_BASE_URL = 'http://localhost:5004';
 const REMOTE_SERVER_BASE_URL = 'https://9nrzjbva00.execute-api.ap-northeast-1.amazonaws.com/dev';
 export const VERSION = 6;
+import * as arrList from './env.json'
 
-const arrList = require('./env.json');
 
-if (String(arrList.env[1].local_flag) === '1') {
+if (String(arrList['LOCAL_FLAG']) === '1') {
   var SERVER_URL_TEMP = `${LOCALHOST_BASE_URL}/complete`;
   var QUERY_URL_TEMP = `${LOCALHOST_BASE_URL}/task_query`;
   var GET_RESULT_URL_TEMP = `${LOCALHOST_BASE_URL}/get_result_completed`;

@@ -5,11 +5,10 @@ echo "IP_ADDRESS=$IP_ADDRESS" > .env
 APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed 's/^.*=//' 
 cat >./frontend/src/app/env.json <<EOF 
 {
-  "env": [
-              {"id":1,"ip_address":"$IP_ADDRESS"},
-              {"id":2,"local_flag":"2"},
-              {"id":3,"apikey":"$APIKEY"}
-   ]
+  "IP_ADDRESS": "$IP_ADDRESS",
+  "LOCAL_FLAG": "1",
+  "APIKEY": "$APIKEY",
+  "FILE_SIZE_LIMIT": "$FILE_SIZE_LIMIT"
 }
 EOF
 echo "LOG: Creating dockerignore file"

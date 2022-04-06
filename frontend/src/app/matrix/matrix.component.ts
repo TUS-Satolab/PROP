@@ -65,7 +65,7 @@ export class MatrixComponent implements OnInit {
       this.form.get('file').setValue('');
       const file = event.target.files[0];
       var upload = this.fileInput.nativeElement;
-      if (upload.files[0].size > 20000000) {
+      if (upload.files[0].size > Number(arrList['FILE_SIZE_LIMIT'])) {
         this.size_flag = 1;
         this.fileInput.nativeElement.value = null;
       } else {
@@ -78,7 +78,7 @@ export class MatrixComponent implements OnInit {
   }
 
   onSubmit() {
-    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
+    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
     formData.append('file', this.form.get('file').value);

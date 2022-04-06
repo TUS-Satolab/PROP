@@ -29,7 +29,7 @@ Optional
 3. `cd frontend`
 4. `sudo npm install`
 5. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
-6. In `frontend/src/app/env.json`, set `{"id":2,"local_flag":"2"},` --> in that case, API Gateway endpoint is used instead of localhost
+6. In `frontend/src/app/env.json`, set `"local_flag":"2"` --> in that case, API Gateway endpoint is used instead of localhost
 7. `cd ../..` (so that you are in the folder `frontend`)
 8. `npx ng build --prod --output-path ../docs --base-href /bioinformatics/prop/`
 9. In `frontend/src/app/header/header.component.html` change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`

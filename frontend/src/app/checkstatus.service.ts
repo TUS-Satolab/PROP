@@ -4,7 +4,6 @@ import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as arrList from './env.json'
 const moment = require('moment');
-import { formatDate } from '@angular/common';
 
 
 @Injectable({
@@ -16,7 +15,7 @@ export class checkstatus {
 
   checkStatus() {
     let formStatus = new FormData();
-    const headers: HttpHeaders | {} = String(arrList.env[1].local_flag) === '1' ? new HttpHeaders({'Apikey': String(arrList.env[2].apikey),}) : {}
+    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
     const error_arr = [
       'Error',
       'File format',

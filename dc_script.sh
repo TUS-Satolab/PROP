@@ -28,13 +28,13 @@ else
   grep -q '^IP_ADDRESS' .env && sed -i -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
 fi
 APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed $SEDOPTION 's/^.*=//')"
+FILE_SIZE_LIMIT="$(grep 'FILE_SIZE_LIMIT=' .env.fixedVariables | sed $SEDOPTION 's/^.*=//')"
 cat >./frontend/src/app/env.json <<EOF 
 {
-  "env": [
-              {"id":1,"ip_address":"$IP_ADDRESS"},
-              {"id":2,"local_flag":"1"},
-              {"id":3,"apikey":"$APIKEY"}
-   ]
+  "IP_ADDRESS":"$IP_ADDRESS",
+  "LOCAL_FLAG":"1",
+  "APIKEY":"$APIKEY",
+  "FILE_SIZE_LIMIT":"$FILE_SIZE_LIMIT"
 }
 EOF
 
