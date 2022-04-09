@@ -29,7 +29,7 @@
     "jquery": "^3.4.1",
     "jszip": "^3.2.2",
     "jszip-utils": "^0.1.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ngx-cookie-service": "^2.2.0",
     "ngx-smart-popover": "^1.1.0",
     "popper.js": "^1.15.0",
