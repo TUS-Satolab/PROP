@@ -34,6 +34,7 @@ export class checkstatus {
       'Phylogenetic Tree Generation Error',
       'Alignment error',
       'Calculating Genetic Difference Error',
+      'Result file is too big'
     ];
     const sec_arr = ['Finished', 'Cancelled'];
     const allCookies: {} = this.cookieService.getAll();
