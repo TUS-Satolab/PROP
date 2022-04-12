@@ -1,7 +1,7 @@
 from flask import Flask, request, flash, redirect, url_for, send_from_directory, send_file, jsonify, render_template, abort
 from calculation import alignment, distance_matrix, phylo_tree, complete_calc, phylo_tree_score_otus
 from werkzeug.utils import secure_filename
-from zipfile import ZipFile
+import zipfile
 from redis import Redis
 from rq import Queue, Connection, Worker, registry, cancel_job, get_current_job
 from rq.job import Job
@@ -51,8 +51,8 @@ def open_matrix(filename, otus, score):
     return (score, otus)
 
 def zipFilesInDir(dirName, zipFileName, filter, result_id):
-   # create a ZipFile object
-   with ZipFile(zipFileName, 'w') as zipObj:
+   # create a zipfile object
+   with zipfile.ZipFile(zipFileName, 'w', compression=zipfile.ZIP_DEFLATED, ) as zipObj:
        # Iterate over all the files in directory
        for filename in os.listdir(dirName):
            if filter(filename):
