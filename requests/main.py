@@ -62,7 +62,7 @@ def zipFilesInDir(dirName, zipFileName, filter, result_id):
                print(filename)
                # Add file to zip
                zipObj.write(os.path.join(dirName, filename), "./"+filename_new)
-       file_size = os.path.getsize(dirName + "/" + zipFileName)
+       file_size = os.path.getsize(zipFileName)
        print("File Size of zip is :", file_size, "bytes")
 
 # Helper function for allowed files
