@@ -1,5 +1,5 @@
 # base image
-FROM python:slim-jessie
+FROM python:3.12.7-slim-bookworm
 
 # set working directory
 WORKDIR /data
