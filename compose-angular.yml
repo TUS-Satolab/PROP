@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   prop_frontend:
     container_name: prop_frontend
@@ -11,10 +9,10 @@ services:
       - ./frontend:/usr/src/app
       - ./frontend/node_modules:/usr/src/app/node_modules
     ports:
-      - '4200:4200'
+      - "4200:4200"
     expose:
-      - '80'
-      - '4200'
+      - "80"
+      - "4200"
     command: npm start
     external_links:
       - prop_backend_requests

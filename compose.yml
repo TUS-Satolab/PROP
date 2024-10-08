@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   prop_backend_requests:
     container_name: prop_backend_requests

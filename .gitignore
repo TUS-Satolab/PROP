@@ -130,3 +130,5 @@ docs
 *.code-workspace
 frontend/src/app/env.json
 frontend/.npm/
+.aider*
+CONVENTIONS.md

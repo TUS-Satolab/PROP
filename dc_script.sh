@@ -66,7 +66,7 @@ docker volume rm prop_docker_volume
 echo "Pruning leftover Docker layers and caches"
 docker system prune -a --force
 # for old build method: DOCKER_BUILDKIT=0 
-docker-compose -f docker-compose.yml up -d --build
+docker compose -f compose.yml up -d --build
 
 rm .dockerignore
 else
@@ -96,7 +96,7 @@ EOF
   echo "Deleting frontend image"
   docker rmi $(docker images -q --filter=reference='prop_frontend:*')
   # for old build method: DOCKER_BUILDKIT=0 
-  docker-compose -f docker-compose-angular.yml up -d --build
+  docker compose -f compose-angular.yml up -d --build
   rm .dockerignore
 else
   echo "Only created backend"
