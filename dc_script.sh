@@ -24,11 +24,30 @@ IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 # Necessary to work for both OSX and Linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
   grep -q '^IP_ADDRESS' .env && sed -i '' -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
+  SEDOPTION="-i ''"
 else
   grep -q '^IP_ADDRESS' .env && sed -i -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
+  SEDOPTION="-i"
 fi
-APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed $SEDOPTION 's/^.*=//')"
-FILE_SIZE_LIMIT="$(grep 'FILE_SIZE_LIMIT=' .env.fixedVariables | sed $SEDOPTION 's/^.*=//')"
+
+# Check if .env file exists
+if [ ! -f .env ]; then
+    echo "Error: .env file not found"
+    exit 1
+fi
+
+# Extract APIKEY from .env file
+APIKEY=$(grep '^BACKEND_APIKEY=' .env | awk -F '=' '{print $2}')
+
+# Check if APIKEY was successfully extracted
+if [ -z "$APIKEY" ]; then
+    echo "Error: BACKEND_APIKEY not found in .env file"
+    exit 1
+fi
+
+# Use FILE_SIZE_LIMIT directly from .env.fixedVariables
+FILE_SIZE_LIMIT=10000000
+
 cat >./frontend/src/app/env.json <<EOF 
 {
   "IP_ADDRESS":"$IP_ADDRESS",
