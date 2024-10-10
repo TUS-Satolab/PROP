@@ -22,7 +22,7 @@ IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 # ----------------------------
 
 # Necessary to work for both OSX and Linux
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [ "$(uname)" = "Darwin" ]; then
   grep -q '^IP_ADDRESS' .env && sed -i '' -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
   SEDOPTION="-i ''"
 else
@@ -57,13 +57,13 @@ cat >./frontend/src/app/env.json <<EOF
 }
 EOF
 
-if [[ "$FRONTEND_ONLY" == "1" && "$BACKEND_ONLY" == "1"  ]]
+if [ "$FRONTEND_ONLY" = "1" ] && [ "$BACKEND_ONLY" = "1" ]
 then
   echo "Can't set both --frontend-only and --backend-only at the same time"
   exit 1
 fi
 
-if [[ "$FRONTEND_ONLY" == "0" ]]
+if [ "$FRONTEND_ONLY" = "0" ]
   then
 cat <<EOF >./.dockerignore
 .git
@@ -94,7 +94,7 @@ fi
 # ----------------------------
 # Creation of frontend locally
 # ----------------------------
-if [[ "$BACKEND_ONLY" == "0" ]]
+if [ "$BACKEND_ONLY" = "0" ]
   then
   echo "Creating Frontend"
   cat <<EOF >./.dockerignore
