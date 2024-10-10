@@ -20,6 +20,15 @@ body {
   font-family: 'Lato', 'arial';
 }
 
+.prop-description {
+  font-size: 14px;
+  max-width: 70%;
+}
+
+.navbar .nav-link {
+  padding: 0.5rem 0;
+}
+
 /* copy from https://github.com/rambaut/figtree.js/blob/master/index.html */
 text {
   font-family: 'helvetica-neue', 'helvetica', 'sans-serif';
