@@ -25,7 +25,7 @@ echo "LOG: Installing packages"
 npm install
 echo "LOG: Finished installing packages"
 cd ..
-echo "LOG: Running docker-compose"
-docker-compose -f docker-compose-angular.yml up -d
-echo "LOG: Finished docker-compose"
+echo "LOG: Running docker　compose"
+docker compose -f compose-angular.yml up -d
+echo "LOG: Finished docker compose"
 rm .dockerignore

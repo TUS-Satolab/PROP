@@ -22,13 +22,32 @@ IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 # ----------------------------
 
 # Necessary to work for both OSX and Linux
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [ "$(uname)" = "Darwin" ]; then
   grep -q '^IP_ADDRESS' .env && sed -i '' -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
+  SEDOPTION="-i ''"
 else
   grep -q '^IP_ADDRESS' .env && sed -i -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
+  SEDOPTION="-i"
 fi
-APIKEY="$(echo "$NAME" | grep 'BACKEND_APIKEY=' .env | sed $SEDOPTION 's/^.*=//')"
-FILE_SIZE_LIMIT="$(grep 'FILE_SIZE_LIMIT=' .env.fixedVariables | sed $SEDOPTION 's/^.*=//')"
+
+# Check if .env file exists
+if [ ! -f .env ]; then
+    echo "Error: .env file not found"
+    exit 1
+fi
+
+# Extract APIKEY from .env file
+APIKEY=$(grep '^BACKEND_APIKEY=' .env | awk -F '=' '{print $2}')
+
+# Check if APIKEY was successfully extracted
+if [ -z "$APIKEY" ]; then
+    echo "Error: BACKEND_APIKEY not found in .env file"
+    exit 1
+fi
+
+# Use FILE_SIZE_LIMIT directly from .env.fixedVariables
+FILE_SIZE_LIMIT=10000000
+
 cat >./frontend/src/app/env.json <<EOF 
 {
   "IP_ADDRESS":"$IP_ADDRESS",
@@ -38,13 +57,13 @@ cat >./frontend/src/app/env.json <<EOF
 }
 EOF
 
-if [[ "$FRONTEND_ONLY" == "1" && "$BACKEND_ONLY" == "1"  ]]
+if [ "$FRONTEND_ONLY" = "1" ] && [ "$BACKEND_ONLY" = "1" ]
 then
   echo "Can't set both --frontend-only and --backend-only at the same time"
   exit 1
 fi
 
-if [[ "$FRONTEND_ONLY" == "0" ]]
+if [ "$FRONTEND_ONLY" = "0" ]
   then
 cat <<EOF >./.dockerignore
 .git
@@ -66,7 +85,7 @@ docker volume rm prop_docker_volume
 echo "Pruning leftover Docker layers and caches"
 docker system prune -a --force
 # for old build method: DOCKER_BUILDKIT=0 
-docker-compose -f docker-compose.yml up -d --build
+docker compose -f compose.yml up -d --build
 
 rm .dockerignore
 else
@@ -75,7 +94,7 @@ fi
 # ----------------------------
 # Creation of frontend locally
 # ----------------------------
-if [[ "$BACKEND_ONLY" == "0" ]]
+if [ "$BACKEND_ONLY" = "0" ]
   then
   echo "Creating Frontend"
   cat <<EOF >./.dockerignore
@@ -96,7 +115,7 @@ EOF
   echo "Deleting frontend image"
   docker rmi $(docker images -q --filter=reference='prop_frontend:*')
   # for old build method: DOCKER_BUILDKIT=0 
-  docker-compose -f docker-compose-angular.yml up -d --build
+  docker compose -f compose-angular.yml up -d --build
   rm .dockerignore
 else
   echo "Only created backend"
