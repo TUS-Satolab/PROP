@@ -32,17 +32,6 @@ if [ -z "$APIKEY" ]; then
     exit 1
 fi
 
-# Use FILE_SIZE_LIMIT directly from .env.fixedVariables
-FILE_SIZE_LIMIT=10000000
-
-cat >./frontend/src/app/env.json <<EOF 
-{
-  "LOCAL_FLAG":"1",
-  "APIKEY":"$APIKEY",
-  "FILE_SIZE_LIMIT":"$FILE_SIZE_LIMIT"
-}
-EOF
-
 if [ "$FRONTEND_ONLY" = "1" ] && [ "$BACKEND_ONLY" = "1" ]
 then
   echo "Can't set both --frontend-only and --backend-only at the same time"

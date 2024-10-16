@@ -15,10 +15,15 @@
 1. Pull this repo
 2. `cd PROP`
 3. copy `.env.example` to `.env`
-4. `./dc_script.sh`
-5. wait for the script to finish
-6. open the website on `https://localhost:4200/`
-7. make changes to the frontend/backend code. Hot reload is enabled
+4. in `frontend/src/environments/environment.ts` set the env vars for development: 
+   - set `production` to `false`
+   - set `baseUrl` to `http://localhost:5004`
+   - set `apiKey` to `DUMMY`
+   - set `fileSizeLimit` to the file size limit
+5. `./dc_script.sh`
+6. wait for the script to finish
+7. open the website on `https://localhost:4200/`
+8. make changes to the frontend/backend code. Hot reload is enabled
 
 NOTE:
 - If you want to run the frontend/backend separately, you can do so by running `sudo ./dc_script.sh --frontend-only` or `sudo ./dc_script.sh --backend-only`
@@ -29,15 +34,17 @@ NOTE:
 
 1. Pull this repo
 2. `cd PROP`
-3. In the `.env` file: 
-   - set `BASE_URL` to the API Gateway URL
-   - set `BACKEND_APIKEY` to the Python backend API key
+3. In the `environment.ts` file, set the env vars for production: 
+   - set `production` to `true`
+   - set `baseUrl` to the API Gateway URL
+   - set `apiKey` to the Python backend API key
+   - set `fileSizeLimit` to the file size limit
 4. `cd frontend`
 5. `npm install`
 6. open `frontend/src/app/header/header.component.html`
    - change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`
-9. `npm run build:prod`
-10. Host the resulting `/docs` folder on a hosting platform
+7. `npm run build:prod`
+8. Host the resulting `/docs` folder on a hosting platform
 
 #### Backend
 

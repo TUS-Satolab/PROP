@@ -19,7 +19,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
-      - .env.fixedVariables
     privileged: true
     depends_on:
       - prop_backend_redis
@@ -40,7 +39,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
-      - .env.fixedVariables
     privileged: true
     depends_on:
       - prop_backend_redis

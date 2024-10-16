@@ -1,14 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
 import { MessageService } from '../message.service';
 import { SERVER_URL, VERSION } from '../globals';
+import { environment } from '../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { checkstatus } from '../checkstatus.service';
-import { image } from 'd3';
-import * as arrList from '../env.json'
 
 @Component({
   selector: 'app-complete-calc',
@@ -47,11 +45,10 @@ export class CompleteCalcComponent implements OnInit {
     this.messageService.setDocuFlag('off');
   }
   onTypeSelect(input) {
-    // var differences = [''];
-    if (input == 'nuc') {
+    if (input === 'nuc') {
       this.form.get('model').setValue('K2P');
       this.differences = ['P-distance', 'K2P'];
-    } else if (input == 'ami') {
+    } else if (input === 'ami') {
       this.form.get('model').setValue('JC');
       this.differences = ['P-distance', 'JC'];
     }
@@ -70,9 +67,8 @@ export class CompleteCalcComponent implements OnInit {
       this.filename = '';
       this.form.get('file').setValue('');
       const file = event.target.files[0];
-      // var upload = document.getElementById('browse');
-      var upload = this.fileInput.nativeElement;
-      if (upload.files[0].size > Number(arrList['FILE_SIZE_LIMIT'])) {
+      const upload = this.fileInput.nativeElement;
+      if (upload.files[0].size > environment.fileSizeLimit) {
         this.size_flag = 1;
         this.fileInput.nativeElement.value = null;
       } else {
@@ -81,13 +77,11 @@ export class CompleteCalcComponent implements OnInit {
         this.filename = file.name;
         this.fileInput.nativeElement.value = null;
       }
-      // this.form.get('file').setValue(file);
-      // this.filename = file.name;
     }
   }
 
   onSubmit() {
-    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
+    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
     formData.append('file', this.form.get('file').value);
@@ -113,27 +107,27 @@ export class CompleteCalcComponent implements OnInit {
         headers, observe: 'response',
       })
       .subscribe((data) => {
-        var unparsed_id = data.body['task_id'];
-        var parsed_id: string = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-        var unparsed_msg = data.body['msg'];
-        var parsed_msg: string = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+        const unparsed_id = data.body['task_id'];
+        const parsed_id: string = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+        const unparsed_msg = data.body['msg'];
+        const parsed_msg: string = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
         this.messageService.add_msg({
           id: parsed_id,
           msg: parsed_msg,
           time: dateTime,
         });
         const allCookies: {} = this.cookieService.getAll();
-        let count = 0 
+        let count = 0
         for (const key in allCookies) {
           if (key.startsWith("CANALPROJECT")) {
-            let keySplit = key.split('.');
+            const keySplit = key.split('.');
             count = Number(keySplit[1]) > count ? Number(keySplit[1]) : count;
           }
         }
         count++
         this.cookieService.set(
-          "CANALPROJECT."+String(count),
-          parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'complete' + ';' + String(VERSION), 
+          `CANALPROJECT.${String(count)}`,
+          `${parsed_id};${parsed_msg};${dateTime};${count};complete;${String(VERSION)}`,
           7,'','',true,"None"
         );
         this.submit_flag = 0;

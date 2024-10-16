@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { QUERY_URL, VERSION } from './globals';
+import { environment } from '../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import * as arrList from './env.json'
 const moment = require('moment');
 
 
@@ -15,7 +15,8 @@ export class checkstatus {
 
   checkStatus() {
     let formStatus = new FormData();
-    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
+    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+
     const error_arr = [
       'Error',
       'File format',
@@ -38,7 +39,7 @@ export class checkstatus {
     ];
     const sec_arr = ['Finished', 'Cancelled'];
     const allCookies: {} = this.cookieService.getAll();
-    
+
     for (const key in allCookies) {
       if (!key.startsWith("CANALPROJECT")) {
         delete allCookies[key]
@@ -93,7 +94,7 @@ export class checkstatus {
         delete allCookies[key]
       }
     }
-    
+
     const prevIds = [];
     // tslint:disable-next-line: forin
     for (var key in allCookies) {
