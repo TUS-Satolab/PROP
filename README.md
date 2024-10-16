@@ -14,8 +14,8 @@
 
 1. Pull this repo
 2. `cd PROP`
-3. create `.env` file with `BACKEND_APIKEY=DUMMY`
-4. `sudo ./dc_script.sh`
+3. copy `.env.example` to `.env`
+4. `./dc_script.sh`
 5. wait for the script to finish
 6. open the website on `https://localhost:4200/`
 7. make changes to the frontend/backend code. Hot reload is enabled
@@ -29,12 +29,12 @@ NOTE:
 
 1. Pull this repo
 2. `cd PROP`
-3. `cd frontend`
-4. `npm install`
-5. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
-6. In `frontend/src/app/env.json`, set `"local_flag":"2"` --> in that case, API Gateway endpoint is used instead of localhost
-7. `cd ../..` (so that you are in the folder `frontend`)
-8. open `header.component.html`
+3. In the `.env` file: 
+   - set `BASE_URL` to the API Gateway URL
+   - set `BACKEND_APIKEY` to the Python backend API key
+4. `cd frontend`
+5. `npm install`
+6. open `frontend/src/app/header/header.component.html`
    - change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`
 9. `npm run build:prod`
 10. Host the resulting `/docs` folder on a hosting platform
@@ -43,7 +43,8 @@ NOTE:
 
 1. Pull this repo
 2. `aws sso login --profile [PROFILE]` (if not already logged in)
-3. make sure that `.env` file contains `AWS_ACCOUNT_ID` and `AWS_REGION`
+3. In the `.env` file: 
+   - set `AWS_ACCOUNT_ID` and `AWS_REGION`
 4. `cd PROP`
 5. `./build_and_upload.sh`
 6. wait for the script to finish
@@ -67,13 +68,13 @@ NOTE:
    - `AWS_ACCOUNT_ID`
    - `AWS_REGION`
    - `BACKEND_APIKEY`
-   - `MAFFT_ARRAY_COUNT` --> found in `./.env.fixedVariables`
-   - `MAFFT_ARRAY_LENGTH` --> found in `./.env.fixedVariables`
-   - `CLUSTALW_ARRAY_COUNT` --> found in `./.env.fixedVariables`
-   - `CLUSTALW_ARRAY_LENGTH` --> found in `./.env.fixedVariables`
-   - `NO_ALIGNMENT_ARRAY_COUNT` --> found in `./.env.fixedVariables`
-   - `NO_ALIGNMENT_ARRAY_LENGTH` --> found in `./.env.fixedVariables`
-   - `FILE_SIZE_LIMIT` --> found in `./.env.fixedVariables`
+   - `MAFFT_ARRAY_COUNT`
+   - `MAFFT_ARRAY_LENGTH`
+   - `CLUSTALW_ARRAY_COUNT`
+   - `CLUSTALW_ARRAY_LENGTH`
+   - `NO_ALIGNMENT_ARRAY_COUNT`
+   - `NO_ALIGNMENT_ARRAY_LENGTH`
+   - `FILE_SIZE_LIMIT`
 4. `docker compose -f compose_deploy.yml up -d`
 
 ## How to update 

@@ -38,8 +38,10 @@ GIT_HASH=$(git rev-parse --short HEAD)
 # AWS ECR repository URLs
 ECR_REPO_REQUESTS="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_requests"
 ECR_REPO_WORKER="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_worker"
+ECR_REPO_DASHBOARD="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_dashboard"
 ECR_REPO_CLUSTALW="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw"
 ECR_REPO_MAFFT="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft"
+ECR_REPO_REDIS="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_redis"
 
 # Create .dockerignore file
 cat <<EOF >./.dockerignore
@@ -94,8 +96,10 @@ tag_and_push() {
 # Tag and push each image
 tag_and_push prop_backend_requests $ECR_REPO_REQUESTS
 tag_and_push prop_backend_worker $ECR_REPO_WORKER
+tag_and_push prop_backend_dashboard $ECR_REPO_DASHBOARD
 tag_and_push prop_backend_clustalw $ECR_REPO_CLUSTALW
 tag_and_push prop_backend_mafft $ECR_REPO_MAFFT
+tag_and_push prop_backend_redis $ECR_REPO_REDIS
 
 # Clean up
 rm .dockerignore

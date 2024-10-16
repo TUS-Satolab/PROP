@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: process.env.PRODUCTION === 'true' || false,
+  apiKey: process.env.BACKEND_APIKEY || 'DUMMY',
+  fileSizeLimit: Number(process.env.FILE_SIZE_LIMIT) || 10000000,
+  baseUrl: process.env.BASE_URL || 'http://localhost:5004',
 };
 
 /*
