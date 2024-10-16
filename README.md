@@ -41,10 +41,13 @@ NOTE:
    - set `fileSizeLimit` to the file size limit
 4. `cd frontend`
 5. `npm install`
-6. open `frontend/src/app/header/header.component.html`
-   - change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`
-7. `npm run build:prod`
-8. Host the resulting `/docs` folder on a hosting platform
+6. For production deployment to non-prop resources
+   1. `npm run build:prod`
+7. For production deployment to the prop environment
+   1. open `frontend/src/app/header/header.component.html`
+      - change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`
+   2. `npm run build:prod:prop`
+8.  Host the resulting `/docs` folder on a hosting platform
 
 #### Backend
 
