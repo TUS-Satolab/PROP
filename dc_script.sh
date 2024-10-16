@@ -16,19 +16,6 @@ do
         ;;
     esac
 done
-IP_ADDRESS="$(dig +short myip.opendns.com @resolver1.opendns.com)"
-# ----------------------------
-# Creation of backend
-# ----------------------------
-
-# Necessary to work for both OSX and Linux
-if [ "$(uname)" = "Darwin" ]; then
-  grep -q '^IP_ADDRESS' .env && sed -i '' -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
-  SEDOPTION="-i ''"
-else
-  grep -q '^IP_ADDRESS' .env && sed -i -e "s/^IP_ADDRESS.*$/IP_ADDRESS=${IP_ADDRESS}/g" .env || echo "IP_ADDRESS=$IP_ADDRESS" >> .env
-  SEDOPTION="-i"
-fi
 
 # Check if .env file exists
 if [ ! -f .env ]; then
@@ -50,7 +37,6 @@ FILE_SIZE_LIMIT=10000000
 
 cat >./frontend/src/app/env.json <<EOF 
 {
-  "IP_ADDRESS":"$IP_ADDRESS",
   "LOCAL_FLAG":"1",
   "APIKEY":"$APIKEY",
   "FILE_SIZE_LIMIT":"$FILE_SIZE_LIMIT"
@@ -63,6 +49,9 @@ then
   exit 1
 fi
 
+# ----------------------------
+# Creation of backend
+# ----------------------------
 if [ "$FRONTEND_ONLY" = "0" ]
   then
 cat <<EOF >./.dockerignore
