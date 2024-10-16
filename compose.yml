@@ -8,10 +8,9 @@ services:
         - BACKEND_APIKEY=${BACKEND_APIKEY}
     image: prop_backend_requests
     ports:
-      - '5004:5000'
+      - '${PORT:-5004}:${PORT:-5004}'
     expose:
-      - '80'
-      - '5004'
+      - '${PORT:-5004}'
     command: bash -c "cron && python3 /data/main.py run -h 0.0.0.0"
     volumes:
       - type: volume
@@ -71,10 +70,6 @@ services:
       context: .
       dockerfile: ./algorithms/Dockerfile_clustalw
     image: prop_backend_clustalw
-    # volumes:
-    #   - type: volume
-    #     source: prop_docker_volume
-    #     target: /data
     links:
       - prop_backend_requests
       - prop_backend_worker
