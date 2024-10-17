@@ -3,6 +3,16 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
+# Check if profile argument is provided
+if [ $# -eq 0 ]; then
+    echo "Error: AWS profile not specified"
+    echo "Usage: $0 <aws-profile>"
+    exit 1
+fi
+
+# Set AWS_PROFILE from the first argument
+export AWS_PROFILE=$1
+
 # Check if .env file exists
 if [ ! -f .env ]; then
     echo "Error: .env file not found"
