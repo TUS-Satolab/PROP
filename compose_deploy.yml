@@ -36,7 +36,7 @@ services:
 
   prop_backend_dashboard:
     container_name: prop_backend_dashboard
-    image: eoranged/rq-dashboard
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_dashboard:latest
     ports:
       - "9181:9181"
     environment:
@@ -68,7 +68,7 @@ services:
 
   prop_backend_redis:
     container_name: prop_backend_redis
-    image: redis:5.0.6-alpine
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_redis:latest
 
 volumes:
   prop_docker_volume:

@@ -80,9 +80,14 @@ docker volume rm prop_docker_volume || true
 echo "Pruning leftover Docker layers and caches"
 docker system prune -a --force
 
-# Build Docker images
-echo "Building Docker images"
+# Pull and build Docker images
+echo "Pulling and building Docker images"
+docker compose -f compose.yml pull --ignore-buildable
 docker compose -f compose.yml build
+
+echo "Renaming pulled images"
+docker tag eoranged/rq-dashboard:latest prop_backend_dashboard:latest
+docker tag redis:5.0.6-alpine prop_backend_redis:latest
 
 # Tag and push images to ECR
 echo "Tagging and pushing images to ECR"
