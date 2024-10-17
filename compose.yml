@@ -49,6 +49,7 @@ services:
   prop_backend_dashboard:
     container_name: prop_backend_dashboard
     image: eoranged/rq-dashboard
+    pull_policy: always
     ports:
       - '9181:9181'
     environment:
@@ -89,6 +90,7 @@ services:
   prop_backend_redis:
     container_name: prop_backend_redis
     image: redis:5.0.6-alpine
+    pull_policy: always
 
 volumes:
   prop_docker_volume:

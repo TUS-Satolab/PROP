@@ -34,20 +34,17 @@ NOTE:
 
 1. Pull this repo
 2. `cd PROP`
-3. In the `environment.ts` file, set the env vars for production: 
-   - set `production` to `true`
-   - set `baseUrl` to the API Gateway URL
-   - set `apiKey` to the Python backend API key
-   - set `fileSizeLimit` to the file size limit
+3. Ensure the `.env` file in the root directory contains the following variables:
+   - `PRODUCTION=true`
+   - `BASE_URL` (set to the API Gateway URL)
+   - `BACKEND_APIKEY` (set to the Python backend API key)
+   - `FILE_SIZE_LIMIT` (set to the desired file size limit)
 4. `cd frontend`
 5. `npm install`
-6. For production deployment to non-prop resources
-   1. `npm run build:prod`
-7. For production deployment to the prop environment
-   1. open `frontend/src/app/header/header.component.html`
-      - change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`
-   2. `npm run build:prod:prop`
-8.  Host the resulting `/docs` folder on a hosting platform
+6. Build production version
+   1. non-prop environments: `npm run build:prod`
+   2. prop environment: `npm run build:prod:prop`
+8. Host the resulting `/docs` folder on a hosting platform
 
 #### Backend
 
@@ -56,7 +53,7 @@ NOTE:
 3. In the `.env` file: 
    - set `AWS_ACCOUNT_ID` and `AWS_REGION`
 4. `cd PROP`
-5. `./build_and_upload.sh`
+5. `./build_and_upload_backend_images_production.sh`
 6. wait for the script to finish
 
 NOTE:

@@ -131,3 +131,4 @@ docs
 frontend/.npm/
 .aider*
 CONVENTIONS.md
+frontend/src/environments/environment.prod.ts
