@@ -12,6 +12,10 @@ services:
         source: prop_docker_volume
         target: /data
       - /var/run/docker.sock:/var/run/docker.sock
+    # the env vars for MAFFT_CONTAINER and CLUSTALW_CONTAINER are set here instead of the .env file to avoid issues with the .env file which could accidentally be used in the local environmentm,
+    environment:
+      - MAFFT_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+      - CLUSTALW_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
     env_file:
       - .env
     privileged: true
@@ -27,6 +31,10 @@ services:
         source: prop_docker_volume
         target: /data
       - /var/run/docker.sock:/var/run/docker.sock
+    # the env vars for MAFFT_CONTAINER and CLUSTALW_CONTAINER are set here instead of the .env file to avoid issues with the .env file which could accidentally be used in the local environmentm,
+    environment:
+      - MAFFT_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+      - CLUSTALW_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
     env_file:
       - .env
     privileged: true
@@ -69,6 +77,10 @@ services:
   prop_backend_redis:
     container_name: prop_backend_redis
     image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_redis:latest
+    # the env vars for MAFFT_CONTAINER and CLUSTALW_CONTAINER are set here instead of the .env file to avoid issues with the .env file which could accidentally be used in the local environmentm,
+    environment:
+      - MAFFT_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+      - CLUSTALW_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
 
 volumes:
   prop_docker_volume:

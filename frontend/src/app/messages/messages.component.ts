@@ -86,7 +86,7 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   async downloadFiles(input) {
-    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
     const formData: any = new FormData();
     formData.set('result_id', input);
     formData.set('result_kind', 'complete');
@@ -198,7 +198,7 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   cancelJob(input) {
-    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
     const formData: any = new FormData();
     formData.append('result_id', input);
     const allCookies: {} = this.cookieService.getAll();
@@ -243,7 +243,7 @@ export class MessagesComponent implements AfterViewInit {
         const result = await this.deleteTree();
       }
       this.showButton = true;
-      const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+      const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
 
       const formData: any = new FormData();
 

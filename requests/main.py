@@ -32,10 +32,8 @@ from functools import wraps
 def require_appkey(view_function):
     @wraps(view_function)
     def decorated_function(*args, **kwargs):
-        if (
-            request.headers["Apikey"]
-            and request.headers["Apikey"] == os.environ["BACKEND_APIKEY"]
-        ):
+        apikey = request.headers.get("apikey")
+        if apikey and apikey == os.environ["BACKEND_APIKEY"]:
             return view_function(*args, **kwargs)
         else:
             abort(401)
@@ -51,7 +49,10 @@ ZIPPED_FOLDER = "/data/zipped"
 ALLOWED_EXTENSIONS = {"fasta", "txt", "fa"}
 
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    resources={r"/*": {"origins": "*", "allow_headers": ["apikey", "Content-Type"]}},
+)
 app.config.from_object(rq_dashboard.default_settings)
 app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 app.secret_key = "Nj#z2L86|!'=Cw&CG"

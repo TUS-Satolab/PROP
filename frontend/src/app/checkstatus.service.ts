@@ -15,7 +15,7 @@ export class checkstatus {
 
   checkStatus() {
     let formStatus = new FormData();
-    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
 
     const error_arr = [
       'Error',

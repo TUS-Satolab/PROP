@@ -81,7 +81,7 @@ export class CompleteCalcComponent implements OnInit {
   }
 
   onSubmit() {
-    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
     formData.append('file', this.form.get('file').value);

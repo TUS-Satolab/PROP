@@ -70,7 +70,7 @@ docker rm $(docker container ls -a -q --filter name=prop_backend_) || true
 
 # Remove existing images
 echo "Deleting backend images"
-docker rmi $(docker images -q --filter=reference='prop_backend_*:*') || true
+docker rmi $(docker images -q --filter=reference='prop_backend_*:*') -f || true
 
 # Delete Docker volume
 echo "Deleting Docker volume"

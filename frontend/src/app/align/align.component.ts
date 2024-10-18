@@ -66,7 +66,7 @@ export class AlignComponent implements OnInit {
     const formData: any = new FormData();
     let res: [''];
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
-    const headers: HttpHeaders = new HttpHeaders({'Apikey': environment.apiKey});
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
 
     const httpOptions: { headers; observe } = {
       headers: new HttpHeaders({
