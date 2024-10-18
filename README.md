@@ -53,7 +53,7 @@ NOTE:
 3. In the `.env` file: 
    - set `AWS_ACCOUNT_ID` and `AWS_REGION`
 4. `cd PROP`
-5. `./build_and_upload_backend_images_production.sh`
+5. `./build_and_upload_backend_images_production.sh [AWS SSO PROFILE]`
 6. wait for the script to finish
 
 NOTE:

@@ -66,4 +66,3 @@ cd frontend
 ng build --prod --output-path ../docs --base-href /bioinformatics/prop/
 
 cd ..
-# Note: The trap will ensure the logo path is reverted even if the build fails
