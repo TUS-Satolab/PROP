@@ -68,6 +68,9 @@ NOTE:
 
 #### Backend
 
+Pre-requisites:
+- make sure that the VPC endpoints `ecr.dkr`, `ecr.api` and `aws_ec2_instance_connect_endpoint` are created using the repository `PROP-infra`
+
 1. SSH into the EC2 instance via the management console
    1. access to the EC2 instance / AWS account is required
 2. copy `compose_deploy.yml` to the instance
