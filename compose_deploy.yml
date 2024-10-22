@@ -1,0 +1,87 @@
+services:
+  prop_backend_requests:
+    container_name: prop_backend_requests
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_requests:latest
+    ports:
+      - "${PORT:-5004}:${PORT:-5004}"
+    expose:
+      - "${PORT:-5004}"
+    command: bash -c "cron && python3 /data/main.py run -h 0.0.0.0"
+    volumes:
+      - type: volume
+        source: prop_docker_volume
+        target: /data
+      - /var/run/docker.sock:/var/run/docker.sock
+    # the env vars for MAFFT_CONTAINER and CLUSTALW_CONTAINER are set here instead of the .env file to avoid issues with the .env file which could accidentally be used in the local environment
+    environment:
+      - MAFFT_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+      - CLUSTALW_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
+    env_file:
+      - .env
+    privileged: true
+    depends_on:
+      - prop_backend_redis
+
+  prop_backend_worker:
+    container_name: prop_backend_worker
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_worker:latest
+    command: rq worker --url redis://prop_backend_redis:6379/0
+    volumes:
+      - type: volume
+        source: prop_docker_volume
+        target: /data
+      - /var/run/docker.sock:/var/run/docker.sock
+    # the env vars for MAFFT_CONTAINER and CLUSTALW_CONTAINER are set here instead of the .env file to avoid issues with the .env file which could accidentally be used in the local environment
+    environment:
+      - MAFFT_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+      - CLUSTALW_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
+    env_file:
+      - .env
+    privileged: true
+    depends_on:
+      - prop_backend_redis
+      - prop_backend_requests
+
+  prop_backend_dashboard:
+    container_name: prop_backend_dashboard
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_dashboard:latest
+    ports:
+      - "9181:9181"
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://prop_backend_redis:6379
+      - RQ_DASHBOARD_USERNAME=rq
+      - RQ_DASHBOARD_PASSWORD=password
+      - RQ_DASHBOARD_interval=30000
+    depends_on:
+      - prop_backend_redis
+      - prop_backend_requests
+
+  prop_backend_clustalw:
+    container_name: prop_backend_clustalw
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
+    depends_on:
+      - prop_backend_requests
+      - prop_backend_worker
+
+  prop_backend_mafft:
+    container_name: prop_backend_mafft
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+    volumes:
+      - type: volume
+        source: prop_docker_volume
+        target: /data
+    depends_on:
+      - prop_backend_requests
+      - prop_backend_worker
+
+  prop_backend_redis:
+    container_name: prop_backend_redis
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_redis:latest
+    # the env vars for MAFFT_CONTAINER and CLUSTALW_CONTAINER are set here instead of the .env file to avoid issues with the .env file which could accidentally be used in the local environment
+    environment:
+      - MAFFT_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_mafft:latest
+      - CLUSTALW_CONTAINER=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/prop_backend_clustalw:latest
+
+volumes:
+  prop_docker_volume:
+    name: prop_docker_volume

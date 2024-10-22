@@ -4,13 +4,13 @@ import { MessageService } from '../message.service';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GET_RESULT_URL, QUERY_URL, CANCEL_URL, VERSION } from '../globals';
+import { environment } from '../../environments/environment';
 import { saveAs } from 'file-saver';
 import { checkstatus } from '../checkstatus.service';
 import * as d3 from 'd3';
 import * as svg_download from 'save-svg-as-png';
 import { Router } from '@angular/router';
-var JSZip = require('jszip');
-import * as arrList from '../env.json'
+const JSZip = require('jszip');
 import { Tree, FigTree, rectangularLayout, branch, circle, tipLabel, internalNodeLabel } from 'figtree/dist/figtree.cjs.min';
 
 @Component({
@@ -24,10 +24,10 @@ export class MessagesComponent implements AfterViewInit {
   svgWidth  = 900;
   svgHeight = 900;
   horizontalScale(event:any) {
-    this.horizontalMultiplier = event.target.value 
+    this.horizontalMultiplier = event.target.value
   }
   verticalScale(event:any) {
-    this.verticalMultiplier = event.target.value 
+    this.verticalMultiplier = event.target.value
   }
 
 
@@ -86,7 +86,7 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   async downloadFiles(input) {
-    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
     const formData: any = new FormData();
     formData.set('result_id', input);
     formData.set('result_kind', 'complete');
@@ -129,7 +129,7 @@ export class MessagesComponent implements AfterViewInit {
                   const output = this.dataURItoBlob(uri);
                   zip.file('figtree.png', output);
                 });
-              } 
+              }
             } catch (e) {
               console.log("ERROR\n", e)
               zip.remove('figtree.png');
@@ -141,7 +141,7 @@ export class MessagesComponent implements AfterViewInit {
           this.downloadFlag = 0;
           this.activateFlag = 0;
       }
-    
+
   }
 
   // deleteAllCookies() {
@@ -198,7 +198,7 @@ export class MessagesComponent implements AfterViewInit {
   }
 
   cancelJob(input) {
-    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
     const formData: any = new FormData();
     formData.append('result_id', input);
     const allCookies: {} = this.cookieService.getAll();
@@ -229,7 +229,7 @@ export class MessagesComponent implements AfterViewInit {
               ';' +
               valueSplit[4] +
               ';' +
-              valueSplit[5], 
+              valueSplit[5],
               7,'','',true,"None"
           );
         }
@@ -243,7 +243,7 @@ export class MessagesComponent implements AfterViewInit {
         const result = await this.deleteTree();
       }
       this.showButton = true;
-      const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
+      const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
 
       const formData: any = new FormData();
 
@@ -261,7 +261,7 @@ export class MessagesComponent implements AfterViewInit {
           const layout = rectangularLayout;
           const margins = { top: 10, bottom: 60, left: 10, right: 400 };
           this.branchSettings = branch().hilightOnHover().reRootOnClick().curve(d3.curveStepBefore);
-          
+
           this.figTree = await new FigTree(this.treeSvg.nativeElement, margins, tree, { width: this.svgWidth, height: this.svgHeight })
                       .layout(rectangularLayout)
                       .nodes(
@@ -309,9 +309,9 @@ export class MessagesComponent implements AfterViewInit {
     this.figTree.settings.width = this.svgWidth;
     this.figTree.update();
   }
-  
+
   async clear_history(){
 	this.messageService.clear();
   }
-  
+
 }

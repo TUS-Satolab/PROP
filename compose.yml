@@ -8,10 +8,9 @@ services:
         - BACKEND_APIKEY=${BACKEND_APIKEY}
     image: prop_backend_requests
     ports:
-      - '5004:5000'
+      - '${PORT:-5004}:${PORT:-5004}'
     expose:
-      - '80'
-      - '5004'
+      - '${PORT:-5004}'
     command: bash -c "cron && python3 /data/main.py run -h 0.0.0.0"
     volumes:
       - type: volume
@@ -20,7 +19,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
-      - .env.fixedVariables
     privileged: true
     depends_on:
       - prop_backend_redis
@@ -41,7 +39,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
-      - .env.fixedVariables
     privileged: true
     depends_on:
       - prop_backend_redis
@@ -52,6 +49,7 @@ services:
   prop_backend_dashboard:
     container_name: prop_backend_dashboard
     image: eoranged/rq-dashboard
+    pull_policy: always
     ports:
       - '9181:9181'
     environment:
@@ -71,10 +69,6 @@ services:
       context: .
       dockerfile: ./algorithms/Dockerfile_clustalw
     image: prop_backend_clustalw
-    # volumes:
-    #   - type: volume
-    #     source: prop_docker_volume
-    #     target: /data
     links:
       - prop_backend_requests
       - prop_backend_worker
@@ -96,6 +90,7 @@ services:
   prop_backend_redis:
     container_name: prop_backend_redis
     image: redis:5.0.6-alpine
+    pull_policy: always
 
 volumes:
   prop_docker_volume:

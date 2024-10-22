@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from '../message.service';
 import { TREE_URL, VERSION } from '../globals';
+import { environment } from '../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
-import * as arrList from '../env.json'
 
 @Component({
   selector: 'app-tree',
@@ -42,8 +42,8 @@ export class TreeComponent implements OnInit {
       this.filename = '';
       this.form.get('file').setValue('');
       const file = event.target.files[0];
-      var upload = this.fileInput.nativeElement;
-      if (upload.files[0].size > Number(arrList['FILE_SIZE_LIMIT'])) {
+      const upload = this.fileInput.nativeElement;
+      if (upload.files[0].size > Number(environment.fileSizeLimit)) {
         this.size_flag = 1;
         this.fileInput.nativeElement.value = null;
       } else {
@@ -62,7 +62,7 @@ export class TreeComponent implements OnInit {
   }
 
   onSubmit() {
-    const headers: HttpHeaders | {} = String(arrList['LOCAL_FLAG']) === '1' ? new HttpHeaders({'Apikey': String(arrList['APIKEY']),}) : {}
+    const headers: HttpHeaders = new HttpHeaders({'apikey': environment.apiKey});
     const formData: any = new FormData();
     const dateTime = formatDate(new Date(), 'yyyy/MM/dd HH:mm', 'en');
     formData.append('tree', this.form.get('tree').value);
@@ -71,19 +71,19 @@ export class TreeComponent implements OnInit {
     this.submit_flag = 1;
     if (this.form.get('file').value === '' && this.form.get('task_id').value === '') {
       return this.messageService.add_msg('Add either a file or a task ID');
-    } else {
+    }
       return this.httpClient.post(TREE_URL, formData, { headers, observe: 'response' }).subscribe((data) => {
-        var unparsed_id = data.body['task_id'];
-        var parsed_id = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-        var unparsed_msg = data.body['msg'];
-        var parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+        const unparsed_id = data.body['task_id'];
+        const parsed_id = unparsed_id.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+        const unparsed_msg = data.body['msg'];
+        const parsed_msg = unparsed_msg.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
         this.messageService.add_msg({ id: parsed_id, msg: parsed_msg, time: dateTime });
-        
+
         const allCookies: {} = this.cookieService.getAll();
-        let count = 0 
+        let count = 0
         for (const key in allCookies) {
           if (key.startsWith("CANALPROJECT")) {
-            let keySplit = key.split('.');
+            const keySplit = key.split('.');
             count = Number(keySplit[1]) > count ? Number(keySplit[1]) : count;
           }
         }
@@ -91,13 +91,12 @@ export class TreeComponent implements OnInit {
 
         if (parsed_id !== 'None') {
           this.cookieService.set(
-            "CANALPROJECT."+String(count),
-            parsed_id + ';' + parsed_msg + ';' + dateTime + ';' + count + ';' + 'tree' + ';' + String(VERSION), 
+            `CANALPROJECT.${String(count)}`,
+            `${parsed_id};${parsed_msg};${dateTime};${count};tree;${String(VERSION)}`,
             7,'','',true,"None"
           );
           this.submit_flag = 0;
         }
       });
-    }
   }
 }

@@ -9,45 +9,83 @@
   - `curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -`
   - `sudo apt install nodejs`
 
-## Installation 
-### Backend
+## Development 
+### Frontend & Backend
 
 1. Pull this repo
 2. `cd PROP`
-3. `sudo ./dc_script.sh`
-Optional
-4. Delete Angular Frontend Docker container if debugging is not needed.
-```
-  docker stop prop_frontend_1
-  docker rm prop_frontend_1
-```  
+3. copy `.env.example` to `.env`
+4. in `frontend/src/environments/environment.ts` set the env vars for development: 
+   - set `production` to `false`
+   - set `baseUrl` to `http://localhost:5004`
+   - set `apiKey` to `DUMMY`
+   - set `fileSizeLimit` to the file size limit
+5. `./dc_script.sh`
+6. wait for the script to finish
+7. open the website on `https://localhost:4200/`
+8. make changes to the frontend/backend code. Hot reload is enabled
 
-### Frontend (static)
+NOTE:
+- If you want to run the frontend/backend separately, you can do so by running `sudo ./dc_script.sh --frontend-only` or `sudo ./dc_script.sh --backend-only`
 
-1. Pull this repo
-2. `cd PROP`
-3. `cd frontend`
-4. `sudo npm install`
-5. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
-6. In `frontend/src/app/env.json`, set `"local_flag":"2"` --> in that case, API Gateway endpoint is used instead of localhost
-7. `cd ../..` (so that you are in the folder `frontend`)
-8. `npx ng build --prod --output-path ../docs --base-href /bioinformatics/prop/`
-9. In `frontend/src/app/header/header.component.html` change `src="/assets/canal_logo.svg"` to `src="/bioinformatics/prop/assets/canal_logo.svg"`
-    
-10. open `header.component.html`
-   - Change from `../../assets/canal_logo.svg` to `/bioinformatics/prop/assets/canal_logo.svg`
-
-11. Host the docs folder on a hosting platform
-
-### local debugging
+## Production
+### Build
+#### Frontend (static)
 
 1. Pull this repo
 2. `cd PROP`
-3. copy/paste `frontend/src/app/envDummy.json` to `frontend/src/app/env.json`
-4. create .env with `BACKEND_APIKEY=DUMMY`
-4. `sudo ./dc_script.sh`
-5. wait for the script to finish
-6. open the website on `https://localhost:4200/`
+3. Ensure the `.env` file in the root directory contains the following variables:
+   - `PRODUCTION=true`
+   - `BASE_URL` (set to the API Gateway URL)
+   - `BACKEND_APIKEY` (set to the Python backend API key)
+   - `FILE_SIZE_LIMIT` (set to the desired file size limit)
+4. `cd frontend`
+5. `npm install`
+6. Build production version
+   1. non-prop environments: `npm run build:prod`
+   2. prop environment: `npm run build:prod:prop`
+8. Host the resulting `/docs` folder on a hosting platform
+
+#### Backend
+
+1. Pull this repo
+2. `aws sso login --profile [PROFILE]` (if not already logged in)
+3. In the `.env` file: 
+   - set `AWS_ACCOUNT_ID` and `AWS_REGION`
+4. `cd PROP`
+5. `./build_and_upload_backend_images_production.sh [AWS SSO PROFILE]`
+6. wait for the script to finish
+
+NOTE:
+- the script builds the Docker images and uploads them to AWS ECR repositories
+  - access to that repository / AWS account is required
+
+
+### Deploy
+#### Frontend
+
+1. Host the `docs` folder created during the build process on a hosting platform
+
+#### Backend
+
+Pre-requisites:
+- make sure that the VPC endpoints `ecr.dkr`, `ecr.api` and `aws_ec2_instance_connect_endpoint` are created using the repository `PROP-infra`
+
+1. SSH into the EC2 instance via the management console
+   1. access to the EC2 instance / AWS account is required
+2. copy `compose_deploy.yml` to the instance
+3. ensure the `.env` file is present and contains the following variables:
+   - `AWS_ACCOUNT_ID`
+   - `AWS_REGION`
+   - `BACKEND_APIKEY`
+   - `MAFFT_ARRAY_COUNT`
+   - `MAFFT_ARRAY_LENGTH`
+   - `CLUSTALW_ARRAY_COUNT`
+   - `CLUSTALW_ARRAY_LENGTH`
+   - `NO_ALIGNMENT_ARRAY_COUNT`
+   - `NO_ALIGNMENT_ARRAY_LENGTH`
+   - `FILE_SIZE_LIMIT`
+4. `docker compose -f compose_deploy.yml up -d`
 
 ## How to update 
 ### MAFFT / ClustalW variables

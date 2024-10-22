@@ -7,5 +7,5 @@ redis==5.1.0
 requests==2.32.3
 docker==7.1.0
 rq-dashboard==0.8.0.2
-Flask-Cors==3.0.8
+Flask-Cors==5.0.0
 click==8.1.7
