@@ -85,7 +85,8 @@ Pre-requisites:
    - `NO_ALIGNMENT_ARRAY_COUNT`
    - `NO_ALIGNMENT_ARRAY_LENGTH`
    - `FILE_SIZE_LIMIT`
-4. `docker compose -f compose_deploy.yml up -d`
+4. `aws ecr get-login-password  | docker login --username AWS --password-stdin 151247720829.dkr.ecr.ap-northeast-1.amazonaws.com`
+5. `docker compose -f compose_deploy.yml up -d`
 
 ## How to update 
 ### MAFFT / ClustalW variables
